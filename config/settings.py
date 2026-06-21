@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'visits',
     'contracts',
     'reports',
+    'activities',
 ]
 
 MIDDLEWARE = [
