@@ -1,3 +1,16 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+from .models import Activity
+from .serializers import ActivitySerializer
+
+
+class ActivityViewSet(viewsets.ModelViewSet):
+
+    queryset = Activity.objects.all()
+
+    serializer_class = ActivitySerializer
+
+    permission_classes = [
+        IsAuthenticated
+    ]

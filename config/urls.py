@@ -47,6 +47,10 @@ urlpatterns = [
     'api/',
     include('customers.urls')
     ),
+    path(
+    'api/',
+    include('activities.urls')
+    ),
 
 ]
 
