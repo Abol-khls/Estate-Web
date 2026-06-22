@@ -1,5 +1,5 @@
 from django.db import models
-
+from agencies.models import Agency
 
 class Customer(models.Model):
 
@@ -39,6 +39,13 @@ class Customer(models.Model):
 
     updated_at = models.DateTimeField(
         auto_now=True
+    )
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.CASCADE,
+        related_name="customers",
+        null=True,
+        blank=True
     )
 
     def __str__(self):

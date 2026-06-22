@@ -1,6 +1,7 @@
 from django.db import models
 from customers.models import Customer
 from users.models import User
+from agencies.models import Agency
 
 
 class Activity(models.Model):
@@ -41,6 +42,13 @@ class Activity(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True
+    )
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.CASCADE,
+        related_name="activities",
+        null=True,
+        blank=True
     )
 
 

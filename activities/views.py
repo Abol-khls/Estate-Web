@@ -10,6 +10,11 @@ class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all()
 
     serializer_class = ActivitySerializer
+    def get_queryset(self):
+
+        return Activity.objects.filter(
+            agency=self.request.user.agency
+        )
 
     permission_classes = [
         IsAuthenticated

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'activities',
     'dashboard',
     'django_filters',
+    'agencies',
 ]
 
 MIDDLEWARE = [

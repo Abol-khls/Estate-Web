@@ -1,7 +1,7 @@
-
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Property
@@ -19,7 +19,8 @@ class PropertyViewSet(viewsets.ModelViewSet):
     ]
 
     filter_backends = [
-        DjangoFilterBackend
+        DjangoFilterBackend,
+        SearchFilter
     ]
 
     filterset_fields = [
@@ -27,14 +28,16 @@ class PropertyViewSet(viewsets.ModelViewSet):
         'transaction_type',
         'rooms',
     ]
-    filter_backends = [
-    DjangoFilterBackend,
-    SearchFilter
-    ]
-
 
     search_fields = [
         'title',
         'address',
         'description'
     ]
+
+
+    def get_queryset(self):
+
+        return Property.objects.filter(
+            agency=self.request.user.agency
+        )

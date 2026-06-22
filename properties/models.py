@@ -1,7 +1,8 @@
 from django.db import models
-
+from agencies.models import Agency
 
 class Property(models.Model):
+    
 
     TRANSACTION_CHOICES = (
         ('sale', 'Sale'),
@@ -58,6 +59,13 @@ class Property(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.CASCADE,
+        related_name="properties",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.code} - {self.title}"
@@ -76,6 +84,7 @@ class PropertyImage(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+    
 
     def __str__(self):
         return self.property.title

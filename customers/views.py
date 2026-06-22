@@ -7,6 +7,11 @@ from .serializers import CustomerSerializer
 class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset = Customer.objects.all()
+    def get_queryset(self):
+
+        return Customer.objects.filter(
+            agency=self.request.user.agency
+        )
 
     serializer_class = CustomerSerializer
 
