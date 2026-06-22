@@ -59,6 +59,10 @@ urlpatterns = [
     'api/',
     include('contracts.urls')
     ),
+    path(
+    'api/dashboard/',
+    include('dashboard.urls')
+    ),
 
 ]
 
