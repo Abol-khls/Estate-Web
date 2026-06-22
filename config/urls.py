@@ -51,6 +51,14 @@ urlpatterns = [
     'api/',
     include('activities.urls')
     ),
+    path(
+    'api/',
+    include('visits.urls')
+    ),
+    path(
+    'api/',
+    include('contracts.urls')
+    ),
 
 ]
 
