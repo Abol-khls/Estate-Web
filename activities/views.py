@@ -15,6 +15,10 @@ class ActivityViewSet(viewsets.ModelViewSet):
         return Activity.objects.filter(
             agency=self.request.user.agency
         )
+    def perform_create(self, serializer):
+        serializer.save(
+            agency=self.request.user.agency
+        )
 
     permission_classes = [
         IsAuthenticated

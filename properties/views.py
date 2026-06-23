@@ -17,6 +17,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated
     ]
+    
 
     filter_backends = [
         DjangoFilterBackend,
@@ -39,5 +40,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
 
         return Property.objects.filter(
+            agency=self.request.user.agency
+        )
+    def perform_create(self, serializer):
+        serializer.save(
             agency=self.request.user.agency
         )

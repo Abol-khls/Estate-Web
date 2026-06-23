@@ -12,9 +12,13 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Customer.objects.filter(
             agency=self.request.user.agency
         )
+    def perform_create(self, serializer):
+        serializer.save(
+            agency=self.request.user.agency
+        )
 
     serializer_class = CustomerSerializer
 
     permission_classes = [
     IsAuthenticated
-]
+        ]

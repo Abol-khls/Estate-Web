@@ -13,6 +13,10 @@ class ContractViewSet(viewsets.ModelViewSet):
         return Contract.objects.filter(
             agency=self.request.user.agency
         )
+    def perform_create(self, serializer):
+        serializer.save(
+            agency=self.request.user.agency
+        )
 
     serializer_class = ContractSerializer
 
