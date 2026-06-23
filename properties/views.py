@@ -7,6 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Property
 from .serializers import PropertySerializer
 
+from rest_framework.parsers import (
+    MultiPartParser,
+    FormParser
+)
+
 
 class PropertyViewSet(viewsets.ModelViewSet):
 
@@ -46,3 +51,8 @@ class PropertyViewSet(viewsets.ModelViewSet):
         serializer.save(
             agency=self.request.user.agency
         )
+
+    parser_classes = [
+    MultiPartParser,
+    FormParser
+    ]
