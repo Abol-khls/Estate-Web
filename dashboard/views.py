@@ -16,16 +16,27 @@ class DashboardView(APIView):
 
     def get(self, request):
 
+        agency = request.user.agency
+
         data = {
 
-            "properties": Property.objects.count(),
+            "properties": Property.objects.filter(
+                agency=agency
+            ).count(),
 
-            "customers": Customer.objects.count(),
+            "customers": Customer.objects.filter(
+                agency=agency
+            ).count(),
 
-            "visits": Visit.objects.count(),
+            "visits": Visit.objects.filter(
+                agency=agency
+            ).count(),
 
-            "contracts": Contract.objects.count(),
+            "contracts": Contract.objects.filter(
+                agency=agency
+            ).count(),
 
         }
 
         return Response(data)
+   
