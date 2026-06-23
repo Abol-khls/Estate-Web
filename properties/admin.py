@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import Property, PropertyImage
+from .models import PropertyVideo
+
+admin.site.register(PropertyVideo)
 
 
 class PropertyImageInline(admin.TabularInline):
