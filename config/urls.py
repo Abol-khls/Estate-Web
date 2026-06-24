@@ -63,6 +63,10 @@ urlpatterns = [
     'api/dashboard/',
     include('dashboard.urls')
     ),
+    path(
+    'api/',
+    include('users.urls')
+    ),
 
 ]
 
