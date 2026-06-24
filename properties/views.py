@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
 
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Property
@@ -26,7 +28,8 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
     filter_backends = [
         DjangoFilterBackend,
-        SearchFilter
+        SearchFilter,
+        OrderingFilter
     ]
 
     filterset_fields = [
@@ -38,7 +41,11 @@ class PropertyViewSet(viewsets.ModelViewSet):
     search_fields = [
         'title',
         'address',
-        'description'
+        'description',
+        'price',
+        'area',
+        'created_at',
+        'rooms',
     ]
 
 
