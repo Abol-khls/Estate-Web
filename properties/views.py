@@ -9,6 +9,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Property
 from .serializers import PropertySerializer
 
+from .filters import PropertyFilter
+
 from rest_framework.parsers import (
     MultiPartParser,
     FormParser
@@ -32,11 +34,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         OrderingFilter
     ]
 
-    filterset_fields = [
-        'property_type',
-        'transaction_type',
-        'rooms',
-    ]
+    filterset_class = PropertyFilter
 
     search_fields = [
         'title',
