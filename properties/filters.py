@@ -35,4 +35,5 @@ class PropertyFilter(
             "property_type",
             "transaction_type",
             "rooms",
+            "is_favorite",
         ]

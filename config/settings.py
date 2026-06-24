@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'dashboard',
     'django_filters',
     'agencies',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -144,4 +145,13 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.PageNumberPagination',
 
     'PAGE_SIZE': 20,
+
+    'DEFAULT_SCHEMA_CLASS':
+        'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Estate API',
+    'DESCRIPTION': 'Real Estate CRM API',
+    'VERSION': '1.0.0',
 }
