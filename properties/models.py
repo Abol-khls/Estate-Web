@@ -37,6 +37,32 @@ class Property(models.Model):
         max_length=20,
         choices=TRANSACTION_CHOICES
     )
+    floor = models.PositiveIntegerField(
+    null=True,
+    blank=True
+    )
+
+    total_floors = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    year_built = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    parking = models.BooleanField(
+        default=False
+    )
+
+    elevator = models.BooleanField(
+        default=False
+    )
+
+    storage = models.BooleanField(
+        default=False
+    )
 
     price = models.BigIntegerField()
 
