@@ -1,35 +1,7 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyc
-
-# Virtual environment
-backend/.venv/
-venv/
-env/
-
-# Django
-backend/db.sqlite3
-backend/media/
-*.log
-
-# Environment
 .env
-backend/.env
 
-# Node
-frontend/node_modules/
-frontend/dist/
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# IDE
 .vscode/
 .idea/
 
-# OS
 .DS_Store
 Thumbs.db
