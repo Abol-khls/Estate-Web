@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+
 
 export default function Login() {
+    const { login } = useAuth();
 
     const navigate = useNavigate();
-
+    
     const [username, setUsername] = useState("");
 
     const [password, setPassword] = useState("");
@@ -33,7 +36,7 @@ export default function Login() {
                 "refresh",
                 response.data.refresh
             );
-
+            login();
             navigate("/dashboard");
 
         } catch {
