@@ -1,14 +1,9 @@
-import {
-    createContext,
-    useContext,
-    useState,
-    useEffect
-} from "react";
+import {createContext,useContext,useState,useEffect} from "react";
 
-import {
-    getAccessToken,
-    clearTokens
-} from "../services/tokenService";
+import {getAccessToken,clearTokens} from "../services/tokenService";
+
+import { useCallback } from "react";
+import api from "../services/api";
 
 
 const AuthContext = createContext();
@@ -17,38 +12,70 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
 
 
-    const [isAuthenticated, setIsAuthenticated] =
-        useState(false);
+    const [isAuthenticated, setIsAuthenticated] =useState(false);
+
+    const [user, setUser] = useState(null);
 
 
-    const [loading, setLoading] =
-        useState(true);
+    const [loading, setLoading] =useState(true); 
+    
+    const fetchUser = useCallback(async () => {
 
+        try {
 
+            const response = await api.get(
+                "me/"
+            );
 
-    useEffect(() => {
-
-
-        const token = getAccessToken();
-
-
-        if(token){
+            setUser(
+                response.data
+            );
 
             setIsAuthenticated(true);
 
+        } catch {
+
+            setUser(null);
+
+            setIsAuthenticated(false);
+
         }
-
-
-        setLoading(false);
-
 
     }, []);
 
 
 
-    const login = () => {
+    useEffect(() => {
 
-        setIsAuthenticated(true);
+       
+
+
+        const initialize = async () => {
+
+            const token = getAccessToken();
+
+            if(token){
+
+                await fetchUser();
+
+            }
+
+            setLoading(false);
+
+        };
+
+        initialize();
+
+
+    }, [fetchUser]);
+
+    
+
+
+
+    const login = async () => {
+
+        await fetchUser();
 
     };
 
@@ -57,6 +84,8 @@ export function AuthProvider({ children }) {
     const logout = () => {
 
         clearTokens();
+
+        setUser(null);
 
         setIsAuthenticated(false);
 
@@ -68,10 +97,12 @@ export function AuthProvider({ children }) {
 
         <AuthContext.Provider
             value={{
+                user,
                 isAuthenticated,
                 loading,
                 login,
-                logout
+                logout,
+                fetchUser,
             }}
         >
 
