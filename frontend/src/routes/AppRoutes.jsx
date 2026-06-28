@@ -5,6 +5,9 @@ import Dashboard from "../pages/dashboard/Dashboard";
 
 import ProtectedRoute from "./ProtectedRoute";
 
+import Layout from "../components/layout/Layout";
+
+
 export default function AppRoutes() {
 
     return (
@@ -22,8 +25,10 @@ export default function AppRoutes() {
                     path="/dashboard"
                     element={
                         <ProtectedRoute>
+                            <Layout>
 
-                            <Dashboard />
+                                <Dashboard />
+                            </Layout>
 
                         </ProtectedRoute>
                     }
