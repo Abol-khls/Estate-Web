@@ -1,46 +1,129 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
+
 
 export default function Dashboard() {
-    const { user } = useAuth();
 
-    console.log(user);
+
+    const [data, setData] = useState(null);
+
+
 
     useEffect(() => {
 
-        async function loadData() {
+
+        async function load() {
+
 
             try {
 
-                const response = await api.get(
-                    "/dashboard/"
+                const res = await api.get(
+                    "dashboard/"
                 );
 
-                console.log(response.data);
+
+                setData(res.data);
+
 
             }
 
-            catch (error) {
+            catch (err) {
 
-                console.log(error);
+                console.log(err);
 
             }
+
 
         }
 
-        loadData();
+
+        load();
+
 
     }, []);
 
+
+
+    if (!data) {
+
+        return <div>Loading...</div>
+
+    }
+
+
+
     return (
 
-        <h1>
+        <div>
 
-            Dashboard
 
-        </h1>
+            <h1>
+                داشبورد
+            </h1>
 
-    );
+
+
+            <div className="cards">
+
+
+                <Card
+                    title="املاک"
+                    value={data.properties}
+                />
+
+
+                <Card
+                    title="مشتریان"
+                    value={data.customers}
+                />
+
+
+                <Card
+                    title="بازدیدها"
+                    value={data.visits}
+                />
+
+
+                <Card
+                    title="قراردادها"
+                    value={data.contracts}
+                />
+
+
+            </div>
+
+
+
+        </div>
+
+
+    )
+
+}
+
+
+
+function Card({ title, value }) {
+
+
+    return (
+
+        <div className="card">
+
+
+            <h3>
+                {title}
+            </h3>
+
+
+            <h1>
+                {value}
+            </h1>
+
+
+        </div>
+
+    )
+
 
 }
