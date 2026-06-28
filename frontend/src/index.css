@@ -155,3 +155,77 @@ main {
   font-size: 40px;
 
 }
+
+.login-page {
+
+height:100vh;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#f5f6fa;
+
+}
+
+
+
+.login-box {
+
+background:white;
+
+width:350px;
+
+padding:30px;
+
+border-radius:15px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+
+box-shadow:0 10px 30px #0002;
+
+}
+
+
+
+.login-box input {
+
+padding:12px;
+
+border:1px solid #ddd;
+
+border-radius:8px;
+
+}
+
+
+
+.login-box button {
+
+padding:12px;
+
+background:#111827;
+
+color:white;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+
+.error {
+
+color:red;
+
+}

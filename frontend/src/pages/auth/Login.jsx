@@ -1,83 +1,149 @@
 import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import api from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
 
 
-export default function Login() {
-    const { login } = useAuth();
+export default function Login(){
+
 
     const navigate = useNavigate();
-    
-    const [username, setUsername] = useState("");
 
-    const [password, setPassword] = useState("");
 
-    async function handleLogin(e) {
+    const [username,setUsername] = useState("");
+    const [password,setPassword] = useState("");
+
+    const [error,setError] = useState("");
+
+    const [loading,setLoading] = useState(false);
+
+
+
+    async function handleSubmit(e){
 
         e.preventDefault();
 
+        setLoading(true);
+        setError("");
+
+
         try {
 
-            const response = await api.post(
-                "/token/",
+
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/token/",
                 {
                     username,
-                    password,
+                    password
                 }
             );
+
 
             localStorage.setItem(
                 "access",
                 response.data.access
             );
 
+
             localStorage.setItem(
                 "refresh",
                 response.data.refresh
             );
-            login();
+
+
             navigate("/dashboard");
 
-        } catch {
 
-            alert("نام کاربری یا رمز عبور اشتباه است.");
         }
+        catch(err){
+
+            setError(
+                "نام کاربری یا رمز عبور اشتباه است"
+            );
+
+        }
+
+
+        setLoading(false);
+
     }
+
+
 
     return (
 
-        <form onSubmit={handleLogin}>
+        <div className="login-page">
 
-            <h1>Login</h1>
 
-            <input
-                placeholder="Username"
-                value={username}
-                onChange={(e) =>
-                    setUsername(e.target.value)
-                }
-            />
+            <form
+                className="login-box"
+                onSubmit={handleSubmit}
+            >
 
-            <br /><br />
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) =>
-                    setPassword(e.target.value)
-                }
-            />
+                <h1>
+                    ورود به پنل
+                </h1>
 
-            <br /><br />
 
-            <button>
 
-                Login
+                {error && (
 
-            </button>
+                    <p className="error">
+                        {error}
+                    </p>
 
-        </form>
+                )}
+
+
+
+                <input
+
+                    placeholder="نام کاربری"
+
+                    value={username}
+
+                    onChange={
+                        e=>setUsername(e.target.value)
+                    }
+
+                />
+
+
+
+                <input
+
+                    type="password"
+
+                    placeholder="رمز عبور"
+
+                    value={password}
+
+                    onChange={
+                        e=>setPassword(e.target.value)
+                    }
+
+                />
+
+
+
+                <button>
+
+                    {
+                        loading
+                        ? "در حال ورود..."
+                        : "ورود"
+                    }
+
+                </button>
+
+
+
+            </form>
+
+
+        </div>
+
     );
+
+
 }
