@@ -57,6 +57,11 @@ class PropertyViewSet(viewsets.ModelViewSet):
         serializer.save(
             agency=self.request.user.agency
         )
+    def get_serializer_context(self):
+
+        return {
+            "request": self.request
+        }
 
     parser_classes = [
     MultiPartParser,

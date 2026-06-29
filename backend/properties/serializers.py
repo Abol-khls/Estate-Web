@@ -31,7 +31,7 @@ class PropertySerializer(serializers.ModelSerializer):
 
     images = PropertyImageSerializer(
         many=True,
-        required=False
+        read_only=True
     )
 
     videos = PropertyVideoSerializer(
@@ -41,32 +41,36 @@ class PropertySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        images = validated_data.pop(
-            "images",
-            []
-        )
-
-        videos = validated_data.pop(
-            "videos",
-            []
-        )
+        request = self.context["request"]
 
         property = Property.objects.create(
             **validated_data
         )
 
 
+        images = request.FILES.getlist(
+            "images"
+        )
+
+
         for image in images:
+
             PropertyImage.objects.create(
                 property=property,
-                **image
+                image=image
             )
 
 
+        videos = request.FILES.getlist(
+            "videos"
+        )
+
+
         for video in videos:
+
             PropertyVideo.objects.create(
                 property=property,
-                **video
+                video=video
             )
 
 

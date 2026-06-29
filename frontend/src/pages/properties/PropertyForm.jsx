@@ -41,6 +41,10 @@ export default function PropertyForm() {
 
     });
 
+    const [images, setImages] = useState([]);
+
+    const [videos, setVideos] = useState([]);
+
     const navigate = useNavigate();
 
 
@@ -77,6 +81,22 @@ export default function PropertyForm() {
 
     }
 
+    function handleImages(e) {
+
+        setImages(
+            [...e.target.files]
+        );
+
+    }
+
+    function handleVideos(e) {
+
+        setVideos(
+            [...e.target.files]
+        );
+
+    }
+
     async function handleSubmit(e) {
 
         e.preventDefault();
@@ -85,20 +105,41 @@ export default function PropertyForm() {
         try {
 
 
-            const data = {
-                ...form,
+            const formData = new FormData();
 
-                floor: form.floor || null,
 
-                total_floors: form.total_floors || null,
+            Object.keys(form).forEach(key => {
 
-                year_built: form.year_built || null,
-            };
+                formData.append(
+                    key,
+                    form[key] ?? ""
+                );
+
+            });
+
+
+            images.forEach(image => {
+
+                formData.append(
+                    "images",
+                    image
+                );
+
+            });
+
+            videos.forEach(video => {
+
+                formData.append(
+                    "videos",
+                    video
+                );
+
+            });
 
 
             await api.post(
                 "properties/",
-                data
+                formData
             );
 
 
@@ -397,6 +438,41 @@ export default function PropertyForm() {
 
                         />
 
+
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+
+                        <input
+
+                            type="file"
+
+                            multiple
+
+                            accept="image/*"
+
+                            onChange={handleImages}
+
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <label>
+                            ویدیوهای ملک
+                        </label>
+
+                        <input
+
+                            type="file"
+
+                            multiple
+
+                            accept="video/*"
+
+                            onChange={handleVideos}
+
+                        />
 
                     </Grid>
 
