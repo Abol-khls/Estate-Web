@@ -13,18 +13,22 @@ import {
     Button
 } from "@mui/material";
 
+import AppButton from "../../components/common/AppButton";
+
+import { useNavigate } from "react-router-dom";
+
+export default function Properties() {
 
 
-export default function Properties(){
+    const [properties, setProperties] = useState([]);
+
+    const navigate = useNavigate();
 
 
-    const [properties,setProperties] = useState([]);
 
+    async function loadProperties() {
 
-
-    async function loadProperties(){
-
-        try{
+        try {
 
             const response = await api.get(
                 "properties/"
@@ -37,7 +41,7 @@ export default function Properties(){
 
 
         }
-        catch(error){
+        catch (error) {
 
             console.log(error);
 
@@ -47,11 +51,11 @@ export default function Properties(){
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
         loadProperties();
 
-    },[]);
+    }, []);
 
 
 
@@ -60,14 +64,32 @@ export default function Properties(){
         <Container>
 
 
-            <Typography
-                variant="h4"
-                sx={{
-                    mb:3
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "24px"
                 }}
             >
-                املاک
-            </Typography>
+
+                <Typography
+                    variant="h4"
+                >
+                    املاک
+                </Typography>
+
+
+                <AppButton
+                    onClick={() =>
+                        navigate("/properties/create")
+                    }
+                >
+                    افزودن ملک
+                </AppButton>
+
+
+            </div>
 
 
 
@@ -111,55 +133,55 @@ export default function Properties(){
                     <TableBody>
 
 
-                    {
-                    properties.map(property=>(
+                        {
+                            properties.map(property => (
 
 
-                        <TableRow
-                            key={property.id}
-                        >
-
-
-                            <TableCell>
-                                {property.title}
-                            </TableCell>
-
-
-                            <TableCell>
-                                {property.price}
-                            </TableCell>
-
-
-                            <TableCell>
-                                {property.address}
-                            </TableCell>
-
-
-
-                            <TableCell>
-
-
-                                <Button>
-                                    ویرایش
-                                </Button>
-
-
-                                <Button
-                                    color="error"
+                                <TableRow
+                                    key={property.id}
                                 >
-                                    حذف
-                                </Button>
 
 
-                            </TableCell>
+                                    <TableCell>
+                                        {property.title}
+                                    </TableCell>
+
+
+                                    <TableCell>
+                                        {property.price}
+                                    </TableCell>
+
+
+                                    <TableCell>
+                                        {property.address}
+                                    </TableCell>
 
 
 
-                        </TableRow>
+                                    <TableCell>
 
 
-                    ))
-                    }
+                                        <Button>
+                                            ویرایش
+                                        </Button>
+
+
+                                        <Button
+                                            color="error"
+                                        >
+                                            حذف
+                                        </Button>
+
+
+                                    </TableCell>
+
+
+
+                                </TableRow>
+
+
+                            ))
+                        }
 
 
                     </TableBody>
