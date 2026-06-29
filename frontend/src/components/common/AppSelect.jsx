@@ -1,30 +1,49 @@
-import { TextField } from "@mui/material";
+import {
+    FormControl,
+    InputLabel,
+    Select
+} from "@mui/material";
+
 
 export default function AppSelect({
 
-    children,
-
-    ...props
+    label,
+    name,
+    value,
+    onChange,
+    children
 
 }) {
 
     return (
 
-        <TextField
+        <FormControl fullWidth>
 
-            select
 
-            fullWidth
+            <InputLabel>
+                {label}
+            </InputLabel>
 
-            size="small"
 
-            {...props}
+            <Select
 
-        >
+                name={name}
 
-            {children}
+                value={value}
 
-        </TextField>
+                onChange={onChange}
+
+                label={label}
+
+            >
+
+                {children}
+
+
+            </Select>
+
+
+        </FormControl>
 
     );
 

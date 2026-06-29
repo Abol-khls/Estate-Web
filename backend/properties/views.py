@@ -13,7 +13,8 @@ from .filters import PropertyFilter
 
 from rest_framework.parsers import (
     MultiPartParser,
-    FormParser
+    FormParser,
+    JSONParser
 )
 
 
@@ -59,5 +60,6 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
     parser_classes = [
     MultiPartParser,
-    FormParser
-    ]
+    FormParser,
+    JSONParser
+]

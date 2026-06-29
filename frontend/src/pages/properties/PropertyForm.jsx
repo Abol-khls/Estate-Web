@@ -8,6 +8,11 @@ import AppTextField from "../../components/common/AppTextField";
 import AppCheckbox from "../../components/common/AppCheckbox";
 import AppSelect from "../../components/common/AppSelect";
 
+import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+
+import { MenuItem } from "@mui/material";
+
 
 export default function PropertyForm() {
 
@@ -35,6 +40,8 @@ export default function PropertyForm() {
         description: "",
 
     });
+
+    const navigate = useNavigate();
 
 
 
@@ -70,6 +77,46 @@ export default function PropertyForm() {
 
     }
 
+    async function handleSubmit(e) {
+
+        e.preventDefault();
+
+
+        try {
+
+
+            const data = {
+                ...form,
+
+                floor: form.floor || null,
+
+                total_floors: form.total_floors || null,
+
+                year_built: form.year_built || null,
+            };
+
+
+            await api.post(
+                "properties/",
+                data
+            );
+
+
+            navigate("/properties");
+
+
+        }
+
+        catch (error) {
+
+            console.log(
+                error.response?.data
+            );
+
+        }
+
+    }
+
 
 
 
@@ -77,289 +124,300 @@ export default function PropertyForm() {
 
         <PageContainer>
 
-
             <PageHeader
                 title="افزودن ملک"
             />
 
 
-            <Grid container spacing={2}>
+            <form onSubmit={handleSubmit}>
 
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                    <AppTextField
+                <Grid container spacing={2}>
 
-                        label="کد ملک"
 
-                        name="code"
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <AppTextField
 
-                        value={form.code}
+                            label="کد ملک"
 
-                        onChange={handleChange}
+                            name="code"
 
-                    />
+                            value={form.code}
+
+                            onChange={handleChange}
+
+                        />
+                    </Grid>
+
+
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <AppTextField
+
+                            label="عنوان"
+
+                            name="title"
+
+                            value={form.title}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <AppSelect
+
+                            label="نوع ملک"
+
+                            name="property_type"
+
+                            value={form.property_type}
+
+                            onChange={handleChange}
+
+                        >
+
+
+                            <MenuItem value="">
+                                انتخاب کنید
+                            </MenuItem>
+
+
+                            <MenuItem value="apartment">
+                                آپارتمان
+                            </MenuItem>
+
+
+                            <MenuItem value="villa">
+                                ویلا
+                            </MenuItem>
+
+
+                            <MenuItem value="land">
+                                زمین
+                            </MenuItem>
+
+
+                            <MenuItem value="office">
+                                دفتر
+                            </MenuItem>
+
+
+                        </AppSelect>
+
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+
+                        <AppSelect
+
+                            label="نوع معامله"
+
+                            name="transaction_type"
+
+                            value={form.transaction_type}
+
+                            onChange={handleChange}
+
+                        >
+
+                            <MenuItem value="">
+                                انتخاب کنید
+                            </MenuItem>
+
+                            <MenuItem value="sale">
+                                فروش
+                            </MenuItem>
+
+                            <MenuItem value="rent">
+                                اجاره
+                            </MenuItem>
+
+
+                        </AppSelect>
+
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+
+                            label="قیمت"
+
+                            name="price"
+
+                            value={form.price}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+
+                            label="متراژ"
+
+                            name="area"
+
+                            value={form.area}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+
+                            label="اتاق"
+
+                            name="rooms"
+
+                            value={form.rooms}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <AppTextField
+
+                            label="آدرس"
+
+                            name="address"
+
+                            multiline
+
+                            rows={3}
+
+                            value={form.address}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <AppTextField
+
+                            label="توضیحات"
+
+                            name="description"
+
+                            multiline
+
+                            rows={4}
+
+                            value={form.description}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </Grid>
+
+
+
+
+                    <Grid size={{ xs: 12 }}>
+
+
+                        <AppCheckbox
+
+                            label="پارکینگ"
+
+                            name="parking"
+
+                            checked={form.parking}
+
+                            onChange={handleCheckbox}
+
+                        />
+
+
+                        <AppCheckbox
+
+                            label="آسانسور"
+
+                            name="elevator"
+
+                            checked={form.elevator}
+
+                            onChange={handleCheckbox}
+
+                        />
+
+
+
+                        <AppCheckbox
+
+                            label="انباری"
+
+                            name="storage"
+
+                            checked={form.storage}
+
+                            onChange={handleCheckbox}
+
+                        />
+
+
+                    </Grid>
+
+
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <AppButton
+                            type="submit"
+                        >
+
+                            ثبت ملک
+
+                        </AppButton>
+
+                    </Grid>
+
+
+
                 </Grid>
-
-
-
-                <Grid size={{ xs: 12, md: 6 }}>
-
-                    <AppTextField
-
-                        label="عنوان"
-
-                        name="title"
-
-                        value={form.title}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-                <Grid size={{ xs: 12, md: 6 }}>
-
-                    <AppSelect
-
-                        label="نوع ملک"
-
-                        name="property_type"
-
-                        value={form.property_type}
-
-                        onChange={handleChange}
-
-                    >
-
-                        <option value="">
-                            انتخاب کنید
-                        </option>
-
-                        <option value="apartment">
-                            آپارتمان
-                        </option>
-
-                        <option value="villa">
-                            ویلا
-                        </option>
-
-                        <option value="land">
-                            زمین
-                        </option>
-
-                        <option value="office">
-                            دفتر
-                        </option>
-
-                    </AppSelect>
-
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12, md: 6 }}>
-
-
-                    <AppSelect
-
-                        label="نوع معامله"
-
-                        name="transaction_type"
-
-                        value={form.transaction_type}
-
-                        onChange={handleChange}
-
-                    >
-
-                        <option value="">
-                            انتخاب کنید
-                        </option>
-
-                        <option value="sale">
-                            فروش
-                        </option>
-
-                        <option value="rent">
-                            اجاره
-                        </option>
-
-
-                    </AppSelect>
-
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12, md: 4 }}>
-
-                    <AppTextField
-
-                        label="قیمت"
-
-                        name="price"
-
-                        value={form.price}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12, md: 4 }}>
-
-                    <AppTextField
-
-                        label="متراژ"
-
-                        name="area"
-
-                        value={form.area}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-                <Grid size={{ xs: 12, md: 4 }}>
-
-                    <AppTextField
-
-                        label="اتاق"
-
-                        name="rooms"
-
-                        value={form.rooms}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12 }}>
-
-                    <AppTextField
-
-                        label="آدرس"
-
-                        name="address"
-
-                        multiline
-
-                        rows={3}
-
-                        value={form.address}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12 }}>
-
-                    <AppTextField
-
-                        label="توضیحات"
-
-                        name="description"
-
-                        multiline
-
-                        rows={4}
-
-                        value={form.description}
-
-                        onChange={handleChange}
-
-                    />
-
-                </Grid>
-
-
-
-
-                <Grid size={{ xs: 12 }}>
-
-
-                    <AppCheckbox
-
-                        label="پارکینگ"
-
-                        name="parking"
-
-                        checked={form.parking}
-
-                        onChange={handleCheckbox}
-
-                    />
-
-
-                    <AppCheckbox
-
-                        label="آسانسور"
-
-                        name="elevator"
-
-                        checked={form.elevator}
-
-                        onChange={handleCheckbox}
-
-                    />
-
-
-
-                    <AppCheckbox
-
-                        label="انباری"
-
-                        name="storage"
-
-                        checked={form.storage}
-
-                        onChange={handleCheckbox}
-
-                    />
-
-
-                </Grid>
-
-
-
-                <Grid size={{ xs: 12 }}>
-
-                    <AppButton>
-
-                        ثبت ملک
-
-                    </AppButton>
-
-                </Grid>
-
-
-
-            </Grid>
+            </form>
 
 
 
