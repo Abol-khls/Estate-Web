@@ -17,6 +17,10 @@ import AppButton from "../../components/common/AppButton";
 
 import { useNavigate } from "react-router-dom";
 
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 export default function Properties() {
 
 
@@ -160,18 +164,29 @@ export default function Properties() {
 
                                     <TableCell>
 
+                                        <Button
+                                            startIcon={<VisibilityIcon />}
+                                            onClick={() =>
+                                                navigate(`/properties/${property.id}`)
+                                            }
+                                        >
+                                            مشاهده
+                                        </Button>
 
-                                        <Button>
+
+                                        <Button
+                                            startIcon={<EditIcon />}
+                                        >
                                             ویرایش
                                         </Button>
 
 
                                         <Button
                                             color="error"
+                                            startIcon={<DeleteIcon />}
                                         >
                                             حذف
                                         </Button>
-
 
                                     </TableCell>
 

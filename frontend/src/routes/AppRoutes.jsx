@@ -9,6 +9,7 @@ import Layout from "../components/layout/Layout";
 
 import PropertyForm from "../pages/properties/PropertyForm";
 
+import PropertyDetail from "../pages/properties/PropertyDetail";
 
 export default function AppRoutes() {
 
@@ -70,6 +71,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <PropertyForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/properties/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <PropertyDetail />
                             </Layout>
                         </ProtectedRoute>
                     }
