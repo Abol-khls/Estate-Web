@@ -329,6 +329,44 @@ export default function PropertyForm() {
 
                     </Grid>
 
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+                            label="طبقه"
+                            name="floor"
+                            type="number"
+                            value={form.floor}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+                            label="تعداد طبقات"
+                            name="total_floors"
+                            type="number"
+                            value={form.total_floors}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+
+                        <AppTextField
+                            label="سال ساخت"
+                            name="year_built"
+                            type="number"
+                            value={form.year_built}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
 
 
                     <Grid size={{ xs: 12, md: 4 }}>
