@@ -14,13 +14,11 @@ export default function PageHeader({
 
             direction="row"
 
-            
-
-            justifyContent="space-between"
-
-            alignItems="center"
-
-            mb={3}
+            sx={{
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 3
+            }}
 
         >
 
