@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
@@ -10,6 +10,8 @@ import AppSelect from "../../components/common/AppSelect";
 
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+
+import { useParams } from "react-router-dom";
 
 import { MenuItem } from "@mui/material";
 
@@ -46,6 +48,56 @@ export default function PropertyForm() {
     const [videos, setVideos] = useState([]);
 
     const navigate = useNavigate();
+
+    const { id } = useParams();
+
+    const isEdit = Boolean(id);
+
+    useEffect(() => {
+
+        if (!isEdit) return;
+
+        async function loadProperty() {
+
+            try {
+
+                const response = await api.get(
+                    `properties/${id}/`
+                );
+
+                setForm({
+
+                    code: response.data.code,
+                    title: response.data.title,
+                    property_type: response.data.property_type,
+                    transaction_type: response.data.transaction_type,
+                    price: response.data.price,
+                    area: response.data.area,
+                    rooms: response.data.rooms,
+                    floor: response.data.floor ?? "",
+                    total_floors: response.data.total_floors ?? "",
+                    year_built: response.data.year_built ?? "",
+                    parking: response.data.parking,
+                    elevator: response.data.elevator,
+                    storage: response.data.storage,
+                    address: response.data.address,
+                    description: response.data.description,
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+        loadProperty();
+
+    }, [id, isEdit]);
 
 
 
@@ -137,10 +189,22 @@ export default function PropertyForm() {
             });
 
 
-            await api.post(
-                "properties/",
-                formData
-            );
+            if (isEdit) {
+
+                await api.put(
+                    `properties/${id}/`,
+                    formData
+                );
+
+            }
+            else {
+
+                await api.post(
+                    "properties/",
+                    formData
+                );
+
+            }
 
 
             navigate("/properties");
@@ -166,7 +230,11 @@ export default function PropertyForm() {
         <PageContainer>
 
             <PageHeader
-                title="افزودن ملک"
+                title={
+                    isEdit
+                        ? "ویرایش ملک"
+                        : "افزودن ملک"
+                }
             />
 
 
@@ -522,7 +590,11 @@ export default function PropertyForm() {
                             type="submit"
                         >
 
-                            ثبت ملک
+                            {
+                                isEdit
+                                    ? "ذخیره تغییرات"
+                                    : "ثبت ملک"
+                            }
 
                         </AppButton>
 

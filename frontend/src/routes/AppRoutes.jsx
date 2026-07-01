@@ -77,6 +77,17 @@ export default function AppRoutes() {
                 />
 
                 <Route
+                    path="/properties/:id/edit"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <PropertyForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
                     path="/properties/:id"
                     element={
                         <ProtectedRoute>

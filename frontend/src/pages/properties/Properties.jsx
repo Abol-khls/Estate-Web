@@ -175,7 +175,9 @@ export default function Properties() {
 
 
                                         <Button
-                                            startIcon={<EditIcon />}
+                                            onClick={() =>
+                                                navigate(`/properties/${property.id}/edit`)
+                                            }
                                         >
                                             ویرایش
                                         </Button>

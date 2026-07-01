@@ -416,10 +416,11 @@ export default function PropertyDetail() {
 
                         <Button
                             variant="contained"
+                            onClick={() =>
+                                navigate(`/properties/${ property.id } / edit`)
+                            }
                         >
-
                             ویرایش
-
                         </Button>
 
 
