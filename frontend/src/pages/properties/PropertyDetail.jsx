@@ -11,7 +11,9 @@ import {
     Grid,
     Divider,
     Chip,
-    Button
+    Button,
+    Card,
+    CardMedia,
 } from "@mui/material";
 
 export default function PropertyDetail() {
@@ -303,6 +305,114 @@ export default function PropertyDetail() {
                         size={{ xs: 12 }}
                         sx={{ mt: 3 }}
                     >
+                        <Divider sx={{ my: 3 }} />
+
+                        <Typography
+                            variant="h5"
+                            sx={{ mb: 2 }}
+                        >
+                            تصاویر
+                        </Typography>
+
+                        <Grid container spacing={2}>
+
+                            {
+                                property.images.length > 0 ?
+
+                                    property.images.map(image => (
+
+                                        <Grid
+                                            size={{ xs: 12, sm: 6, md: 4 }}
+                                            key={image.id}
+                                        >
+
+                                            <Card>
+
+                                                <CardMedia
+
+                                                    component="img"
+
+                                                    height="220"
+
+                                                    image={image.image}
+
+                                                    alt={property.title}
+
+                                                />
+
+                                            </Card>
+
+                                        </Grid>
+
+                                    ))
+
+                                    :
+
+                                    <Typography>
+
+                                        تصویری ثبت نشده است.
+
+                                    </Typography>
+
+                            }
+
+                        </Grid>
+
+
+                        <Divider sx={{ my: 3 }} />
+
+                        <Typography
+                            variant="h5"
+                            sx={{ mb: 2 }}
+                        >
+                            ویدیوها
+                        </Typography>
+
+                        <Grid container spacing={2}>
+
+                            {
+                                property.videos.length > 0 ?
+
+                                    property.videos.map(video => (
+
+                                        <Grid
+                                            size={{ xs: 12, md: 6 }}
+                                            key={video.id}
+                                        >
+
+                                            <video
+
+                                                controls
+
+                                                width="100%"
+
+                                            >
+
+                                                <source
+
+                                                    src={video.video}
+
+                                                />
+
+                                            </video>
+
+                                        </Grid>
+
+                                    ))
+
+                                    :
+
+                                    <Typography>
+
+                                        ویدیویی ثبت نشده است.
+
+                                    </Typography>
+
+                            }
+
+                        </Grid>
+
+
 
                         <Button
                             variant="contained"
