@@ -20,11 +20,16 @@ import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteDialog from "../../components/common/DeleteDialog";
 
 export default function Properties() {
 
 
     const [properties, setProperties] = useState([]);
+
+    const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const [selectedProperty, setSelectedProperty] = useState(null);
 
     const navigate = useNavigate();
 
@@ -60,6 +65,38 @@ export default function Properties() {
         loadProperties();
 
     }, []);
+
+    function handleDeleteClick(property) {
+
+        setSelectedProperty(property);
+
+        setDeleteOpen(true);
+
+    }
+
+    async function handleDelete() {
+
+        try {
+
+            await api.delete(
+                `properties/${selectedProperty.id}/`
+            );
+
+            setDeleteOpen(false);
+
+            setSelectedProperty(null);
+
+            loadProperties();
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+    }
 
 
 
@@ -185,7 +222,9 @@ export default function Properties() {
 
                                         <Button
                                             color="error"
-                                            startIcon={<DeleteIcon />}
+                                            onClick={() =>
+                                                handleDeleteClick(property)
+                                            }
                                         >
                                             حذف
                                         </Button>
@@ -209,6 +248,26 @@ export default function Properties() {
 
 
             </Paper>
+
+            <DeleteDialog
+
+                open={deleteOpen}
+
+                title="حذف ملک"
+
+                message={`آیا از حذف "${selectedProperty?.title ?? ""}" مطمئن هستید؟`}
+
+                onClose={() => {
+
+                    setDeleteOpen(false);
+
+                    setSelectedProperty(null);
+
+                }}
+
+                onConfirm={handleDelete}
+
+            />
 
 
 
