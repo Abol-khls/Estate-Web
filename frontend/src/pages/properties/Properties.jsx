@@ -13,6 +13,12 @@ import {
     Button
 } from "@mui/material";
 
+import IconButton from "@mui/material/IconButton";
+
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
 import AppButton from "../../components/common/AppButton";
 
 import { useNavigate } from "react-router-dom";
@@ -98,6 +104,34 @@ export default function Properties() {
 
     }
 
+    async function toggleFavorite(property) {
+
+        try {
+
+            await api.patch(
+
+                `properties/${property.id}/`,
+
+                {
+
+                    is_favorite: !property.is_favorite
+
+                }
+
+            );
+
+            loadProperties();
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+    }
+
 
 
     return (
@@ -158,6 +192,14 @@ export default function Properties() {
                                 آدرس
                             </TableCell>
 
+                            <TableCell>
+
+                                علاقه‌مندی
+
+                            </TableCell>
+
+
+
 
                             <TableCell>
                                 عملیات
@@ -195,6 +237,28 @@ export default function Properties() {
 
                                     <TableCell>
                                         {property.address}
+                                    </TableCell>
+
+                                    <TableCell>
+
+                                        <IconButton
+
+                                            color="error"
+
+                                            onClick={() =>
+                                                toggleFavorite(property)
+                                            }
+
+                                        >
+
+                                            {
+                                                property.is_favorite
+                                                    ? <FavoriteIcon />
+                                                    : <FavoriteBorderIcon />
+                                            }
+
+                                        </IconButton>
+
                                     </TableCell>
 
 
