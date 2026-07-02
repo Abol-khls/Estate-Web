@@ -16,6 +16,12 @@ import {
     CardMedia,
 } from "@mui/material";
 
+import IconButton from "@mui/material/IconButton";
+
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
 export default function PropertyDetail() {
 
     const { id } = useParams();
@@ -74,6 +80,34 @@ export default function PropertyDetail() {
 
     }
 
+    async function toggleFavorite() {
+
+        try {
+
+            const response = await api.patch(
+
+                `properties/${property.id}/`,
+
+                {
+
+                    is_favorite: !property.is_favorite
+
+                }
+
+            );
+
+            setProperty(response.data);
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+    }
+
 
 
     return (
@@ -87,14 +121,57 @@ export default function PropertyDetail() {
                 sx={{ p: 4 }}
             >
 
-                <Typography
-                    variant="h4"
-                    gutterBottom
+                <div
+
+                    style={{
+
+                        display: "flex",
+
+                        justifyContent: "space-between",
+
+                        alignItems: "center",
+
+                        marginBottom: 24
+
+                    }}
+
                 >
 
-                    {property.title}
+                    <Typography
 
-                </Typography>
+                        variant="h4"
+
+                    >
+
+                        {property.title}
+
+                    </Typography>
+
+                    <IconButton
+
+                        color="error"
+
+                        onClick={toggleFavorite}
+
+                    >
+
+                        {
+
+                            property.is_favorite
+
+                                ?
+
+                                <FavoriteIcon />
+
+                                :
+
+                                <FavoriteBorderIcon />
+
+                        }
+
+                    </IconButton>
+
+                </div>
 
                 <Divider sx={{ mb: 3 }} />
 
@@ -417,7 +494,7 @@ export default function PropertyDetail() {
                         <Button
                             variant="contained"
                             onClick={() =>
-                                navigate(`/properties/${ property.id } / edit`)
+                                navigate(`/properties/${property.id} / edit`)
                             }
                         >
                             ویرایش
