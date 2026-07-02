@@ -7,7 +7,10 @@ import AppButton from "../../components/common/AppButton";
 import AppTextField from "../../components/common/AppTextField";
 import AppCheckbox from "../../components/common/AppCheckbox";
 import AppSelect from "../../components/common/AppSelect";
-
+import {
+    PROPERTY_TYPES,
+    TRANSACTION_TYPES
+} from "../../constants/propertyOptions";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
@@ -297,25 +300,16 @@ export default function PropertyForm() {
                                 انتخاب کنید
                             </MenuItem>
 
+                            {PROPERTY_TYPES.map(item => (
 
-                            <MenuItem value="apartment">
-                                آپارتمان
-                            </MenuItem>
+                                <MenuItem
+                                    key={item.value}
+                                    value={item.value}
+                                >
+                                    {item.label}
+                                </MenuItem>
 
-
-                            <MenuItem value="villa">
-                                ویلا
-                            </MenuItem>
-
-
-                            <MenuItem value="land">
-                                زمین
-                            </MenuItem>
-
-
-                            <MenuItem value="office">
-                                دفتر
-                            </MenuItem>
+                            ))}
 
 
                         </AppSelect>
@@ -345,13 +339,16 @@ export default function PropertyForm() {
                                 انتخاب کنید
                             </MenuItem>
 
-                            <MenuItem value="sale">
-                                فروش
-                            </MenuItem>
+                            {TRANSACTION_TYPES.map(item => (
 
-                            <MenuItem value="rent">
-                                اجاره
-                            </MenuItem>
+                                <MenuItem
+                                    key={item.value}
+                                    value={item.value}
+                                >
+                                    {item.label}
+                                </MenuItem>
+
+                            ))}
 
 
                         </AppSelect>

@@ -5,6 +5,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import AppTextField from "../common/AppTextField";
 import AppSelect from "../common/AppSelect";
 import AppCheckbox from "../common/AppCheckbox";
+import {
+    PROPERTY_TYPES,
+    TRANSACTION_TYPES
+} from "../../constants/propertyOptions";
 
 export default function PropertyFilters({
 
@@ -94,17 +98,20 @@ export default function PropertyFilters({
 
                     >
 
-                        <MenuItem value="">همه</MenuItem>
+                        <MenuItem value="">
+                            همه
+                        </MenuItem>
 
-                        <MenuItem value="apartment">آپارتمان</MenuItem>
+                        {PROPERTY_TYPES.map(item => (
 
-                        <MenuItem value="villa">ویلا</MenuItem>
+                            <MenuItem
+                                key={item.value}
+                                value={item.value}
+                            >
+                                {item.label}
+                            </MenuItem>
 
-                        <MenuItem value="land">زمین</MenuItem>
-
-                        <MenuItem value="office">دفتر</MenuItem>
-
-                        <MenuItem value="shop">مغازه</MenuItem>
+                        ))}
 
                     </AppSelect>
 
@@ -124,15 +131,20 @@ export default function PropertyFilters({
 
                     >
 
-                        <MenuItem value="">همه</MenuItem>
+                        <MenuItem value="">
+                            همه
+                        </MenuItem>
 
-                        <MenuItem value="sale">فروش</MenuItem>
+                        {TRANSACTION_TYPES.map(item => (
 
-                        <MenuItem value="rent">اجاره</MenuItem>
+                            <MenuItem
+                                key={item.value}
+                                value={item.value}
+                            >
+                                {item.label}
+                            </MenuItem>
 
-                        <MenuItem value="pre_sale">پیش فروش</MenuItem>
-
-                        <MenuItem value="mortgage">رهن</MenuItem>
+                        ))}
 
                     </AppSelect>
 
