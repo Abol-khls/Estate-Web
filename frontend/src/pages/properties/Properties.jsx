@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-
 import {
     Container,
     Typography,
@@ -12,23 +11,15 @@ import {
     TableBody,
     Button
 } from "@mui/material";
-
 import IconButton from "@mui/material/IconButton";
-
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
 import AppButton from "../../components/common/AppButton";
-
 import SearchIcon from "@mui/icons-material/Search";
-
 import InputAdornment from "@mui/material/InputAdornment";
-
 import AppTextField from "../../components/common/AppTextField";
-
+import PropertyFilters from "../../components/common/PropertyFilters";
 import { useNavigate } from "react-router-dom";
-
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -41,7 +32,11 @@ export default function Properties() {
 
     const [search, setSearch] = useState("");
 
-    
+    const [propertyType, setPropertyType] = useState("");
+
+    const [transactionType, setTransactionType] = useState("");
+
+    const [favoriteOnly, setFavoriteOnly] = useState(false);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -59,7 +54,15 @@ export default function Properties() {
                 "properties/",
                 {
                     params: {
-                        search: search
+
+                        search,
+
+                        property_type: propertyType,
+
+                        transaction_type: transactionType,
+
+                        is_favorite: favoriteOnly
+
                     }
                 }
             );
@@ -85,7 +88,17 @@ export default function Properties() {
 
         loadProperties();
 
-    }, [search]);
+    }, [
+
+        search,
+
+        propertyType,
+
+        transactionType,
+
+        favoriteOnly
+
+    ]);
 
     function handleDeleteClick(property) {
 
@@ -183,35 +196,19 @@ export default function Properties() {
 
             </div>
 
-            <AppTextField
+            <PropertyFilters
 
-                placeholder="جستجوی ملک..."
+                search={search}
+                setSearch={setSearch}
 
-                value={search}
+                propertyType={propertyType}
+                setPropertyType={setPropertyType}
 
-                onChange={(e) =>
-                    setSearch(e.target.value)
-                }
+                transactionType={transactionType}
+                setTransactionType={setTransactionType}
 
-                fullWidth
-
-                sx={{
-                    mb: 3
-                }}
-
-                InputProps={{
-
-                    startAdornment: (
-
-                        <InputAdornment position="start">
-
-                            <SearchIcon />
-
-                        </InputAdornment>
-
-                    )
-
-                }}
+                favoriteOnly={favoriteOnly}
+                setFavoriteOnly={setFavoriteOnly}
 
             />
 

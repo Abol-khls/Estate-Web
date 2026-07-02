@@ -4,44 +4,47 @@ import {
     Select
 } from "@mui/material";
 
-
 export default function AppSelect({
 
     label,
-    name,
-    value,
-    onChange,
-    children
+
+    children,
+
+    fullWidth = true,
+
+    size = "small",
+
+    ...props
 
 }) {
 
     return (
 
-        <FormControl fullWidth>
+        <FormControl
 
+            fullWidth={fullWidth}
+
+            size={size}
+
+        >
 
             <InputLabel>
-                {label}
-            </InputLabel>
 
+                {label}
+
+            </InputLabel>
 
             <Select
 
-                name={name}
-
-                value={value}
-
-                onChange={onChange}
-
                 label={label}
+
+                {...props}
 
             >
 
                 {children}
 
-
             </Select>
-
 
         </FormControl>
 
