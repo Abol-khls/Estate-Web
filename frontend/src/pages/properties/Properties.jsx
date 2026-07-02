@@ -21,6 +21,12 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import AppButton from "../../components/common/AppButton";
 
+import SearchIcon from "@mui/icons-material/Search";
+
+import InputAdornment from "@mui/material/InputAdornment";
+
+import AppTextField from "../../components/common/AppTextField";
+
 import { useNavigate } from "react-router-dom";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,6 +38,10 @@ export default function Properties() {
 
 
     const [properties, setProperties] = useState([]);
+
+    const [search, setSearch] = useState("");
+
+    
 
     const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -46,7 +56,12 @@ export default function Properties() {
         try {
 
             const response = await api.get(
-                "properties/"
+                "properties/",
+                {
+                    params: {
+                        search: search
+                    }
+                }
             );
 
 
@@ -70,7 +85,7 @@ export default function Properties() {
 
         loadProperties();
 
-    }, []);
+    }, [search]);
 
     function handleDeleteClick(property) {
 
@@ -164,7 +179,41 @@ export default function Properties() {
                 </AppButton>
 
 
+
+
             </div>
+
+            <AppTextField
+
+                placeholder="جستجوی ملک..."
+
+                value={search}
+
+                onChange={(e) =>
+                    setSearch(e.target.value)
+                }
+
+                fullWidth
+
+                sx={{
+                    mb: 3
+                }}
+
+                InputProps={{
+
+                    startAdornment: (
+
+                        <InputAdornment position="start">
+
+                            <SearchIcon />
+
+                        </InputAdornment>
+
+                    )
+
+                }}
+
+            />
 
 
 
