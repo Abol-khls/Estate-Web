@@ -38,9 +38,9 @@ export default function Properties() {
 
     const [search, setSearch] = useState("");
 
-    const [propertyType, setPropertyType] = useState("");
+    const [propertyType, setPropertyType] = useState("all");
 
-    const [transactionType, setTransactionType] = useState("");
+    const [transactionType, setTransactionType] = useState("all");
 
     const [favoriteOnly, setFavoriteOnly] = useState(false);
 
@@ -56,7 +56,7 @@ export default function Properties() {
 
     const pageSize = 20;
 
-    const [ordering, setOrdering] = useState("");
+    const [ordering, setOrdering] = useState("all");
 
 
 
@@ -67,14 +67,24 @@ export default function Properties() {
             const params = {
                 page,
                 search,
-                ordering,
-                property_type: propertyType,
-                transaction_type: transactionType,
             };
+
+            if (propertyType !== "all") {
+                params.property_type = propertyType;
+            }
+
+            if (transactionType !== "all") {
+                params.transaction_type = transactionType;
+            }
+
+            if (ordering !== "all") {
+                params.ordering = ordering;
+            }
 
             if (favoriteOnly) {
                 params.is_favorite = true;
             }
+
 
             const response = await api.get(
                 "properties/",

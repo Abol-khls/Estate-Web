@@ -102,7 +102,7 @@ export default function PropertyFilters({
 
                     >
 
-                        <MenuItem value="">
+                        <MenuItem value="all">
                             همه
                         </MenuItem>
 
@@ -135,7 +135,7 @@ export default function PropertyFilters({
 
                     >
 
-                        <MenuItem value="">
+                        <MenuItem value="all">
                             همه
                         </MenuItem>
 
@@ -163,6 +163,9 @@ export default function PropertyFilters({
                             setOrdering(e.target.value)
                         }
                     >
+                        <MenuItem value="all">
+                            پیش فرض
+                        </MenuItem>
 
                         {ORDERING_OPTIONS.map(item => (
 

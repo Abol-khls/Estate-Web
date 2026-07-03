@@ -14,8 +14,9 @@ export const TRANSACTION_TYPES = [
 ];
 
 export const ORDERING_OPTIONS = [
+    
     {
-        value: "",
+        value: "-created_at",
         label: "جدیدترین"
     },
     {
