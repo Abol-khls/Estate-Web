@@ -16,6 +16,12 @@ import {
     CardMedia,
 } from "@mui/material";
 
+import {
+    getPropertyTypeLabel,
+    getTransactionTypeLabel
+} from "../../constants/propertyHelpers";
+
+
 import IconButton from "@mui/material/IconButton";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -199,7 +205,7 @@ export default function PropertyDetail() {
 
                             نوع ملک:
                             {" "}
-                            {property.property_type}
+                            {getPropertyTypeLabel(property.property_type)}
 
                         </Typography>
 
@@ -212,7 +218,7 @@ export default function PropertyDetail() {
 
                             نوع معامله:
                             {" "}
-                            {property.transaction_type}
+                            {getTransactionTypeLabel(property.transaction_type)}
 
                         </Typography>
 
