@@ -9,8 +9,10 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Button
+    Button,
+    Stack
 } from "@mui/material";
+
 import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -24,6 +26,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteDialog from "../../components/common/DeleteDialog";
+
+import Pagination from "@mui/material/Pagination";
+
+
 
 export default function Properties() {
 
@@ -44,37 +50,48 @@ export default function Properties() {
 
     const navigate = useNavigate();
 
+    const [page, setPage] = useState(1);
+
+    const [count, setCount] = useState(0);
+
+    const pageSize = 20;
+
 
 
     async function loadProperties() {
 
         try {
 
+            const params = {
+                page,
+                search,
+                property_type: propertyType,
+                transaction_type: transactionType,
+            };
+
+            if (favoriteOnly) {
+                params.is_favorite = true;
+            }
+
             const response = await api.get(
                 "properties/",
                 {
-                    params: {
-
-                        search,
-
-                        property_type: propertyType,
-
-                        transaction_type: transactionType,
-
-                        is_favorite: favoriteOnly
-
-                    }
+                    params
                 }
             );
-
 
             setProperties(
                 response.data.results ?? response.data
             );
 
+            setCount(
+                response.data.count ?? 0
+            );
+
 
         }
         catch (error) {
+            console.log(error.response?.data);
 
             console.log(error);
 
@@ -96,7 +113,9 @@ export default function Properties() {
 
         transactionType,
 
-        favoriteOnly
+        favoriteOnly,
+
+        page
 
     ]);
 
@@ -358,6 +377,23 @@ export default function Properties() {
 
 
             </Paper>
+
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 24,
+                }}
+            >
+                <Pagination
+                    page={page}
+                    count={Math.ceil(count / pageSize)}
+                    color="primary"
+                    onChange={(event, value) => {
+                        setPage(value);
+                    }}
+                />
+            </div>
 
             <DeleteDialog
 
