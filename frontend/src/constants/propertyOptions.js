@@ -12,3 +12,30 @@ export const TRANSACTION_TYPES = [
     { value: "mortgage", label: "رهن" },
     { value: "pre_sale", label: "پیش فروش" },
 ];
+
+export const ORDERING_OPTIONS = [
+    {
+        value: "",
+        label: "جدیدترین"
+    },
+    {
+        value: "created_at",
+        label: "قدیمی‌ترین"
+    },
+    {
+        value: "-price",
+        label: "گران‌ترین"
+    },
+    {
+        value: "price",
+        label: "ارزان‌ترین"
+    },
+    {
+        value: "-area",
+        label: "بیشترین متراژ"
+    },
+    {
+        value: "area",
+        label: "کمترین متراژ"
+    }
+];

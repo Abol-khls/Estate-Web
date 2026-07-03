@@ -7,7 +7,8 @@ import AppSelect from "../common/AppSelect";
 import AppCheckbox from "../common/AppCheckbox";
 import {
     PROPERTY_TYPES,
-    TRANSACTION_TYPES
+    TRANSACTION_TYPES,
+    ORDERING_OPTIONS
 } from "../../constants/propertyOptions";
 
 export default function PropertyFilters({
@@ -22,7 +23,10 @@ export default function PropertyFilters({
     setTransactionType,
 
     favoriteOnly,
-    setFavoriteOnly
+    setFavoriteOnly,
+
+    ordering,
+    setOrdering
 
 }) {
 
@@ -136,6 +140,31 @@ export default function PropertyFilters({
                         </MenuItem>
 
                         {TRANSACTION_TYPES.map(item => (
+
+                            <MenuItem
+                                key={item.value}
+                                value={item.value}
+                            >
+                                {item.label}
+                            </MenuItem>
+
+                        ))}
+
+                    </AppSelect>
+
+                </Box>
+
+                <Box sx={{ flex: 1 }}>
+
+                    <AppSelect
+                        label="مرتب‌سازی"
+                        value={ordering}
+                        onChange={(e) =>
+                            setOrdering(e.target.value)
+                        }
+                    >
+
+                        {ORDERING_OPTIONS.map(item => (
 
                             <MenuItem
                                 key={item.value}

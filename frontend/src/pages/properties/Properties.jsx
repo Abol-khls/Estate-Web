@@ -56,6 +56,8 @@ export default function Properties() {
 
     const pageSize = 20;
 
+    const [ordering, setOrdering] = useState("");
+
 
 
     async function loadProperties() {
@@ -65,6 +67,7 @@ export default function Properties() {
             const params = {
                 page,
                 search,
+                ordering,
                 property_type: propertyType,
                 transaction_type: transactionType,
             };
@@ -115,7 +118,9 @@ export default function Properties() {
 
         favoriteOnly,
 
-        page
+        page,
+
+        ordering
 
     ]);
 
@@ -228,6 +233,9 @@ export default function Properties() {
 
                 favoriteOnly={favoriteOnly}
                 setFavoriteOnly={setFavoriteOnly}
+
+                ordering={ordering}
+                setOrdering={setOrdering}
 
             />
 
