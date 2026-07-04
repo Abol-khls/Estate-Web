@@ -122,6 +122,15 @@ class PropertyImage(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+    def delete(self, *args, **kwargs):
+
+        storage = self.image.storage
+        path = self.image.path
+
+        super().delete(*args, **kwargs)
+
+        if storage.exists(path):
+            storage.delete(path)
     
 class PropertyVideo(models.Model):
 

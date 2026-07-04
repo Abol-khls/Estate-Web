@@ -95,10 +95,13 @@ class PropertySerializer(serializers.ModelSerializer):
 
             deleted_images = json.loads(deleted_images)
 
-            PropertyImage.objects.filter(
-                property=instance,
-                id__in=deleted_images
-            ).delete()
+            images = PropertyImage.objects.filter(
+            property=instance,
+            id__in=deleted_images
+        )
+
+        for image in images:
+            image.delete()
 
         images = request.FILES.getlist("images")
 
