@@ -7,7 +7,10 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Property
-from .serializers import PropertySerializer
+from .serializers import (
+    PropertySerializer,
+    PropertyImageSerializer,
+)
 
 from .filters import PropertyFilter
 
@@ -16,6 +19,14 @@ from rest_framework.parsers import (
     FormParser,
     JSONParser
 )
+
+from .serializers import (
+    PropertySerializer,
+    PropertyImageSerializer
+)
+
+from .models import PropertyImage
+from rest_framework import permissions
 
 
 class PropertyViewSet(viewsets.ModelViewSet):
@@ -68,3 +79,21 @@ class PropertyViewSet(viewsets.ModelViewSet):
     FormParser,
     JSONParser
 ]
+    
+class PropertyImageViewSet(viewsets.ModelViewSet):
+
+    queryset = PropertyImage.objects.all()
+    serializer_class = PropertyImageSerializer
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    http_method_names = [
+        "delete"
+    ]
+
+    def get_queryset(self):
+        return PropertyImage.objects.filter(
+            property__agency=self.request.user.agency
+        )

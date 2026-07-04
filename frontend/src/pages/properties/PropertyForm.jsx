@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import {
+    Grid,
+    Typography,
+    Stack
+} from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
@@ -13,6 +17,8 @@ import {
 } from "../../constants/propertyOptions";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+
+import ImageUploader from "../../components/properties/ImageUploader";
 
 import { useParams } from "react-router-dom";
 
@@ -88,6 +94,13 @@ export default function PropertyForm() {
 
                 });
 
+                setImages(
+                    response.data.images.map(image => ({
+                        ...image,
+                        isNew: false
+                    }))
+                );
+
             }
 
             catch (error) {
@@ -135,14 +148,14 @@ export default function PropertyForm() {
         }));
 
     }
-
     function handleImages(e) {
 
-        setImages(
+        setNewImages(
             [...e.target.files]
         );
 
     }
+
 
     function handleVideos(e) {
 
@@ -156,51 +169,36 @@ export default function PropertyForm() {
 
         e.preventDefault();
 
-
         try {
-
 
             const formData = new FormData();
 
-
             Object.keys(form).forEach(key => {
-
-                formData.append(
-                    key,
-                    form[key] ?? ""
-                );
-
+                formData.append(key, form[key] ?? "");
             });
 
-
-            images.forEach(image => {
-
-                formData.append(
-                    "images",
-                    image
-                );
-
-            });
+            images
+                .filter(image => image.isNew)
+                .forEach(image => {
+                    formData.append("images", image.file);
+                });
 
             videos.forEach(video => {
-
-                formData.append(
-                    "videos",
-                    video
-                );
-
+                formData.append("videos", video);
             });
 
+            for (const pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
 
             if (isEdit) {
 
-                await api.put(
+                await api.patch(
                     `properties/${id}/`,
                     formData
                 );
 
-            }
-            else {
+            } else {
 
                 await api.post(
                     "properties/",
@@ -209,17 +207,11 @@ export default function PropertyForm() {
 
             }
 
-
             navigate("/properties");
 
+        } catch (error) {
 
-        }
-
-        catch (error) {
-
-            console.log(
-                error.response?.data
-            );
+            console.log(error.response?.data);
 
         }
 
@@ -543,21 +535,7 @@ export default function PropertyForm() {
 
 
                     </Grid>
-                    <Grid size={{ xs: 12 }}>
 
-                        <input
-
-                            type="file"
-
-                            multiple
-
-                            accept="image/*"
-
-                            onChange={handleImages}
-
-                        />
-
-                    </Grid>
 
                     <Grid size={{ xs: 12 }}>
 
@@ -578,6 +556,59 @@ export default function PropertyForm() {
                         />
 
                     </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <Typography variant="h6">
+
+                            تصاویر فعلی
+
+                        </Typography>
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <Stack
+                            direction="row"
+                            spacing={2}
+                            flexWrap="wrap"
+                        >
+
+                            {images.map(image => (
+
+                                <img
+
+                                    key={image.id}
+
+                                    src={image.image}
+
+                                    alt=""
+
+                                    style={{
+
+                                        width: 120,
+
+                                        height: 120,
+
+                                        objectFit: "cover",
+
+                                        borderRadius: 8
+
+                                    }}
+
+                                />
+
+                            ))}
+
+                        </Stack>
+
+                    </Grid>
+
+                    <ImageUploader
+                        images={images}
+                        setImages={setImages}
+                    />
 
 
 

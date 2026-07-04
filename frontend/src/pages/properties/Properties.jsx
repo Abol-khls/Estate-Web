@@ -20,7 +20,7 @@ import AppButton from "../../components/common/AppButton";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import AppTextField from "../../components/common/AppTextField";
-import PropertyFilters from "../../components/common/PropertyFilters";
+import PropertyFilters from "../../components/properties/PropertyFilters";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
