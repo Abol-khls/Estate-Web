@@ -100,23 +100,28 @@ class Property(models.Model):
         return f"{self.code} - {self.title}"
     
 class PropertyImage(models.Model):
+
     property = models.ForeignKey(
         Property,
         on_delete=models.CASCADE,
-        related_name='images'
+        related_name="images"
     )
 
     image = models.ImageField(
-        upload_to='properties/'
+        upload_to="properties/"
+    )
+
+    is_cover = models.BooleanField(
+        default=False
+    )
+
+    order = models.PositiveIntegerField(
+        default=0
     )
 
     created_at = models.DateTimeField(
         auto_now_add=True
     )
-    
-
-    def __str__(self):
-        return self.property.title
     
 class PropertyVideo(models.Model):
 

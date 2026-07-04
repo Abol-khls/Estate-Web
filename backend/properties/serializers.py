@@ -13,7 +13,9 @@ class PropertyImageSerializer(serializers.ModelSerializer):
         model = PropertyImage
         fields = [
             "id",
-            "image"
+            "image",
+            "is_cover",
+            "order"
         ]
 
 
