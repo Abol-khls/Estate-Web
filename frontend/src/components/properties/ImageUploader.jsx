@@ -11,11 +11,8 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function ImageUploader({
-
-    images,
-
-    setImages
-
+    newImages = [],
+    setNewImages
 }) {
 
     const inputRef = useRef(null);
@@ -30,32 +27,25 @@ export default function ImageUploader({
             isNew: true
         }));
 
-        setImages(prev => [
-
+        setNewImages(prev => [
             ...prev,
-
             ...previews
-
         ]);
 
+        e.target.value = "";
     }
 
     function removeImage(index) {
 
-        if (images[index].preview) {
+        const image = newImages[index];
 
-            URL.revokeObjectURL(
-                images[index].preview
-            );
-
+        if (image?.preview) {
+            URL.revokeObjectURL(image.preview);
         }
 
-        setImages(
-
-            images.filter((_, i) => i !== index)
-
+        setNewImages(prev =>
+            prev.filter((_, i) => i !== index)
         );
-
     }
 
     return (
@@ -66,155 +56,88 @@ export default function ImageUploader({
                 variant="h6"
                 mb={2}
             >
-
-                تصاویر ملک
-
+                تصاویر جدید
             </Typography>
 
             <input
-
                 hidden
-
                 multiple
-
                 accept="image/*"
-
                 ref={inputRef}
-
                 type="file"
-
                 onChange={handleSelect}
-
             />
 
             <Box
-
                 sx={{
-
                     border: "2px dashed",
-
                     borderColor: "divider",
-
                     borderRadius: 2,
-
                     py: 4,
-
                     textAlign: "center",
-
                     cursor: "pointer",
-
                     mb: 3
-
                 }}
-
-                onClick={() =>
-
-                    inputRef.current.click()
-
-                }
-
+                onClick={() => inputRef.current.click()}
             >
 
                 <AddPhotoAlternateIcon
-
                     sx={{
-
                         fontSize: 50,
-
                         color: "primary.main"
-
                     }}
-
                 />
 
                 <Typography>
-
                     برای انتخاب تصویر کلیک کنید
-
                 </Typography>
 
             </Box>
 
             <Stack
-
                 direction="row"
-
                 spacing={2}
-
-                flexWrap="wrap"
-
+                sx={{
+                    flexWrap: "wrap"
+                }}
             >
 
-                {
+                {newImages.map((image, index) => (
 
-                    images.map((image, index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            position: "relative"
+                        }}
+                    >
 
-                        <Box
-
-                            key={image.id ?? index}
-
-                            sx={{
-
-                                position: "relative"
-
+                        <img
+                            src={image.preview}
+                            width={140}
+                            height={110}
+                            style={{
+                                objectFit: "cover",
+                                borderRadius: 8
                             }}
+                        />
 
+                        <IconButton
+                            color="error"
+                            size="small"
+                            sx={{
+                                position: "absolute",
+                                top: 5,
+                                right: 5,
+                                bgcolor: "white"
+                            }}
+                            onClick={() => removeImage(index)}
                         >
+                            <DeleteIcon />
+                        </IconButton>
 
-                            <img
+                    </Box>
 
-                                src={image.preview || image.image}
-
-                                width={140}
-
-                                height={110}
-
-
-                                style={{
-
-                                    objectFit: "cover",
-
-                                    borderRadius: 8
-
-                                }}
-
-                            />
-
-                            <IconButton
-
-                                color="error"
-
-                                size="small"
-
-                                sx={{
-
-                                    position: "absolute",
-
-                                    top: 5,
-
-                                    right: 5,
-
-                                    bgcolor: "white"
-
-                                }}
-
-                                onClick={() =>
-
-                                    removeImage(index)
-
-                                }
-
-                            >
-
-                                <DeleteIcon />
-
-                            </IconButton>
-
-                        </Box>
-
-                    ))
-
-                }
+                ))}
 
             </Stack>
 

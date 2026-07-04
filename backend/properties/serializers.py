@@ -82,18 +82,28 @@ class PropertySerializer(serializers.ModelSerializer):
 
         request = self.context["request"]
 
-        print("FILES:", request.FILES)
-        print("IMAGES:", request.FILES.getlist("images"))
-        print("VIDEOS:", request.FILES.getlist("videos"))
-
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
         instance.save()
 
+        import json
+
+        deleted_images = request.data.get("deleted_images")
+
+        if deleted_images:
+
+            deleted_images = json.loads(deleted_images)
+
+            PropertyImage.objects.filter(
+                property=instance,
+                id__in=deleted_images
+            ).delete()
+
         images = request.FILES.getlist("images")
 
         for image in images:
+
             PropertyImage.objects.create(
                 property=instance,
                 image=image
@@ -102,6 +112,7 @@ class PropertySerializer(serializers.ModelSerializer):
         videos = request.FILES.getlist("videos")
 
         for video in videos:
+
             PropertyVideo.objects.create(
                 property=instance,
                 video=video

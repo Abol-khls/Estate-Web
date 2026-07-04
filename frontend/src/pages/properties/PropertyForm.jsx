@@ -18,11 +18,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+
 import ImageUploader from "../../components/properties/ImageUploader";
 
 import { useParams } from "react-router-dom";
 
 import { MenuItem } from "@mui/material";
+
 
 
 export default function PropertyForm() {
@@ -52,10 +57,11 @@ export default function PropertyForm() {
 
     });
 
-    const [images, setImages] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
+    const [newImages, setNewImages] = useState([]);
 
     const [videos, setVideos] = useState([]);
-
+    const [deletedImages, setDeletedImages] = useState([]);
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -93,13 +99,10 @@ export default function PropertyForm() {
                     description: response.data.description,
 
                 });
+                setExistingImages(response.data.images || []);
+                setNewImages([]);
 
-                setImages(
-                    response.data.images.map(image => ({
-                        ...image,
-                        isNew: false
-                    }))
-                );
+
 
             }
 
@@ -165,6 +168,31 @@ export default function PropertyForm() {
 
     }
 
+    function handleRemoveImage(image) {
+
+        if (!image.isNew && image.id) {
+            setDeletedImages(prev => [...prev, image.id]);
+
+            setExistingImages(prev =>
+                prev.filter(img => img.id !== image.id)
+            );
+        }
+
+    }
+
+    function handleRemoveExisting(image, index) {
+
+        setDeletedImages(prev => [
+            ...prev,
+            image.id
+        ]);
+
+        setExistingImages(prev =>
+            prev.filter((_, i) => i !== index)
+        );
+
+    }
+
     async function handleSubmit(e) {
 
         e.preventDefault();
@@ -177,11 +205,9 @@ export default function PropertyForm() {
                 formData.append(key, form[key] ?? "");
             });
 
-            images
-                .filter(image => image.isNew)
-                .forEach(image => {
-                    formData.append("images", image.file);
-                });
+            newImages.forEach(image => {
+                formData.append("images", image.file ?? image);
+            });
 
             videos.forEach(video => {
                 formData.append("videos", video);
@@ -190,6 +216,11 @@ export default function PropertyForm() {
             for (const pair of formData.entries()) {
                 console.log(pair[0], pair[1]);
             }
+            formData.append(
+                "deleted_images",
+                JSON.stringify(deletedImages)
+            );
+
 
             if (isEdit) {
 
@@ -208,6 +239,7 @@ export default function PropertyForm() {
             }
 
             navigate("/properties");
+
 
         } catch (error) {
 
@@ -572,32 +604,45 @@ export default function PropertyForm() {
                         <Stack
                             direction="row"
                             spacing={2}
-                            flexWrap="wrap"
+                            sx={{
+                                flexWrap: "wrap"
+                            }}
                         >
 
-                            {images.map(image => (
+                            {existingImages.map((image, index) => (
 
-                                <img
-
+                                <Box
                                     key={image.id}
-
-                                    src={image.image}
-
-                                    alt=""
-
-                                    style={{
-
-                                        width: 120,
-
-                                        height: 120,
-
-                                        objectFit: "cover",
-
-                                        borderRadius: 8
-
+                                    sx={{
+                                        position: "relative"
                                     }}
+                                >
 
-                                />
+                                    <img
+                                        src={image.image}
+                                        width={140}
+                                        height={110}
+                                        style={{
+                                            objectFit: "cover",
+                                            borderRadius: 8
+                                        }}
+                                    />
+
+                                    <IconButton
+                                        color="error"
+                                        size="small"
+                                        sx={{
+                                            position: "absolute",
+                                            top: 5,
+                                            right: 5,
+                                            bgcolor: "white"
+                                        }}
+                                        onClick={() => handleRemoveExisting(image, index)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+
+                                </Box>
 
                             ))}
 
@@ -606,9 +651,10 @@ export default function PropertyForm() {
                     </Grid>
 
                     <ImageUploader
-                        images={images}
-                        setImages={setImages}
+                        newImages={newImages}
+                        setNewImages={setNewImages}
                     />
+
 
 
 
