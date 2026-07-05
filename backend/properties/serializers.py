@@ -162,15 +162,15 @@ class PropertySerializer(serializers.ModelSerializer):
             "images",
         ]
 
-        def to_representation(self, instance):
+    def to_representation(self, instance):
 
-            data = super().to_representation(instance)
+        data = super().to_representation(instance)
 
-            data["videos"] = PropertyVideoSerializer(
-                instance.videos.all(),
-                many=True
-            ).data
+        data["videos"] = PropertyVideoSerializer(
+            instance.videos.all(),
+            many=True
+        ).data
 
-            return data
+        return data
 
     

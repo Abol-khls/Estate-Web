@@ -67,6 +67,8 @@ export default function PropertyForm() {
     const [newVideos, setNewVideos] = useState([]);
     const [deletedVideos, setDeletedVideos] = useState([]);
 
+    const [errors, setErrors] = useState({});
+
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -140,6 +142,10 @@ export default function PropertyForm() {
             [name]: value
 
         }));
+        setErrors(prev => ({
+            ...prev,
+            [name]: ""
+        }));
 
     }
 
@@ -157,6 +163,10 @@ export default function PropertyForm() {
             [name]: checked
 
         }));
+        setErrors(prev => ({
+            ...prev,
+            [name]: ""
+        }));
 
     }
     function handleImages(e) {
@@ -164,6 +174,10 @@ export default function PropertyForm() {
         setNewImages(
             [...e.target.files]
         );
+        setErrors(prev => ({
+            ...prev,
+            images: ""
+        }));
 
     }
 
@@ -229,25 +243,93 @@ export default function PropertyForm() {
 
     }
 
+    function validateForm() {
+
+        const newErrors = {};
+
+        if (!form.code.trim()) {
+            newErrors.code = "کد ملک الزامی است";
+        }
+
+        if (!form.title.trim()) {
+            newErrors.title = "عنوان الزامی است";
+        }
+
+        if (!form.property_type) {
+            newErrors.property_type = "نوع ملک را انتخاب کنید";
+        }
+
+        if (!form.transaction_type) {
+            newErrors.transaction_type = "نوع معامله را انتخاب کنید";
+        }
+
+        if (!form.price) {
+            newErrors.price = "قیمت الزامی است";
+        }
+
+        if (!form.area) {
+            newErrors.area = "متراژ الزامی است";
+        }
+
+        if (!form.rooms) {
+            newErrors.rooms = "تعداد اتاق الزامی است";
+        }
+
+        if (!form.address.trim()) {
+            newErrors.address = "آدرس الزامی است";
+        }
+
+        
+
+        
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    }
+
     async function handleSubmit(e) {
 
         e.preventDefault();
+        console.log("Submit Clicked");
+
+        if (!validateForm()) {
+            return;
+        }
+        console.log("1");
 
         try {
+            
 
             const formData = new FormData();
 
+            console.log("2");
+
             Object.keys(form).forEach(key => {
-                formData.append(key, form[key] ?? "");
+
+                const value = form[key];
+
+                if (
+                    ["floor", "total_floors", "year_built","description"].includes(key)
+                    && value === ""
+                ) {
+                    return;
+                }
+
+                formData.append(key, value);
+
             });
+            console.log("3");
 
             newImages.forEach(image => {
                 formData.append("images", image.file ?? image);
             });
+            console.log("4");
 
             newVideos.forEach(video => {
                 formData.append("videos", video.file);
             });
+            console.log("5");
 
             for (const pair of formData.entries()) {
                 console.log(pair[0], pair[1]);
@@ -256,6 +338,7 @@ export default function PropertyForm() {
                 "deleted_images",
                 JSON.stringify(deletedImages)
             );
+            console.log("6");
             formData.append(
 
                 "deleted_videos",
@@ -263,9 +346,13 @@ export default function PropertyForm() {
                 JSON.stringify(deletedVideos)
 
             );
+            console.log("7");
+            
+            console.log("Before API Request");
 
 
             if (isEdit) {
+                
 
                 await api.patch(
                     `properties/${id}/`,
@@ -324,6 +411,8 @@ export default function PropertyForm() {
                             value={form.code}
 
                             onChange={handleChange}
+                            error={!!errors.code}
+                            helperText={errors.code}
 
                         />
                     </Grid>
@@ -341,6 +430,8 @@ export default function PropertyForm() {
                             value={form.title}
 
                             onChange={handleChange}
+                            error={!!errors.title}
+                            helperText={errors.title}
 
                         />
 
@@ -359,6 +450,8 @@ export default function PropertyForm() {
                             value={form.property_type}
 
                             onChange={handleChange}
+                            error={!!errors.property_type}
+                            helperText={errors.property_type}
 
                         >
 
@@ -399,6 +492,8 @@ export default function PropertyForm() {
                             value={form.transaction_type}
 
                             onChange={handleChange}
+                            error={!!errors.transaction_type}
+                            helperText={errors.transaction_type}
 
                         >
 
@@ -437,6 +532,8 @@ export default function PropertyForm() {
                             value={form.price}
 
                             onChange={handleChange}
+                            error={!!errors.price}
+                            helperText={errors.price}
 
                         />
 
@@ -456,6 +553,8 @@ export default function PropertyForm() {
                             value={form.area}
 
                             onChange={handleChange}
+                            error={!!errors.area}
+                            helperText={errors.area}
 
                         />
 
@@ -512,6 +611,8 @@ export default function PropertyForm() {
                             value={form.rooms}
 
                             onChange={handleChange}
+                            error={!!errors.rooms}
+                            helperText={errors.rooms}
 
                         />
 
@@ -535,6 +636,8 @@ export default function PropertyForm() {
                             value={form.address}
 
                             onChange={handleChange}
+                            error={!!errors.address}
+                            helperText={errors.address}
 
                         />
 
