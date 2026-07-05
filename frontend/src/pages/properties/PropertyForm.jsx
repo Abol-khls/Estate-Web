@@ -279,13 +279,28 @@ export default function PropertyForm() {
             newErrors.address = "آدرس الزامی است";
         }
 
-        
 
-        
+
+
 
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
+    }
+
+    function handleNumberChange(e) {
+
+        const { name, value } = e.target;
+
+        if (/^\d*$/.test(value)) {
+
+            setForm(prev => ({
+                ...prev,
+                [name]: value
+            }));
+
+        }
+
     }
 
     async function handleSubmit(e) {
@@ -299,7 +314,7 @@ export default function PropertyForm() {
         console.log("1");
 
         try {
-            
+
 
             const formData = new FormData();
 
@@ -310,7 +325,7 @@ export default function PropertyForm() {
                 const value = form[key];
 
                 if (
-                    ["floor", "total_floors", "year_built","description"].includes(key)
+                    ["floor", "total_floors", "year_built", "description"].includes(key)
                     && value === ""
                 ) {
                     return;
@@ -347,12 +362,12 @@ export default function PropertyForm() {
 
             );
             console.log("7");
-            
+
             console.log("Before API Request");
 
 
             if (isEdit) {
-                
+
 
                 await api.patch(
                     `properties/${id}/`,
@@ -531,9 +546,15 @@ export default function PropertyForm() {
 
                             value={form.price}
 
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
                             error={!!errors.price}
                             helperText={errors.price}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
 
                         />
 
@@ -552,9 +573,15 @@ export default function PropertyForm() {
 
                             value={form.area}
 
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
                             error={!!errors.area}
                             helperText={errors.area}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
 
                         />
 
@@ -567,7 +594,13 @@ export default function PropertyForm() {
                             name="floor"
                             type="number"
                             value={form.floor}
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
                         />
 
                     </Grid>
@@ -580,7 +613,13 @@ export default function PropertyForm() {
                             name="total_floors"
                             type="number"
                             value={form.total_floors}
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
                         />
 
                     </Grid>
@@ -593,7 +632,13 @@ export default function PropertyForm() {
                             name="year_built"
                             type="number"
                             value={form.year_built}
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
                         />
 
                     </Grid>
@@ -610,9 +655,15 @@ export default function PropertyForm() {
 
                             value={form.rooms}
 
-                            onChange={handleChange}
+                            onChange={handleNumberChange}
                             error={!!errors.rooms}
                             helperText={errors.rooms}
+                            type="text"
+                            slotProps={{
+                                htmlInput: {
+                                    inputMode: "numeric"
+                                }
+                            }}
 
                         />
 
