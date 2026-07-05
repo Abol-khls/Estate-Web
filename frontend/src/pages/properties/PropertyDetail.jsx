@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../services/api";
 
+import { API_BASE_URL } from "../../config";
+
 import {
     Container,
     Paper,
@@ -126,6 +128,9 @@ export default function PropertyDetail() {
         navigate("/properties");
 
     }
+
+    
+    console.log(property.images);
 
 
 
@@ -427,7 +432,7 @@ export default function PropertyDetail() {
                                                 <CardMedia
                                                     component="img"
                                                     height="220"
-                                                    image={image.image}
+                                                    image={`${API_BASE_URL}${image.image}`}
                                                     alt={property.title}
                                                 />
 
@@ -459,6 +464,7 @@ export default function PropertyDetail() {
                             ویدیوها
                         </Typography>
 
+
                         <Grid container spacing={2}>
 
                             {(property?.videos ?? []).length > 0 ? (
@@ -475,7 +481,12 @@ export default function PropertyDetail() {
                                             width="100%"
                                         >
 
-                                            <source src={video.video} />
+                                            <source
+                                                src={`${API_BASE_URL}${video.video}`}
+                                                type="video/mp4"
+                                            />
+
+                                            مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
 
                                         </video>
 

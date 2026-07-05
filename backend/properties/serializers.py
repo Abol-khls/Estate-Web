@@ -15,8 +15,18 @@ class PropertyImageSerializer(serializers.ModelSerializer):
             "id",
             "image",
             "is_cover",
-            "order"
+            "order",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        request = self.context.get("request")
+
+        if request:
+            data["image"] = instance.image.url
+
+        return data
 
 
 class PropertyVideoSerializer(serializers.ModelSerializer):
@@ -25,8 +35,18 @@ class PropertyVideoSerializer(serializers.ModelSerializer):
         model = PropertyVideo
         fields = [
             "id",
-            "video"
+            "video",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        request = self.context.get("request")
+
+        if request:
+            data["video"] = instance.video.url
+
+        return data
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -172,5 +192,7 @@ class PropertySerializer(serializers.ModelSerializer):
         ).data
 
         return data
+    
+    
 
     
