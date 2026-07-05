@@ -36,10 +36,7 @@ class PropertySerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    videos = PropertyVideoSerializer(
-        many=True,
-        required=True
-    )
+    
 
     def create(self, validated_data):
         
@@ -145,6 +142,35 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
 
-        fields = "__all__"
+        fields = [
+            "id",
+            "code",
+            "title",
+            "property_type",
+            "transaction_type",
+            "price",
+            "area",
+            "rooms",
+            "floor",
+            "total_floors",
+            "year_built",
+            "parking",
+            "elevator",
+            "storage",
+            "address",
+            "description",
+            "images",
+        ]
+
+        def to_representation(self, instance):
+
+            data = super().to_representation(instance)
+
+            data["videos"] = PropertyVideoSerializer(
+                instance.videos.all(),
+                many=True
+            ).data
+
+            return data
 
     

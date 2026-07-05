@@ -22,6 +22,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 
+import VideoUploader from "../../components/properties/VideoUploader";
+
 import ImageUploader from "../../components/properties/ImageUploader";
 
 import { useParams } from "react-router-dom";
@@ -59,9 +61,12 @@ export default function PropertyForm() {
 
     const [existingImages, setExistingImages] = useState([]);
     const [newImages, setNewImages] = useState([]);
-
-    const [videos, setVideos] = useState([]);
     const [deletedImages, setDeletedImages] = useState([]);
+
+    const [existingVideos, setExistingVideos] = useState([]);
+    const [newVideos, setNewVideos] = useState([]);
+    const [deletedVideos, setDeletedVideos] = useState([]);
+
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -101,6 +106,9 @@ export default function PropertyForm() {
                 });
                 setExistingImages(response.data.images || []);
                 setNewImages([]);
+
+                setExistingVideos(response.data.videos || []);
+                setNewVideos([]);
 
 
 
@@ -180,6 +188,34 @@ export default function PropertyForm() {
 
     }
 
+    function handleRemoveVideo(video, index, isNew) {
+
+        if (isNew) {
+
+            URL.revokeObjectURL(video.preview);
+
+            setNewVideos(prev =>
+                prev.filter((_, i) => i !== index)
+            );
+
+        } else {
+
+            setDeletedVideos(prev => [
+
+                ...prev,
+
+                video.id
+
+            ]);
+
+            setExistingVideos(prev =>
+                prev.filter(v => v.id !== video.id)
+            );
+
+        }
+
+    }
+
     function handleRemoveExisting(image, index) {
 
         setDeletedImages(prev => [
@@ -209,8 +245,8 @@ export default function PropertyForm() {
                 formData.append("images", image.file ?? image);
             });
 
-            videos.forEach(video => {
-                formData.append("videos", video);
+            newVideos.forEach(video => {
+                formData.append("videos", video.file);
             });
 
             for (const pair of formData.entries()) {
@@ -219,6 +255,13 @@ export default function PropertyForm() {
             formData.append(
                 "deleted_images",
                 JSON.stringify(deletedImages)
+            );
+            formData.append(
+
+                "deleted_videos",
+
+                JSON.stringify(deletedVideos)
+
             );
 
 
@@ -567,28 +610,6 @@ export default function PropertyForm() {
 
 
                     </Grid>
-
-
-                    <Grid size={{ xs: 12 }}>
-
-                        <label>
-                            ویدیوهای ملک
-                        </label>
-
-                        <input
-
-                            type="file"
-
-                            multiple
-
-                            accept="video/*"
-
-                            onChange={handleVideos}
-
-                        />
-
-                    </Grid>
-
                     <Grid size={{ xs: 12 }}>
 
                         <Typography variant="h6">
@@ -654,6 +675,29 @@ export default function PropertyForm() {
                         newImages={newImages}
                         setNewImages={setNewImages}
                     />
+
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <label>
+                            ویدیوهای ملک
+                        </label>
+
+                        <VideoUploader
+
+                            existingVideos={existingVideos}
+                            setExistingVideos={setExistingVideos}
+
+                            newVideos={newVideos}
+                            setNewVideos={setNewVideos}
+
+                            onRemove={handleRemoveVideo}
+
+                        />
+
+                    </Grid>
+
+
 
 
 

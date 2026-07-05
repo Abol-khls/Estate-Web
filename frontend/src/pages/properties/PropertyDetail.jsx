@@ -114,6 +114,19 @@ export default function PropertyDetail() {
 
     }
 
+    async function handleDelete() {
+
+        if (!window.confirm("از حذف این ملک مطمئن هستید؟"))
+            return;
+
+        await api.delete(
+            `properties/${property.id}/`
+        );
+
+        navigate("/properties");
+
+    }
+
 
 
     return (
@@ -400,9 +413,9 @@ export default function PropertyDetail() {
                         <Grid container spacing={2}>
 
                             {
-                                property.images.length > 0 ?
+                                (property?.images ?? []).length > 0 ?
 
-                                    property.images.map(image => (
+                                    (property?.images ?? []).map(image => (
 
                                         <Grid
                                             size={{ xs: 12, sm: 6, md: 4 }}
@@ -412,15 +425,10 @@ export default function PropertyDetail() {
                                             <Card>
 
                                                 <CardMedia
-
                                                     component="img"
-
                                                     height="220"
-
                                                     image={image.image}
-
                                                     alt={property.title}
-
                                                 />
 
                                             </Card>
@@ -453,45 +461,35 @@ export default function PropertyDetail() {
 
                         <Grid container spacing={2}>
 
-                            {
-                                property.videos.length > 0 ?
+                            {(property?.videos ?? []).length > 0 ? (
 
-                                    property.videos.map(video => (
+                                property.videos.map(video => (
 
-                                        <Grid
-                                            size={{ xs: 12, md: 6 }}
-                                            key={video.id}
+                                    <Grid
+                                        size={{ xs: 12, md: 6 }}
+                                        key={video.id}
+                                    >
+
+                                        <video
+                                            controls
+                                            width="100%"
                                         >
 
-                                            <video
+                                            <source src={video.video} />
 
-                                                controls
+                                        </video>
 
-                                                width="100%"
+                                    </Grid>
 
-                                            >
+                                ))
 
-                                                <source
+                            ) : (
 
-                                                    src={video.video}
+                                <Typography>
+                                    ویدیویی ثبت نشده است.
+                                </Typography>
 
-                                                />
-
-                                            </video>
-
-                                        </Grid>
-
-                                    ))
-
-                                    :
-
-                                    <Typography>
-
-                                        ویدیویی ثبت نشده است.
-
-                                    </Typography>
-
-                            }
+                            )}
 
                         </Grid>
 
@@ -500,7 +498,7 @@ export default function PropertyDetail() {
                         <Button
                             variant="contained"
                             onClick={() =>
-                                navigate(`/properties/${property.id} / edit`)
+                                navigate(`/properties/${property.id}/edit`)
                             }
                         >
                             ویرایش
@@ -508,15 +506,11 @@ export default function PropertyDetail() {
 
 
                         <Button
-
                             color="error"
-
                             sx={{ ml: 2 }}
-
+                            onClick={handleDelete}
                         >
-
                             حذف
-
                         </Button>
 
 

@@ -45,6 +45,7 @@ export default function VideoUploader({
             ...previews
 
         ]);
+        e.target.value = "";
 
     }
 
