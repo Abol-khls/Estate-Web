@@ -148,5 +148,15 @@ class PropertyVideo(models.Model):
         auto_now_add=True
     )
 
+    def delete(self, *args, **kwargs):
+
+        storage = self.video.storage
+        path = self.video.path
+
+        super().delete(*args, **kwargs)
+
+        if storage.exists(path):
+            storage.delete(path)
+
     def __str__(self):
         return self.property.title

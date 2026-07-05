@@ -38,7 +38,7 @@ class PropertySerializer(serializers.ModelSerializer):
 
     videos = PropertyVideoSerializer(
         many=True,
-        required=False
+        required=True
     )
 
     def create(self, validated_data):
@@ -89,6 +89,7 @@ class PropertySerializer(serializers.ModelSerializer):
 
         import json
 
+ 
         deleted_images = request.data.get("deleted_images")
 
         if deleted_images:
@@ -96,12 +97,28 @@ class PropertySerializer(serializers.ModelSerializer):
             deleted_images = json.loads(deleted_images)
 
             images = PropertyImage.objects.filter(
-            property=instance,
-            id__in=deleted_images
-        )
+                property=instance,
+                id__in=deleted_images
+            )
 
-        for image in images:
-            image.delete()
+            for image in images:
+                image.delete()
+
+
+        deleted_videos = request.data.get("deleted_videos")
+
+        if deleted_videos:
+
+            deleted_videos = json.loads(deleted_videos)
+
+            videos = PropertyVideo.objects.filter(
+                property=instance,
+                id__in=deleted_videos
+            )
+
+            for video in videos:
+                video.delete()
+
 
         images = request.FILES.getlist("images")
 
@@ -111,6 +128,7 @@ class PropertySerializer(serializers.ModelSerializer):
                 property=instance,
                 image=image
             )
+
 
         videos = request.FILES.getlist("videos")
 
@@ -122,7 +140,6 @@ class PropertySerializer(serializers.ModelSerializer):
             )
 
         return instance
-    
 
 
     class Meta:
