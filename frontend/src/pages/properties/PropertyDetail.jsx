@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 
 import { API_BASE_URL } from "../../config";
+import PropertyGallery from "../../components/properties/PropertyGallery";
 
 import {
     Container,
@@ -415,78 +416,16 @@ export default function PropertyDetail() {
                             تصاویر
                         </Typography>
 
-                        {
+                        <PropertyGallery
+                            images={property.images}
+                            title={property.title}
+                        />
 
-                            coverImage && (
-
-                                <Card sx={{ mb: 3 }}>
-
-                                    <CardMedia
-
-                                        component="img"
-
-                                        height="420"
-
-                                        image={`${API_BASE_URL}${coverImage.image}`}
-
-                                        alt={property.title}
-
-                                    />
-
-                                </Card>
-
-                            )
-
-                        }
-
-                        <Grid container spacing={2}>
-
-                            {
-
-                                (property?.images ?? []).length > 0 ?
-
-                                    property.images.map(image => (
-
-                                        <Grid
-                                            size={{ xs: 12, sm: 6, md: 4 }}
-                                            key={image.id}
-                                        >
-
-                                            <Card>
-
-                                                <CardMedia
-
-                                                    component="img"
-
-                                                    height="220"
-
-                                                    image={`${API_BASE_URL}${image.image}`}
-
-                                                    alt={property.title}
-
-                                                />
-
-                                            </Card>
-
-                                        </Grid>
-
-                                    ))
-
-                                    :
-
-                                    <Typography>
-
-                                        تصویری ثبت نشده است.
-
-                                    </Typography>
-
-                            }
-
-                        </Grid>
+                       
 
                     </Grid>
 
-                    
+
 
 
                     <Divider sx={{ my: 3 }} />
@@ -576,9 +515,9 @@ export default function PropertyDetail() {
                 </Grid>
 
 
-            
 
-        </Paper>
+
+            </Paper>
 
         </Container >
 
