@@ -129,8 +129,10 @@ export default function PropertyDetail() {
 
     }
 
-    
-    console.log(property.images);
+
+    const coverImage =
+        property?.images?.find(image => image.is_cover)
+        || property?.images?.[0];
 
 
 
@@ -402,10 +404,8 @@ export default function PropertyDetail() {
                     </Grid>
 
 
-                    <Grid
-                        size={{ xs: 12 }}
-                        sx={{ mt: 3 }}
-                    >
+                    <Grid size={{ xs: 12 }} sx={{ mt: 3 }}>
+
                         <Divider sx={{ my: 3 }} />
 
                         <Typography
@@ -415,12 +415,37 @@ export default function PropertyDetail() {
                             تصاویر
                         </Typography>
 
+                        {
+
+                            coverImage && (
+
+                                <Card sx={{ mb: 3 }}>
+
+                                    <CardMedia
+
+                                        component="img"
+
+                                        height="420"
+
+                                        image={`${API_BASE_URL}${coverImage.image}`}
+
+                                        alt={property.title}
+
+                                    />
+
+                                </Card>
+
+                            )
+
+                        }
+
                         <Grid container spacing={2}>
 
                             {
+
                                 (property?.images ?? []).length > 0 ?
 
-                                    (property?.images ?? []).map(image => (
+                                    property.images.map(image => (
 
                                         <Grid
                                             size={{ xs: 12, sm: 6, md: 4 }}
@@ -430,10 +455,15 @@ export default function PropertyDetail() {
                                             <Card>
 
                                                 <CardMedia
+
                                                     component="img"
+
                                                     height="220"
+
                                                     image={`${API_BASE_URL}${image.image}`}
+
                                                     alt={property.title}
+
                                                 />
 
                                             </Card>
@@ -454,99 +484,103 @@ export default function PropertyDetail() {
 
                         </Grid>
 
+                    </Grid>
 
-                        <Divider sx={{ my: 3 }} />
-
-                        <Typography
-                            variant="h5"
-                            sx={{ mb: 2 }}
-                        >
-                            ویدیوها
-                        </Typography>
+                    
 
 
-                        <Grid container spacing={2}>
+                    <Divider sx={{ my: 3 }} />
 
-                            {(property?.videos ?? []).length > 0 ? (
+                    <Typography
+                        variant="h5"
+                        sx={{ mb: 2 }}
+                    >
+                        ویدیوها
+                    </Typography>
 
-                                property.videos.map(video => (
 
-                                    <Grid
-                                        size={{ xs: 12, md: 6 }}
-                                        key={video.id}
+                    <Grid container spacing={2}>
+
+                        {(property?.videos ?? []).length > 0 ? (
+
+                            property.videos.map(video => (
+
+                                <Grid
+                                    size={{ xs: 12, md: 6 }}
+                                    key={video.id}
+                                >
+
+                                    <video
+                                        controls
+                                        width="100%"
                                     >
 
-                                        <video
-                                            controls
-                                            width="100%"
-                                        >
+                                        <source
+                                            src={`${API_BASE_URL}${video.video}`}
+                                            type="video/mp4"
+                                        />
 
-                                            <source
-                                                src={`${API_BASE_URL}${video.video}`}
-                                                type="video/mp4"
-                                            />
+                                        مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
 
-                                            مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                    </video>
 
-                                        </video>
+                                </Grid>
 
-                                    </Grid>
+                            ))
 
-                                ))
+                        ) : (
 
-                            ) : (
+                            <Typography>
+                                ویدیویی ثبت نشده است.
+                            </Typography>
 
-                                <Typography>
-                                    ویدیویی ثبت نشده است.
-                                </Typography>
-
-                            )}
-
-                        </Grid>
-
-
-
-                        <Button
-                            variant="contained"
-                            onClick={() =>
-                                navigate(`/properties/${property.id}/edit`)
-                            }
-                        >
-                            ویرایش
-                        </Button>
-
-
-                        <Button
-                            color="error"
-                            sx={{ ml: 2 }}
-                            onClick={handleDelete}
-                        >
-                            حذف
-                        </Button>
-
-
-                        <Button
-
-                            sx={{ ml: 2 }}
-
-                            onClick={() =>
-                                navigate("/properties")
-                            }
-
-                        >
-
-                            بازگشت
-
-                        </Button>
+                        )}
 
                     </Grid>
 
 
+
+                    <Button
+                        variant="contained"
+                        onClick={() =>
+                            navigate(`/properties/${property.id}/edit`)
+                        }
+                    >
+                        ویرایش
+                    </Button>
+
+
+                    <Button
+                        color="error"
+                        sx={{ ml: 2 }}
+                        onClick={handleDelete}
+                    >
+                        حذف
+                    </Button>
+
+
+                    <Button
+
+                        sx={{ ml: 2 }}
+
+                        onClick={() =>
+                            navigate("/properties")
+                        }
+
+                    >
+
+                        بازگشت
+
+                    </Button>
+
                 </Grid>
 
-            </Paper>
 
-        </Container>
+            
+
+        </Paper>
+
+        </Container >
 
     );
 

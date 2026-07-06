@@ -10,6 +10,8 @@ import {
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import { API_BASE_URL } from "../../config";
+
 export default function VideoUploader({
 
     existingVideos,
@@ -19,6 +21,7 @@ export default function VideoUploader({
     setNewVideos,
 
     onRemove
+
 
 }) {
 
@@ -144,6 +147,7 @@ export default function VideoUploader({
 
                     existingVideos.map((video, index) => (
 
+
                         <Box
                             key={video.id}
                             sx={{
@@ -152,14 +156,16 @@ export default function VideoUploader({
                         >
 
                             <video
-
-                                src={video.video}
-
                                 width={180}
-
                                 controls
+                            >
+                                <source
+                                    src={`${API_BASE_URL}${video.video}`}
+                                    type="video/mp4"
+                                />
+                            </video>
 
-                            />
+
 
                             <IconButton
 
@@ -207,6 +213,7 @@ export default function VideoUploader({
                                 position: "relative"
                             }}
                         >
+                            
 
                             <video
 

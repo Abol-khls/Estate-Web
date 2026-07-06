@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import {
     Grid,
     Typography,
-    Stack
+    Stack,
+     Box,
+    Button,
+    IconButton,
+    Card,
+    CardMedia,
+    Chip
 } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
@@ -19,8 +25,8 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
+
+
 
 import VideoUploader from "../../components/properties/VideoUploader";
 
@@ -74,6 +80,7 @@ export default function PropertyForm() {
     const { id } = useParams();
 
     const isEdit = Boolean(id);
+    const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
 
@@ -302,6 +309,32 @@ export default function PropertyForm() {
         }
 
     }
+
+    const handleSetCover = async (imageId) => {
+
+        try {
+
+            await api.post(
+                `properties/${id}/set_cover/`,
+                {
+                    image_id: imageId
+                }
+            );
+
+            setExistingImages(prev =>
+                prev.map(image => ({
+                    ...image,
+                    is_cover: image.id === imageId
+                }))
+            );
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
 
     async function handleSubmit(e) {
 
@@ -786,20 +819,26 @@ export default function PropertyForm() {
 
                             {existingImages.map((image, index) => (
 
-                                <Box
+                                <Card
                                     key={image.id}
                                     sx={{
-                                        position: "relative"
+                                        width: 170,
+                                        position: "relative",
+                                        overflow: "hidden"
                                     }}
                                 >
 
-                                    <img
-                                        src={image.image}
-                                        width={140}
-                                        height={110}
-                                        style={{
-                                            objectFit: "cover",
-                                            borderRadius: 8
+                                    <Chip
+                                        label={image.is_cover ? "⭐ کاور" : "انتخاب کاور"}
+                                        color={image.is_cover ? "primary" : "default"}
+                                        size="small"
+                                        clickable
+                                        onClick={() => handleSetCover(image.id)}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 8,
+                                            left: 8,
+                                            zIndex: 2
                                         }}
                                     />
 
@@ -810,14 +849,24 @@ export default function PropertyForm() {
                                             position: "absolute",
                                             top: 5,
                                             right: 5,
-                                            bgcolor: "white"
+                                            bgcolor: "white",
+                                            zIndex: 2
                                         }}
                                         onClick={() => handleRemoveExisting(image, index)}
                                     >
                                         <DeleteIcon />
                                     </IconButton>
 
-                                </Box>
+                                    <CardMedia
+                                        component="img"
+                                        image={`${API_BASE_URL}${image.image}`}
+                                        height="120"
+                                        sx={{
+                                            objectFit: "cover"
+                                        }}
+                                    />
+
+                                </Card>
 
                             ))}
 

@@ -73,12 +73,17 @@ class PropertySerializer(serializers.ModelSerializer):
         )
 
 
-        for image in images:
+        for index, image in enumerate(images):
 
             PropertyImage.objects.create(
+
                 property=property,
-                image=image
-            )
+
+                image=image,
+
+                is_cover=(index == 0)
+
+    )
 
 
         videos = request.FILES.getlist(
@@ -139,12 +144,28 @@ class PropertySerializer(serializers.ModelSerializer):
 
         images = request.FILES.getlist("images")
 
+        has_cover = PropertyImage.objects.filter(
+
+            property=instance,
+
+            is_cover=True
+
+        ).exists()
+
+
         for image in images:
 
             PropertyImage.objects.create(
+
                 property=instance,
-                image=image
+
+                image=image,
+
+                is_cover=not has_cover
+
             )
+
+            has_cover = True
 
 
         videos = request.FILES.getlist("videos")

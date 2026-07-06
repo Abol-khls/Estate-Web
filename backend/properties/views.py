@@ -21,6 +21,7 @@ class PropertyImageViewSet(viewsets.ModelViewSet):
 
 from .filters import PropertyFilter
 
+
 from rest_framework.parsers import (
     MultiPartParser,
     FormParser,
@@ -38,9 +39,44 @@ from rest_framework import permissions
 
 class PropertyViewSet(viewsets.ModelViewSet):
 
+
+
     queryset = Property.objects.all()
 
     serializer_class = PropertySerializer
+    from rest_framework.decorators import action
+    from rest_framework.response import Response
+    @action(detail=True, methods=["post"])
+
+    def set_cover(self, request, pk=None):
+
+        property = self.get_object()
+
+        image_id = request.data.get("image_id")
+
+        PropertyImage.objects.filter(
+
+            property=property
+
+        ).update(
+
+            is_cover=False
+
+        )
+
+        PropertyImage.objects.filter(
+
+            id=image_id,
+
+            property=property
+
+        ).update(
+
+            is_cover=True
+
+        )
+
+        return Response({"success": True})
 
     permission_classes = [
         IsAuthenticated
