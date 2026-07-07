@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
+import PropertyActions from "../../components/properties/PropertyActions";
 
 import Avatar from "@mui/material/Avatar";
 import TableContainer from "@mui/material/TableContainer";
@@ -370,33 +371,21 @@ export default function Properties() {
 
                                         <TableCell>
 
-                                            <Button
-                                                startIcon={<VisibilityIcon />}
-                                                onClick={() =>
+                                            <PropertyActions
+
+                                                property={property}
+
+                                                onView={(property) =>
                                                     navigate(`/properties/${property.id}`)
                                                 }
-                                            >
-                                                مشاهده
-                                            </Button>
 
-
-                                            <Button
-                                                onClick={() =>
+                                                onEdit={(property) =>
                                                     navigate(`/properties/${property.id}/edit`)
                                                 }
-                                            >
-                                                ویرایش
-                                            </Button>
 
+                                                onDelete={handleDeleteClick}
 
-                                            <Button
-                                                color="error"
-                                                onClick={() =>
-                                                    handleDeleteClick(property)
-                                                }
-                                            >
-                                                حذف
-                                            </Button>
+                                            />
 
                                         </TableCell>
 
