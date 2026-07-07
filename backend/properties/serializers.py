@@ -50,6 +50,7 @@ class PropertyVideoSerializer(serializers.ModelSerializer):
 
 
 class PropertySerializer(serializers.ModelSerializer):
+    cover_image = serializers.SerializerMethodField()
 
     images = PropertyImageSerializer(
         many=True,
@@ -178,6 +179,22 @@ class PropertySerializer(serializers.ModelSerializer):
             )
 
         return instance
+    def get_cover_image(self, obj):
+
+        cover = obj.images.filter(is_cover=True).first()
+
+        if not cover:
+            cover = obj.images.first()
+
+        if not cover:
+            return None
+
+        request = self.context.get("request")
+
+        if request:
+            return request.build_absolute_uri(cover.image.url)
+
+        return cover.image.url
 
 
     class Meta:
@@ -201,6 +218,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "address",
             "description",
             "images",
+            "cover_image",
         ]
 
     def to_representation(self, instance):
