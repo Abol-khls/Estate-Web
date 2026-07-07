@@ -219,6 +219,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "description",
             "images",
             "cover_image",
+            "is_favorite",
         ]
 
     def to_representation(self, instance):

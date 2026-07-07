@@ -89,6 +89,13 @@ class PropertyViewSet(viewsets.ModelViewSet):
         SearchFilter,
         OrderingFilter
     ]
+    ordering_fields = [
+        "created_at",
+        "price",
+        "area",
+    ]
+
+    ordering = ["-created_at"]
 
     filterset_class = PropertyFilter
 
