@@ -13,6 +13,8 @@ import {
     Stack
 } from "@mui/material";
 
+import PropertyToolbar from "../../components/properties/PropertyToolbar";
+
 import Avatar from "@mui/material/Avatar";
 import TableContainer from "@mui/material/TableContainer";
 
@@ -233,7 +235,7 @@ export default function Properties() {
 
             </div>
 
-            <PropertyFilters
+            <PropertyToolbar
 
                 search={search}
                 setSearch={setSearch}
