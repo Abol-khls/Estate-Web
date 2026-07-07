@@ -13,6 +13,8 @@ import {
     Stack
 } from "@mui/material";
 
+import PropertyRow from "../../components/properties/PropertyRow";
+
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import PropertyActions from "../../components/properties/PropertyActions";
 
@@ -312,89 +314,31 @@ export default function Properties() {
                             {
                                 properties.map(property => (
 
+    <PropertyRow
 
-                                    <TableRow
-                                        key={property.id}
-                                    >
-                                        <TableCell>
+        key={property.id}
 
-                                            <Avatar
-                                                src={property.cover_image}
-                                                variant="rounded"
-                                                sx={{
-                                                    width: 80,
-                                                    height: 60,
-                                                    borderRadius: 2
-                                                }}
-                                            />
+        property={property}
 
-                                        </TableCell>
+        onView={(property)=>
 
+            navigate(`/properties/${property.id}`)
 
-                                        <TableCell>
-                                            {property.title}
-                                        </TableCell>
+        }
 
+        onEdit={(property)=>
 
-                                        <TableCell>
-                                            {property.price}
-                                        </TableCell>
+            navigate(`/properties/${property.id}/edit`)
 
+        }
 
-                                        <TableCell>
-                                            {property.address}
-                                        </TableCell>
+        onDelete={handleDeleteClick}
 
-                                        <TableCell>
+        onToggleFavorite={toggleFavorite}
 
-                                            <IconButton
+    />
 
-                                                color="error"
-
-                                                onClick={() =>
-                                                    toggleFavorite(property)
-                                                }
-
-                                            >
-
-                                                {
-                                                    property.is_favorite
-                                                        ? <FavoriteIcon />
-                                                        : <FavoriteBorderIcon />
-                                                }
-
-                                            </IconButton>
-
-                                        </TableCell>
-
-
-
-                                        <TableCell>
-
-                                            <PropertyActions
-
-                                                property={property}
-
-                                                onView={(property) =>
-                                                    navigate(`/properties/${property.id}`)
-                                                }
-
-                                                onEdit={(property) =>
-                                                    navigate(`/properties/${property.id}/edit`)
-                                                }
-
-                                                onDelete={handleDeleteClick}
-
-                                            />
-
-                                        </TableCell>
-
-
-
-                                    </TableRow>
-
-
-                                ))
+))
                             }
 
 
