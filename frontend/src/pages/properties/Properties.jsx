@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import PropertyRow from "../../components/properties/PropertyRow";
-
+import PropertyTable from "../../components/properties/PropertyTable";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import PropertyActions from "../../components/properties/PropertyActions";
 
@@ -259,98 +259,27 @@ export default function Properties() {
 
 
 
-            <Paper>
-                <TableContainer>
+            <PropertyTable
 
+                properties={properties}
 
-                    <Table>
+                onView={(property) =>
 
+                    navigate(`/properties/${property.id}`)
 
-                        <TableHead>
+                }
 
-                            <TableRow>
-                                <TableCell>
-                                    تصویر
-                                </TableCell>
+                onEdit={(property) =>
 
-                                <TableCell>
-                                    عنوان
-                                </TableCell>
+                    navigate(`/properties/${property.id}/edit`)
 
+                }
 
-                                <TableCell>
-                                    قیمت
-                                </TableCell>
+                onDelete={handleDeleteClick}
 
+                onToggleFavorite={toggleFavorite}
 
-                                <TableCell>
-                                    آدرس
-                                </TableCell>
-
-                                <TableCell>
-
-                                    علاقه‌مندی
-
-                                </TableCell>
-
-
-
-
-                                <TableCell>
-                                    عملیات
-                                </TableCell>
-
-
-                            </TableRow>
-
-
-                        </TableHead>
-
-
-
-                        <TableBody>
-
-
-                            {
-                                properties.map(property => (
-
-    <PropertyRow
-
-        key={property.id}
-
-        property={property}
-
-        onView={(property)=>
-
-            navigate(`/properties/${property.id}`)
-
-        }
-
-        onEdit={(property)=>
-
-            navigate(`/properties/${property.id}/edit`)
-
-        }
-
-        onDelete={handleDeleteClick}
-
-        onToggleFavorite={toggleFavorite}
-
-    />
-
-))
-                            }
-
-
-                        </TableBody>
-
-
-
-                    </Table>
-                </TableContainer>
-
-
-            </Paper>
+            />
 
             <div
                 style={{
