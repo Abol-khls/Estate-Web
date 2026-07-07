@@ -3,7 +3,7 @@ import {
     Grid,
     Typography,
     Stack,
-     Box,
+    Box,
     Button,
     IconButton,
     Card,
@@ -17,6 +17,8 @@ import AppButton from "../../components/common/AppButton";
 import AppTextField from "../../components/common/AppTextField";
 import AppCheckbox from "../../components/common/AppCheckbox";
 import AppSelect from "../../components/common/AppSelect";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import {
     PROPERTY_TYPES,
     TRANSACTION_TYPES
@@ -828,19 +830,24 @@ export default function PropertyForm() {
                                     }}
                                 >
 
-                                    <Chip
-                                        label={image.is_cover ? "⭐ کاور" : "انتخاب کاور"}
-                                        color={image.is_cover ? "primary" : "default"}
+                                    <IconButton
+                                        color={image.is_cover ? "warning" : "default"}
                                         size="small"
-                                        clickable
                                         onClick={() => handleSetCover(image.id)}
                                         sx={{
                                             position: "absolute",
-                                            top: 8,
-                                            left: 8,
+                                            top: 5,
+                                            left: 5,
+                                            bgcolor: "rgba(255,255,255,.9)",
                                             zIndex: 2
                                         }}
-                                    />
+                                    >
+                                        {
+                                            image.is_cover
+                                                ? <StarIcon />
+                                                : <StarBorderIcon />
+                                        }
+                                    </IconButton>
 
                                     <IconButton
                                         color="error"
@@ -854,7 +861,8 @@ export default function PropertyForm() {
                                         }}
                                         onClick={() => handleRemoveExisting(image, index)}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon
+                                         />
                                     </IconButton>
 
                                     <CardMedia

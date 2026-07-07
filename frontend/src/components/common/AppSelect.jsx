@@ -1,7 +1,8 @@
 import {
     FormControl,
     InputLabel,
-    Select
+    Select,
+    FormHelperText
 } from "@mui/material";
 
 export default function AppSelect({
@@ -14,6 +15,10 @@ export default function AppSelect({
 
     size = "small",
 
+    helperText,
+
+    error,
+
     ...props
 
 }) {
@@ -21,11 +26,9 @@ export default function AppSelect({
     return (
 
         <FormControl
-
             fullWidth={fullWidth}
-
             size={size}
-
+            error={error}
         >
 
             <InputLabel>
@@ -45,6 +48,11 @@ export default function AppSelect({
                 {children}
 
             </Select>
+            <FormHelperText>
+
+                {helperText}
+
+            </FormHelperText>
 
         </FormControl>
 
