@@ -13,6 +13,9 @@ import {
     Stack
 } from "@mui/material";
 
+import Avatar from "@mui/material/Avatar";
+import TableContainer from "@mui/material/TableContainer";
+
 import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -252,146 +255,164 @@ export default function Properties() {
 
 
             <Paper>
+                <TableContainer>
 
 
-                <Table>
+                    <Table>
 
 
-                    <TableHead>
+                        <TableHead>
 
-                        <TableRow>
+                            <TableRow>
+                                <TableCell>
+                                    تصویر
+                                </TableCell>
 
-                            <TableCell>
-                                عنوان
-                            </TableCell>
-
-
-                            <TableCell>
-                                قیمت
-                            </TableCell>
+                                <TableCell>
+                                    عنوان
+                                </TableCell>
 
 
-                            <TableCell>
-                                آدرس
-                            </TableCell>
-
-                            <TableCell>
-
-                                علاقه‌مندی
-
-                            </TableCell>
+                                <TableCell>
+                                    قیمت
+                                </TableCell>
 
 
+                                <TableCell>
+                                    آدرس
+                                </TableCell>
 
+                                <TableCell>
 
-                            <TableCell>
-                                عملیات
-                            </TableCell>
+                                    علاقه‌مندی
 
-
-                        </TableRow>
-
-
-                    </TableHead>
+                                </TableCell>
 
 
 
-                    <TableBody>
+
+                                <TableCell>
+                                    عملیات
+                                </TableCell>
 
 
-                        {
-                            properties.map(property => (
+                            </TableRow>
 
 
-                                <TableRow
-                                    key={property.id}
-                                >
-
-
-                                    <TableCell>
-                                        {property.title}
-                                    </TableCell>
-
-
-                                    <TableCell>
-                                        {property.price}
-                                    </TableCell>
-
-
-                                    <TableCell>
-                                        {property.address}
-                                    </TableCell>
-
-                                    <TableCell>
-
-                                        <IconButton
-
-                                            color="error"
-
-                                            onClick={() =>
-                                                toggleFavorite(property)
-                                            }
-
-                                        >
-
-                                            {
-                                                property.is_favorite
-                                                    ? <FavoriteIcon />
-                                                    : <FavoriteBorderIcon />
-                                            }
-
-                                        </IconButton>
-
-                                    </TableCell>
+                        </TableHead>
 
 
 
-                                    <TableCell>
-
-                                        <Button
-                                            startIcon={<VisibilityIcon />}
-                                            onClick={() =>
-                                                navigate(`/properties/${property.id}`)
-                                            }
-                                        >
-                                            مشاهده
-                                        </Button>
+                        <TableBody>
 
 
-                                        <Button
-                                            onClick={() =>
-                                                navigate(`/properties/${property.id}/edit`)
-                                            }
-                                        >
-                                            ویرایش
-                                        </Button>
+                            {
+                                properties.map(property => (
 
 
-                                        <Button
-                                            color="error"
-                                            onClick={() =>
-                                                handleDeleteClick(property)
-                                            }
-                                        >
-                                            حذف
-                                        </Button>
+                                    <TableRow
+                                        key={property.id}
+                                    >
+                                        <TableCell>
 
-                                    </TableCell>
+                                            <Avatar
+                                                src={property.cover_image}
+                                                variant="rounded"
+                                                sx={{
+                                                    width: 80,
+                                                    height: 60,
+                                                    borderRadius: 2
+                                                }}
+                                            />
 
-
-
-                                </TableRow>
-
-
-                            ))
-                        }
+                                        </TableCell>
 
 
-                    </TableBody>
+                                        <TableCell>
+                                            {property.title}
+                                        </TableCell>
+
+
+                                        <TableCell>
+                                            {property.price}
+                                        </TableCell>
+
+
+                                        <TableCell>
+                                            {property.address}
+                                        </TableCell>
+
+                                        <TableCell>
+
+                                            <IconButton
+
+                                                color="error"
+
+                                                onClick={() =>
+                                                    toggleFavorite(property)
+                                                }
+
+                                            >
+
+                                                {
+                                                    property.is_favorite
+                                                        ? <FavoriteIcon />
+                                                        : <FavoriteBorderIcon />
+                                                }
+
+                                            </IconButton>
+
+                                        </TableCell>
 
 
 
-                </Table>
+                                        <TableCell>
+
+                                            <Button
+                                                startIcon={<VisibilityIcon />}
+                                                onClick={() =>
+                                                    navigate(`/properties/${property.id}`)
+                                                }
+                                            >
+                                                مشاهده
+                                            </Button>
+
+
+                                            <Button
+                                                onClick={() =>
+                                                    navigate(`/properties/${property.id}/edit`)
+                                                }
+                                            >
+                                                ویرایش
+                                            </Button>
+
+
+                                            <Button
+                                                color="error"
+                                                onClick={() =>
+                                                    handleDeleteClick(property)
+                                                }
+                                            >
+                                                حذف
+                                            </Button>
+
+                                        </TableCell>
+
+
+
+                                    </TableRow>
+
+
+                                ))
+                            }
+
+
+                        </TableBody>
+
+
+
+                    </Table>
+                </TableContainer>
 
 
             </Paper>
