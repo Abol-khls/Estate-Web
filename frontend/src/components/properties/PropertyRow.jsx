@@ -2,12 +2,14 @@ import {
 
     TableRow,
     TableCell,
-    IconButton
+    IconButton,
+    Stack
 
 } from "@mui/material";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
 
 import PropertyActions from "./PropertyActions";
 
@@ -33,9 +35,22 @@ export default function PropertyRow({
 
     return (
 
-        <TableRow>
+        <TableRow
+            hover
+            sx={{
+                transition: "all .2s",
+                "&:hover": {
+                    bgcolor: "action.hover",
+                },
+            }}
+        >
 
-            <TableCell width={140}>
+            <TableCell
+                sx={{
+                    py: 2,
+                    verticalAlign: "middle",
+                }}
+                width={140}>
 
                 {
 
@@ -86,25 +101,45 @@ export default function PropertyRow({
 
             </TableCell>
 
-            <TableCell>
+            <TableCell
+                sx={{
+                    py: 2,
+                    verticalAlign: "middle",
+                }}
+            >
 
                 {property.title}
 
             </TableCell>
 
-            <TableCell>
+            <TableCell
+                sx={{
+                    py: 2,
+                    verticalAlign: "middle",
+                }}
+            >
 
                 {property.price}
 
             </TableCell>
 
-            <TableCell>
+            <TableCell
+                sx={{
+                    py: 2,
+                    verticalAlign: "middle",
+                }}
+            >
 
                 {property.address}
 
             </TableCell>
 
-            <TableCell>
+            <TableCell
+                sx={{
+                    py: 2,
+                    verticalAlign: "middle",
+                }}
+            >
 
                 <IconButton
 
@@ -131,22 +166,37 @@ export default function PropertyRow({
                 </IconButton>
 
             </TableCell>
+            <TableCell
+                sx={{
+                    py: 2,
+                }}
+            >
 
-            <TableCell>
+                <Stack direction="row" spacing={1}>
 
-                <PropertyActions
+                    <PropertyActions
 
-                    property={property}
+                        property={property}
 
-                    onView={onView}
+                        onView={onView}
 
-                    onEdit={onEdit}
+                        onEdit={onEdit}
 
-                    onDelete={onDelete}
+                        onDelete={onDelete}
 
-                />
+                    />
+
+                </Stack>
 
             </TableCell>
+
+
+
+
+
+
+
+
 
         </TableRow>
 

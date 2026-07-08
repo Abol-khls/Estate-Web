@@ -49,7 +49,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 تصویر
@@ -58,7 +59,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 عنوان
@@ -67,7 +69,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 قیمت
@@ -76,7 +79,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 آدرس
@@ -85,7 +89,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 علاقه‌مندی
@@ -94,7 +99,8 @@ export default function PropertyTable({
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    py: 2,
                                 }}
                             >
                                 عملیات
