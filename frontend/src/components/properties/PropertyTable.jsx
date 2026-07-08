@@ -1,12 +1,11 @@
 import {
-
     Paper,
     Table,
     TableHead,
     TableRow,
     TableCell,
-    TableBody
-
+    TableBody,
+    TableContainer
 } from "@mui/material";
 
 import PropertyRow from "./PropertyRow";
@@ -27,73 +26,123 @@ export default function PropertyTable({
 
     return (
 
-        <Paper>
+        <Paper
+            elevation={2}
+            sx={{
+                borderRadius: 3,
+                overflow: "hidden"
+            }}
+        >
 
-            <Table>
+            <TableContainer>
 
-                <TableHead>
+                <Table>
 
-                    <TableRow>
+                    <TableHead>
 
-                        <TableCell>
-                            تصویر
-                        </TableCell>
+                        <TableRow
+                            sx={{
+                                bgcolor: "grey.100"
+                            }}
+                        >
 
-                        <TableCell>
-                            عنوان
-                        </TableCell>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                تصویر
+                            </TableCell>
 
-                        <TableCell>
-                            قیمت
-                        </TableCell>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                عنوان
+                            </TableCell>
 
-                        <TableCell>
-                            آدرس
-                        </TableCell>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                قیمت
+                            </TableCell>
 
-                        <TableCell>
-                            علاقه‌مندی
-                        </TableCell>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                آدرس
+                            </TableCell>
 
-                        <TableCell>
-                            عملیات
-                        </TableCell>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                علاقه‌مندی
+                            </TableCell>
 
-                    </TableRow>
+                            <TableCell
+                                sx={{
+                                    fontWeight: 700,
+                                    fontSize: 15
+                                }}
+                            >
+                                عملیات
+                            </TableCell>
 
-                </TableHead>
+                        </TableRow>
 
-                <TableBody>
+                    </TableHead>
 
-                    {
+                    <TableBody>
 
-                        properties.map(property => (
+                        {
 
-                            <PropertyRow
+                            properties.map(property => (
 
-                                key={property.id}
+                                <PropertyRow
 
-                                property={property}
+                                    key={property.id}
 
-                                onView={onView}
+                                    property={property}
 
-                                onEdit={onEdit}
+                                    onView={onView}
 
-                                onDelete={onDelete}
+                                    onEdit={onEdit}
 
-                                onToggleFavorite={onToggleFavorite}
+                                    onDelete={onDelete}
 
-                            />
+                                    onToggleFavorite={onToggleFavorite}
 
-                        ))
+                                />
 
-                    }
+                            ))
 
-                </TableBody>
+                        }
 
-            </Table>
+                    </TableBody>
+
+                </Table>
+
+            </TableContainer>
 
         </Paper>
+
+
+
+
+
+
 
     );
 
