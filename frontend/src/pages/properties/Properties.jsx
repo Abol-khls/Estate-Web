@@ -9,14 +9,14 @@ import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
 import { useSnackbar } from "../../context/SnackbarContext";
-import Loading from "../../components/common/Loading";
+
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 
 
 
 export default function Properties() {
-    const [loading, setLoading] = useState(true);
+
 
     const [properties, setProperties] = useState([]);
 
@@ -47,7 +47,6 @@ export default function Properties() {
 
 
     async function loadProperties() {
-        setLoading(true);
 
         try {
 
@@ -98,8 +97,6 @@ export default function Properties() {
 
             showSnackbar(message, "error");
 
-        } finally {
-            setLoading(false);
         }
 
 
@@ -186,7 +183,7 @@ export default function Properties() {
 
 
             loadProperties();
-
+            
 
         }
 
@@ -199,19 +196,6 @@ export default function Properties() {
             showSnackbar(message, "error");
 
         }
-
-    }
-    if (loading) {
-
-        return (
-
-            <PageContainer>
-
-                <Loading />
-
-            </PageContainer>
-
-        );
 
     }
 
@@ -282,47 +266,6 @@ export default function Properties() {
                 onToggleFavorite={toggleFavorite}
 
             />
-            {properties.length === 0 ? (
-
-                <Box
-                    sx={{
-                        py: 8,
-                        textAlign: "center",
-                    }}
-                >
-
-                    <Typography
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                    >
-                        هیچ ملکی ثبت نشده است.
-                    </Typography>
-
-                    <AppButton
-                        startIcon={<AddIcon />}
-                        onClick={() => navigate("/properties/create")}
-                    >
-                        افزودن اولین ملک
-                    </AppButton>
-
-                </Box>
-
-            ) : (
-
-                <PropertyTable
-                    properties={properties}
-                    onView={(property) =>
-                        navigate(`/properties/${property.id}`)
-                    }
-                    onEdit={(property) =>
-                        navigate(`/properties/${property.id}/edit`)
-                    }
-                    onDelete={handleDeleteClick}
-                    onToggleFavorite={toggleFavorite}
-                />
-
-            )}
-
 
             {count > pageSize && (
 
