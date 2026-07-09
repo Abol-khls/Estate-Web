@@ -1,6 +1,7 @@
-import { Stack, Box, MenuItem } from "@mui/material";
+import { Stack, Box, MenuItem, Typography } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
+import TuneIcon from "@mui/icons-material/Tune";
 
 import AppTextField from "../common/AppTextField";
 import AppSelect from "../common/AppSelect";
@@ -38,19 +39,41 @@ export default function PropertyFilters({
 
                 mb: 3,
 
-                p: 2,
+                p: 3,
 
-                borderRadius: 2,
+                borderRadius: 4,
 
                 bgcolor: "background.paper",
 
-                boxShadow: 1
+                border: "1px solid",
+
+                borderColor: "divider",
+
+                boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
 
             }}
 
         >
 
+            <Stack
+                direction="row"
+                spacing={1}
+                sx={{ alignItems: "center", mb: 2 }}
+            >
 
+                <TuneIcon
+                    fontSize="small"
+                    sx={{ color: "secondary.main" }}
+                />
+
+                <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                >
+                    فیلتر و جستجو
+                </Typography>
+
+            </Stack>
 
             <AppTextField
 
@@ -62,7 +85,7 @@ export default function PropertyFilters({
                     setSearch(e.target.value)
                 }
 
-                startIcon={<SearchIcon />}
+                startIcon={<SearchIcon sx={{ color: "text.secondary" }} />}
 
                 sx={{
 
@@ -71,8 +94,6 @@ export default function PropertyFilters({
                 }}
 
             />
-
-
 
             <Stack
                 direction={{
@@ -190,7 +211,13 @@ export default function PropertyFilters({
 
                         display: "flex",
 
-                        justifyContent: "center"
+                        justifyContent: "center",
+
+                        bgcolor: favoriteOnly ? "rgba(200, 155, 60, 0.1)" : "transparent",
+
+                        borderRadius: 2,
+
+                        transition: ".2s",
 
                     }}
 
