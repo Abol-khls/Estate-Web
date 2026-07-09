@@ -54,11 +54,11 @@ export default function VideoUploader({
 
     return (
 
-        <Box mt={4}>
+        <Box sx={{ mt: 4 }}>
 
             <Typography
-                variant="h6"
-                mb={2}
+                variant="subtitle1"
+                sx={{ mb: 1.5 }}
             >
 
                 ویدیوهای ملک
@@ -89,7 +89,7 @@ export default function VideoUploader({
 
                     borderColor: "divider",
 
-                    borderRadius: 2,
+                    borderRadius: 3,
 
                     py: 4,
 
@@ -97,7 +97,16 @@ export default function VideoUploader({
 
                     cursor: "pointer",
 
-                    mb: 3
+                    mb: 3,
+
+                    bgcolor: "rgba(31, 59, 87, 0.02)",
+
+                    transition: ".2s",
+
+                    "&:hover": {
+                        borderColor: "primary.main",
+                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                    },
 
                 }}
 
@@ -113,7 +122,7 @@ export default function VideoUploader({
 
                     sx={{
 
-                        fontSize: 50,
+                        fontSize: 44,
 
                         color: "primary.main"
 
@@ -121,7 +130,11 @@ export default function VideoUploader({
 
                 />
 
-                <Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 0.5 }}
+                >
 
                     برای انتخاب ویدیو کلیک کنید
 
@@ -137,7 +150,9 @@ export default function VideoUploader({
 
                 sx={{
 
-                    flexWrap: "wrap"
+                    flexWrap: "wrap",
+
+                    rowGap: 2,
 
                 }}
 
@@ -151,21 +166,23 @@ export default function VideoUploader({
                         <Box
                             key={video.id}
                             sx={{
-                                position: "relative"
+                                position: "relative",
+                                borderRadius: 2,
+                                overflow: "hidden",
+                                boxShadow: "0 1px 3px rgba(16,24,40,0.15)",
                             }}
                         >
 
                             <video
                                 width={180}
                                 controls
+                                style={{ display: "block" }}
                             >
                                 <source
                                     src={`${API_BASE_URL}${video.video}`}
                                     type="video/mp4"
                                 />
                             </video>
-
-
 
                             <IconButton
 
@@ -177,11 +194,15 @@ export default function VideoUploader({
 
                                     position: "absolute",
 
-                                    top: 5,
+                                    top: 6,
 
-                                    right: 5,
+                                    right: 6,
 
-                                    bgcolor: "white"
+                                    bgcolor: "white",
+
+                                    boxShadow: 1,
+
+                                    "&:hover": { bgcolor: "error.main", color: "#fff" },
 
                                 }}
 
@@ -193,7 +214,7 @@ export default function VideoUploader({
 
                             >
 
-                                <DeleteIcon />
+                                <DeleteIcon fontSize="small" />
 
                             </IconButton>
 
@@ -210,10 +231,12 @@ export default function VideoUploader({
                         <Box
                             key={index}
                             sx={{
-                                position: "relative"
+                                position: "relative",
+                                borderRadius: 2,
+                                overflow: "hidden",
+                                boxShadow: "0 1px 3px rgba(16,24,40,0.15)",
                             }}
                         >
-                            
 
                             <video
 
@@ -222,6 +245,8 @@ export default function VideoUploader({
                                 width={180}
 
                                 controls
+
+                                style={{ display: "block" }}
 
                             />
 
@@ -235,11 +260,15 @@ export default function VideoUploader({
 
                                     position: "absolute",
 
-                                    top: 5,
+                                    top: 6,
 
-                                    right: 5,
+                                    right: 6,
 
-                                    bgcolor: "white"
+                                    bgcolor: "white",
+
+                                    boxShadow: 1,
+
+                                    "&:hover": { bgcolor: "error.main", color: "#fff" },
 
                                 }}
 
@@ -251,7 +280,7 @@ export default function VideoUploader({
 
                             >
 
-                                <DeleteIcon />
+                                <DeleteIcon fontSize="small" />
 
                             </IconButton>
 

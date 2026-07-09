@@ -53,8 +53,8 @@ export default function ImageUploader({
         <Box>
 
             <Typography
-                variant="h6"
-                mb={2}
+                variant="subtitle1"
+                sx={{ mb: 1.5 }}
             >
                 تصاویر جدید
             </Typography>
@@ -72,23 +72,33 @@ export default function ImageUploader({
                 sx={{
                     border: "2px dashed",
                     borderColor: "divider",
-                    borderRadius: 2,
+                    borderRadius: 3,
                     py: 4,
                     textAlign: "center",
                     cursor: "pointer",
-                    mb: 3
+                    mb: 3,
+                    bgcolor: "rgba(31, 59, 87, 0.02)",
+                    transition: ".2s",
+                    "&:hover": {
+                        borderColor: "primary.main",
+                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                    },
                 }}
                 onClick={() => inputRef.current.click()}
             >
 
                 <AddPhotoAlternateIcon
                     sx={{
-                        fontSize: 50,
+                        fontSize: 44,
                         color: "primary.main"
                     }}
                 />
 
-                <Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 0.5 }}
+                >
                     برای انتخاب تصویر کلیک کنید
                 </Typography>
 
@@ -98,7 +108,8 @@ export default function ImageUploader({
                 direction="row"
                 spacing={2}
                 sx={{
-                    flexWrap: "wrap"
+                    flexWrap: "wrap",
+                    rowGap: 2,
                 }}
             >
 
@@ -111,13 +122,15 @@ export default function ImageUploader({
                         }}
                     >
 
-                        <img
+                        <Box
+                            component="img"
                             src={image.preview}
-                            width={140}
-                            height={110}
-                            style={{
+                            sx={{
+                                width: 140,
+                                height: 110,
                                 objectFit: "cover",
-                                borderRadius: 8
+                                borderRadius: 2,
+                                boxShadow: "0 1px 3px rgba(16,24,40,0.15)",
                             }}
                         />
 
@@ -126,13 +139,15 @@ export default function ImageUploader({
                             size="small"
                             sx={{
                                 position: "absolute",
-                                top: 5,
-                                right: 5,
-                                bgcolor: "white"
+                                top: 6,
+                                right: 6,
+                                bgcolor: "white",
+                                boxShadow: 1,
+                                "&:hover": { bgcolor: "error.main", color: "#fff" },
                             }}
                             onClick={() => removeImage(index)}
                         >
-                            <DeleteIcon />
+                            <DeleteIcon fontSize="small" />
                         </IconButton>
 
                     </Box>

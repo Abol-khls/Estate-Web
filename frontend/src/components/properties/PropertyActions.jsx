@@ -14,6 +14,8 @@ const actionButtonSx = {
 
     border: "1px solid",
 
+    transition: ".15s",
+
 };
 
 export default function PropertyActions({
@@ -43,6 +45,7 @@ export default function PropertyActions({
                     sx={{
                         ...actionButtonSx,
                         borderColor: "info.main",
+                        "&:hover": { bgcolor: "info.main", color: "#fff" },
                     }}
                 >
                     <VisibilityIcon fontSize="small" />
@@ -59,6 +62,7 @@ export default function PropertyActions({
                     sx={{
                         ...actionButtonSx,
                         borderColor: "primary.main",
+                        "&:hover": { bgcolor: "primary.main", color: "#fff" },
                     }}
                 >
                     <EditIcon fontSize="small" />
@@ -75,6 +79,7 @@ export default function PropertyActions({
                     sx={{
                         ...actionButtonSx,
                         borderColor: "error.main",
+                        "&:hover": { bgcolor: "error.main", color: "#fff" },
                     }}
                 >
                     <DeleteIcon fontSize="small" />
