@@ -22,6 +22,16 @@ export default function AppCheckbox({
 
             label={label}
 
+            sx={{
+
+                "& .MuiFormControlLabel-label": {
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "text.primary",
+                },
+
+            }}
+
         />
 
     );

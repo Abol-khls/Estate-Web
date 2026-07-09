@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-export default function AppButton(props){
+export default function AppButton(props) {
 
     return (
 

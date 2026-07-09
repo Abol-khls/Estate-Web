@@ -1,8 +1,10 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
 export default function PageHeader({
 
     title,
+
+    subtitle,
 
     action
 
@@ -11,28 +13,52 @@ export default function PageHeader({
     return (
 
         <Stack
-
             direction="row"
-
             sx={{
                 justifyContent: "space-between",
-                alignItems: "center",
-                mb: 3
+                alignItems: "flex-end",
+                flexWrap: "wrap",
+                gap: 2,
+                mb: 4,
             }}
-
         >
 
-            <Typography
+            <Box>
 
-                variant="h4"
+                <Box
+                    sx={{
+                        width: 36,
+                        height: 4,
+                        borderRadius: 2,
+                        bgcolor: "secondary.main",
+                        mb: 1.5,
+                    }}
+                />
 
-                fontWeight={700}
+                <Typography
+                    variant="h4"
+                    color="text.primary"
+                >
 
-            >
+                    {title}
 
-                {title}
+                </Typography>
 
-            </Typography>
+                {subtitle && (
+
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.5 }}
+                    >
+
+                        {subtitle}
+
+                    </Typography>
+
+                )}
+
+            </Box>
 
             {action}
 

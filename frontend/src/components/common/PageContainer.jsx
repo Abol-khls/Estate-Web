@@ -1,18 +1,22 @@
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 export default function PageContainer({ children }) {
 
     return (
 
-        <Container
-            maxWidth="xl"
+        <Box
             sx={{
-                mt: 4,
-                mb: 4,
+                minHeight: "100vh",
+                bgcolor: "background.default",
+                py: { xs: 3, md: 5 },
             }}
         >
-            {children}
-        </Container>
+
+            <Container maxWidth="xl">
+                {children}
+            </Container>
+
+        </Box>
 
     );
 

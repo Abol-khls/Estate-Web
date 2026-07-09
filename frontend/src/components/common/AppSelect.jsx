@@ -48,11 +48,16 @@ export default function AppSelect({
                 {children}
 
             </Select>
-            <FormHelperText>
 
-                {helperText}
+            {helperText && (
 
-            </FormHelperText>
+                <FormHelperText>
+
+                    {helperText}
+
+                </FormHelperText>
+
+            )}
 
         </FormControl>
 
