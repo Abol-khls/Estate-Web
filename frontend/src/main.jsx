@@ -5,26 +5,30 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme.js";
+import { SnackbarProvider } from "./context/SnackbarContext";
 
 createRoot(
     document.getElementById("root")
 )
-.render(
+    .render(
 
-    <StrictMode>
+        <StrictMode>
 
-        <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
 
-            <CssBaseline />
+                <SnackbarProvider>
 
-            <AuthProvider>
+                    <AuthProvider>
 
-                <App />
+                        <App />
 
-            </AuthProvider>
+                    </AuthProvider>
 
-        </ThemeProvider>
+                </SnackbarProvider>
 
-    </StrictMode>
+            </ThemeProvider>
 
-);
+        </StrictMode>
+
+    );

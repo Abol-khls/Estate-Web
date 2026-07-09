@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { saveTokens } from "../../services/tokenService";
 import { useAuth } from "../../context/AuthContext";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 import {
     Box,
@@ -19,6 +20,7 @@ export default function Login() {
 
 
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
 
     const [username, setUsername] = useState("");
@@ -56,6 +58,10 @@ export default function Login() {
             );
 
             await login();
+            showSnackbar(
+                "با موفقیت وارد شدید",
+                "success"
+            );
 
             navigate("/dashboard");
 
@@ -63,8 +69,11 @@ export default function Login() {
         }
         catch (err) {
 
-            setError(
-                "نام کاربری یا رمز عبور اشتباه است"
+            setError("نام کاربری یا رمز عبور اشتباه است");
+
+            showSnackbar(
+                "نام کاربری یا رمز عبور اشتباه است",
+                "error"
             );
 
         }

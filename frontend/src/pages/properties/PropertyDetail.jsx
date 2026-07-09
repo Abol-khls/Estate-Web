@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../config";
 import PropertyGallery from "../../components/properties/PropertyGallery";
 import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 import {
     Paper,
@@ -65,6 +66,7 @@ export default function PropertyDetail() {
     const { id } = useParams();
 
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     const [property, setProperty] = useState(null);
 
@@ -86,7 +88,11 @@ export default function PropertyDetail() {
 
             catch (error) {
 
-                console.log(error);
+                const message =
+                    error.response?.data?.detail ||
+                    "خطا در دریافت اطلاعات ملک";
+
+                showSnackbar(message, "error");
 
             }
 
@@ -156,7 +162,11 @@ export default function PropertyDetail() {
 
         catch (error) {
 
-            console.log(error);
+            const message =
+                error.response?.data?.detail ||
+                "خطا در افزودن به علاقه‌مندی‌ها";
+
+            showSnackbar(message, "error");
 
         }
 
@@ -167,13 +177,32 @@ export default function PropertyDetail() {
         if (!window.confirm("از حذف این ملک مطمئن هستید؟"))
             return;
 
-        await api.delete(
-            `properties/${property.id}/`
-        );
+        try {
 
-        navigate("/properties");
+            await api.delete(
+                `properties/${property.id}/`
+            );
+
+            showSnackbar(
+                "ملک با موفقیت حذف شد.",
+                "success"
+            );
+
+            navigate("/properties");
+
+        }
+        catch (error) {
+
+            const message =
+                error.response?.data?.detail ||
+                "حذف ملک انجام نشد.";
+
+            showSnackbar(message, "error");
+
+        }
 
     }
+
 
 
     return (

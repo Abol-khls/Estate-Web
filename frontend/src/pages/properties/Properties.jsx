@@ -8,6 +8,7 @@ import PropertyTable from "../../components/properties/PropertyTable";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,6 +21,8 @@ export default function Properties() {
     const [properties, setProperties] = useState([]);
 
     const [search, setSearch] = useState("");
+
+    const { showSnackbar } = useSnackbar();
 
     const [propertyType, setPropertyType] = useState("all");
 
@@ -87,11 +90,15 @@ export default function Properties() {
 
         }
         catch (error) {
-            console.log(error.response?.data);
 
-            console.log(error);
+            const message =
+                error.response?.data?.detail ||
+                "خطا در دریافت لیست املاک";
+
+            showSnackbar(message, "error");
 
         }
+
 
     }
 
@@ -132,6 +139,10 @@ export default function Properties() {
             await api.delete(
                 `properties/${selectedProperty.id}/`
             );
+            showSnackbar(
+                "ملک با موفقیت حذف شد.",
+                "success"
+            );
 
             setDeleteOpen(false);
 
@@ -143,9 +154,14 @@ export default function Properties() {
 
         catch (error) {
 
-            console.log(error);
+            const message =
+                error.response?.data?.detail ||
+                "حذف ملک انجام نشد.";
+
+            showSnackbar(message, "error");
 
         }
+
 
     }
 
@@ -165,13 +181,19 @@ export default function Properties() {
 
             );
 
+
             loadProperties();
+            
 
         }
 
         catch (error) {
 
-            console.log(error);
+            const message =
+                error.response?.data?.detail ||
+                "تغییر وضعیت علاقه‌مندی انجام نشد.";
+
+            showSnackbar(message, "error");
 
         }
 
