@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { saveTokens } from "../../services/tokenService";
+import { useAuth } from "../../context/AuthContext";
 
 import {
     Box,
@@ -13,6 +15,7 @@ import {
 } from "@mui/material";
 
 export default function Login() {
+    const { login } = useAuth();
 
 
     const navigate = useNavigate();
@@ -47,19 +50,14 @@ export default function Login() {
             );
 
 
-            localStorage.setItem(
-                "access",
-                response.data.access
-            );
+            saveTokens(
+    response.data.access,
+    response.data.refresh
+);
 
+await login();
 
-            localStorage.setItem(
-                "refresh",
-                response.data.refresh
-            );
-
-
-            navigate("/dashboard");
+navigate("/dashboard");
 
 
         }

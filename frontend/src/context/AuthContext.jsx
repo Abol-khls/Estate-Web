@@ -1,6 +1,6 @@
-import {createContext,useContext,useState,useEffect} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-import {getAccessToken,clearTokens} from "../services/tokenService";
+import { getAccessToken, clearTokens } from "../services/tokenService";
 
 import { useCallback } from "react";
 import api from "../services/api";
@@ -12,13 +12,13 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
 
 
-    const [isAuthenticated, setIsAuthenticated] =useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const [user, setUser] = useState(null);
 
 
-    const [loading, setLoading] =useState(true); 
-    
+    const [loading, setLoading] = useState(true);
+
     const fetchUser = useCallback(async () => {
 
         try {
@@ -47,14 +47,14 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
 
-       
+
 
 
         const initialize = async () => {
 
             const token = getAccessToken();
 
-            if(token){
+            if (token) {
 
                 await fetchUser();
 
@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
 
     }, [fetchUser]);
 
-    
+
 
 
 
@@ -89,7 +89,11 @@ export function AuthProvider({ children }) {
 
         setIsAuthenticated(false);
 
+        setLoading(false);
+
     };
+
+    
 
 
 
@@ -116,7 +120,7 @@ export function AuthProvider({ children }) {
 
 
 
-export function useAuth(){
+export function useAuth() {
 
     return useContext(AuthContext);
 
