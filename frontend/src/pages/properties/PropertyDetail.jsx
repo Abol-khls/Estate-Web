@@ -8,6 +8,7 @@ import PropertyGallery from "../../components/properties/PropertyGallery";
 import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
 import { useSnackbar } from "../../context/SnackbarContext";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 import {
     Paper,
@@ -88,9 +89,10 @@ export default function PropertyDetail() {
 
             catch (error) {
 
-                const message =
-                    error.response?.data?.detail ||
-                    "خطا در دریافت اطلاعات ملک";
+                const message = getErrorMessage(
+                    error,
+                    "خطا در دریافت اطلاعات ملک"
+                );
 
                 showSnackbar(message, "error");
 
@@ -162,9 +164,10 @@ export default function PropertyDetail() {
 
         catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "خطا در افزودن به علاقه‌مندی‌ها";
+            const message = getErrorMessage(
+                error,
+                "خطا در افزودن به علاقه‌مندی‌ها"
+            );
 
             showSnackbar(message, "error");
 
@@ -193,9 +196,10 @@ export default function PropertyDetail() {
         }
         catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "حذف ملک انجام نشد.";
+            const message = getErrorMessage(
+                error,
+                "حذف ملک انجام نشد."
+            );
 
             showSnackbar(message, "error");
 

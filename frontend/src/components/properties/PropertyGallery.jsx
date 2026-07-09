@@ -4,8 +4,10 @@ import {
     Box,
     Grid,
     Card,
-    CardMedia
+    CardMedia,
+    Typography
 } from "@mui/material";
+import ImageNotSupportedOutlinedIcon from "@mui/icons-material/ImageNotSupportedOutlined";
 
 import { API_BASE_URL } from "../../config";
 
@@ -27,7 +29,35 @@ export default function PropertyGallery({ images, title }) {
     }, [images]);
 
     if (!images?.length) {
-        return null;
+
+        return (
+
+            <Box
+                sx={{
+                    py: 6,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 1.5,
+                    color: "text.secondary",
+                    border: "1px dashed",
+                    borderColor: "divider",
+                    borderRadius: 3,
+                }}
+            >
+
+                <ImageNotSupportedOutlinedIcon
+                    sx={{ fontSize: 36, opacity: 0.5 }}
+                />
+
+                <Typography variant="body2">
+                    تصویری برای این ملک ثبت نشده است.
+                </Typography>
+
+            </Box>
+
+        );
+
     }
 
 

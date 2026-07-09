@@ -20,6 +20,7 @@ import AppSelect from "../../components/common/AppSelect";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { useSnackbar } from "../../context/SnackbarContext";
+import { getErrorMessage } from "../../utils/errorMessage";
 import {
     PROPERTY_TYPES,
     TRANSACTION_TYPES
@@ -161,9 +162,10 @@ export default function PropertyForm() {
 
             catch (error) {
 
-                const message =
-                    error.response?.data?.detail ||
-                    "خطا در دریافت اطلاعات ملک";
+                const message = getErrorMessage(
+                    error,
+                    "خطا در دریافت اطلاعات ملک"
+                );
 
                 showSnackbar(message, "error");
 
@@ -334,9 +336,10 @@ export default function PropertyForm() {
 
         } catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "خطا در انتخاب تصویر کاور";
+            const message = getErrorMessage(
+                error,
+                "خطا در انتخاب تصویر کاور"
+            );
 
             showSnackbar(message, "error");
 
@@ -413,35 +416,12 @@ export default function PropertyForm() {
 
         } catch (error) {
 
-            const data = error.response?.data;
+            const message = getErrorMessage(
+                error,
+                "ثبت اطلاعات ملک با مشکل مواجه شد. لطفاً فیلدها را بررسی کنید."
+            );
 
-            if (typeof data === "string") {
-                showSnackbar(data, "error");
-                return;
-            }
-
-            if (data?.detail) {
-                showSnackbar(data.detail, "error");
-                return;
-            }
-
-            if (typeof data === "object") {
-
-                const firstError = Object.values(data)[0];
-
-                if (Array.isArray(firstError)) {
-                    showSnackbar(firstError[0], "error");
-                    return;
-                }
-
-                if (typeof firstError === "string") {
-                    showSnackbar(firstError, "error");
-                    return;
-                }
-
-            }
-
-            showSnackbar("خطایی رخ داده است.", "error");
+            showSnackbar(message, "error");
 
         }
 

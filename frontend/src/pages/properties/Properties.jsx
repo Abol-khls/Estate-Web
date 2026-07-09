@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 import { Box, Pagination } from "@mui/material";
 
@@ -8,7 +8,9 @@ import PropertyTable from "../../components/properties/PropertyTable";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
+import Loading from "../../components/common/Loading";
 import { useSnackbar } from "../../context/SnackbarContext";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -44,14 +46,21 @@ export default function Properties() {
 
     const [ordering, setOrdering] = useState("all");
 
+    const [loading, setLoading] = useState(true);
 
 
-    async function loadProperties() {
+    const isFirstRun = useRef(true);
+
+
+
+    async function loadProperties(pageToLoad = page) {
+
+        setLoading(true);
 
         try {
 
             const params = {
-                page,
+                page: pageToLoad,
                 search,
             };
 
@@ -91,11 +100,27 @@ export default function Properties() {
         }
         catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "خطا در دریافت لیست املاک";
+            if (error.response?.status === 404 && pageToLoad !== 1) {
+
+                setPage(1);
+                return;
+
+            }
+
+            const message = getErrorMessage(
+                error,
+                "خطا در دریافت لیست املاک"
+            );
 
             showSnackbar(message, "error");
+
+            setProperties([]);
+            setCount(0);
+
+        }
+        finally {
+
+            setLoading(false);
 
         }
 
@@ -106,8 +131,21 @@ export default function Properties() {
 
     useEffect(() => {
 
-        loadProperties();
+        if (isFirstRun.current) {
 
+            isFirstRun.current = false;
+            loadProperties(1);
+            return;
+
+        }
+
+        if (page !== 1) {
+            setPage(1);
+        } else {
+            loadProperties(1);
+        }
+
+    
     }, [
 
         search,
@@ -118,11 +156,18 @@ export default function Properties() {
 
         favoriteOnly,
 
-        page,
-
         ordering
 
     ]);
+
+
+    useEffect(() => {
+
+        if (isFirstRun.current) return;
+
+        loadProperties(page);
+
+    }, [page]);
 
     function handleDeleteClick(property) {
 
@@ -154,9 +199,10 @@ export default function Properties() {
 
         catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "حذف ملک انجام نشد.";
+            const message = getErrorMessage(
+                error,
+                "حذف ملک انجام نشد."
+            );
 
             showSnackbar(message, "error");
 
@@ -189,9 +235,10 @@ export default function Properties() {
 
         catch (error) {
 
-            const message =
-                error.response?.data?.detail ||
-                "تغییر وضعیت علاقه‌مندی انجام نشد.";
+            const message = getErrorMessage(
+                error,
+                "تغییر وضعیت علاقه‌مندی انجام نشد."
+            );
 
             showSnackbar(message, "error");
 
@@ -245,27 +292,35 @@ export default function Properties() {
 
             />
 
-            <PropertyTable
+            {loading ? (
 
-                properties={properties}
+                <Loading />
 
-                onView={(property) =>
+            ) : (
 
-                    navigate(`/properties/${property.id}`)
+                <PropertyTable
 
-                }
+                    properties={properties}
 
-                onEdit={(property) =>
+                    onView={(property) =>
 
-                    navigate(`/properties/${property.id}/edit`)
+                        navigate(`/properties/${property.id}`)
 
-                }
+                    }
 
-                onDelete={handleDeleteClick}
+                    onEdit={(property) =>
 
-                onToggleFavorite={toggleFavorite}
+                        navigate(`/properties/${property.id}/edit`)
 
-            />
+                    }
+
+                    onDelete={handleDeleteClick}
+
+                    onToggleFavorite={toggleFavorite}
+
+                />
+
+            )}
 
             {count > pageSize && (
 
@@ -281,6 +336,7 @@ export default function Properties() {
                         count={Math.ceil(count / pageSize)}
                         color="primary"
                         shape="rounded"
+                        disabled={loading}
                         onChange={(event, value) => {
                             setPage(value);
                         }}

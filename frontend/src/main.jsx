@@ -4,30 +4,37 @@ import "./index.css"
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider, CssBaseline } from "@mui/material";
+import { CacheProvider } from "@emotion/react";
 import theme from "./theme.js";
+import rtlCache from "./rtlCache.js";
 import { SnackbarProvider } from "./context/SnackbarContext";
 
 createRoot(
     document.getElementById("root")
+
 )
     .render(
 
         <StrictMode>
 
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
+            <CacheProvider value={rtlCache}>
 
-                <SnackbarProvider>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
 
-                    <AuthProvider>
+                    <SnackbarProvider>
 
-                        <App />
+                        <AuthProvider>
 
-                    </AuthProvider>
+                            <App />
 
-                </SnackbarProvider>
+                        </AuthProvider>
 
-            </ThemeProvider>
+                    </SnackbarProvider>
+
+                </ThemeProvider>
+
+            </CacheProvider>
 
         </StrictMode>
 

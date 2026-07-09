@@ -1,129 +1,150 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { Box, Typography, Button } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import PageContainer from "../../components/common/PageContainer";
+import Loading from "../../components/common/Loading";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 
 export default function Dashboard() {
 
-
     const [data, setData] = useState(null);
 
+    const [loading, setLoading] = useState(true);
 
+    const [error, setError] = useState(false);
 
-    useEffect(() => {
+    const { showSnackbar } = useSnackbar();
 
+    async function load() {
 
-        async function load() {
+        setLoading(true);
+        setError(false);
 
+        try {
 
-            try {
+            const res = await api.get("dashboard/");
 
-                const res = await api.get(
-                    "dashboard/"
-                );
+            setData(res.data);
 
+        }
+        catch (err) {
 
-                setData(res.data);
+            console.error(err);
 
+            setError(true);
 
-            }
+            const message = getErrorMessage(
+                err,
+                "خطا در دریافت اطلاعات داشبورد"
+            );
 
-            catch (err) {
+            showSnackbar(message, "error");
 
-                console.log(err);
+        }
+        finally {
 
-            }
-
+            setLoading(false);
 
         }
 
+    }
+
+    useEffect(() => {
 
         load();
 
-
     }, []);
 
+    if (loading) {
 
-
-    if (!data) {
-
-        return <div>Loading...</div>
+        return (
+            <PageContainer>
+                <Loading />
+            </PageContainer>
+        );
 
     }
 
+    if (error || !data) {
 
+        return (
+            <PageContainer>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 2,
+                        py: 8,
+                    }}
+                >
+                    <Typography color="text.secondary">
+                        دریافت اطلاعات داشبورد با مشکل مواجه شد.
+                    </Typography>
+
+                    <Button
+                        variant="outlined"
+                        startIcon={<RefreshIcon />}
+                        onClick={load}
+                    >
+                        تلاش مجدد
+                    </Button>
+                </Box>
+            </PageContainer>
+        );
+
+    }
 
     return (
-
-        <div>
-
-
-            <h1>
+        <PageContainer>
+            <Typography variant="h4" sx={{ mb: 3 }}>
                 داشبورد
-            </h1>
+            </Typography>
 
-
-
-            <div className="cards">
-
-
-                <Card
-                    title="املاک"
-                    value={data.properties}
-                />
-
-
-                <Card
-                    title="مشتریان"
-                    value={data.customers}
-                />
-
-
-                <Card
-                    title="بازدیدها"
-                    value={data.visits}
-                />
-
-
-                <Card
-                    title="قراردادها"
-                    value={data.contracts}
-                />
-
-
-            </div>
-
-
-
-        </div>
-
-
-    )
-
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(4, 1fr)",
+                    },
+                    gap: 2,
+                }}
+            >
+                <Card title="املاک" value={data.properties} />
+                <Card title="مشتریان" value={data.customers} />
+                <Card title="بازدیدها" value={data.visits} />
+                <Card title="قراردادها" value={data.contracts} />
+            </Box>
+        </PageContainer>
+    );
 }
-
-
 
 function Card({ title, value }) {
 
-
     return (
-
-        <div className="card">
-
-
-            <h3>
+        <Box
+            sx={{
+                p: 3,
+                borderRadius: 4,
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
+                textAlign: "center",
+            }}
+        >
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
                 {title}
-            </h3>
+            </Typography>
 
-
-            <h1>
-                {value}
-            </h1>
-
-
-        </div>
-
-    )
-
-
+            <Typography variant="h4" fontWeight={800}>
+                {value ?? 0}
+            </Typography>
+        </Box>
+    );
 }
