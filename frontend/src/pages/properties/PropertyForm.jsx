@@ -612,7 +612,15 @@ export default function PropertyForm() {
 
                     <Grid size={{ xs: 12 }}>
 
-                        <Stack direction="row" spacing={3} flexWrap="wrap">
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: 3,
+                                flexWrap: "wrap",
+                            }}
+                        >
 
                             <AppCheckbox
                                 label="پارکینگ"
@@ -635,7 +643,7 @@ export default function PropertyForm() {
                                 onChange={handleCheckbox}
                             />
 
-                        </Stack>
+                        </Box>
 
                     </Grid>
 

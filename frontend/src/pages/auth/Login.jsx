@@ -51,13 +51,13 @@ export default function Login() {
 
 
             saveTokens(
-    response.data.access,
-    response.data.refresh
-);
+                response.data.access,
+                response.data.refresh
+            );
 
-await login();
+            await login();
 
-navigate("/dashboard");
+            navigate("/dashboard");
 
 
         }
@@ -103,12 +103,15 @@ navigate("/dashboard");
                 }}
             >
 
-                <Stack
-                    direction="row"
-                    spacing={1.2}
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{ mb: 3 }}
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 1.2,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 3,
+                    }}
                 >
 
                     <Box
@@ -121,18 +124,21 @@ navigate("/dashboard");
                     />
 
                     <Typography
+
                         variant="h6"
                         color="primary.main"
                     >
                         Estate CRM
                     </Typography>
 
-                </Stack>
+                </Box>
 
                 <Typography
                     variant="h5"
-                    textAlign="center"
-                    sx={{ mb: 3 }}
+                    sx={{
+                        textAlign: "center",
+                        mb: 3,
+                    }}
                 >
                     ورود به پنل
                 </Typography>

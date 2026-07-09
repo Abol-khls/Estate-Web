@@ -47,11 +47,15 @@ export default function Sidebar() {
 
             <Box>
 
-                <Stack
-                    direction="row"
-                    spacing={1.2}
-                    alignItems="center"
-                    sx={{ mb: 5, px: 0.5 }}
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1.2,
+                        mb: 5,
+                        px: 0.5,
+                    }}
                 >
 
                     <Box
@@ -67,7 +71,7 @@ export default function Sidebar() {
                         Estate CRM
                     </Typography>
 
-                </Stack>
+                </Box>
 
                 <Stack spacing={0.5}>
 

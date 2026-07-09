@@ -28,11 +28,15 @@ export default function Header() {
                 داشبورد
             </Typography>
 
-            <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="center"
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 1.5,
+                }}
             >
+
 
                 <Typography variant="body2" color="text.secondary">
                     {user?.username}
@@ -49,7 +53,7 @@ export default function Header() {
                     {initial}
                 </Avatar>
 
-            </Stack>
+            </Box>
 
         </Box>
 

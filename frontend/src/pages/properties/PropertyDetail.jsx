@@ -19,6 +19,7 @@ import {
     Stack,
 } from "@mui/material";
 
+
 import {
     getPropertyTypeLabel,
     getTransactionTypeLabel
@@ -230,7 +231,14 @@ export default function PropertyDetail() {
 
                     </Box>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 1,
+                            alignItems: "center",
+                        }}
+                    >
 
                         <Box
                             sx={{
@@ -274,7 +282,7 @@ export default function PropertyDetail() {
 
                         </IconButton>
 
-                    </Stack>
+                    </Box>
 
                 </Stack>
 
@@ -343,7 +351,14 @@ export default function PropertyDetail() {
 
                     <Grid size={{ xs: 12 }}>
 
-                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: 1,
+                                flexWrap: "wrap",
+                            }}
+                        >
 
                             <Chip
                                 icon={<LocalParkingIcon />}
@@ -366,7 +381,7 @@ export default function PropertyDetail() {
                                 variant={property.storage ? "filled" : "outlined"}
                             />
 
-                        </Stack>
+                        </Box>
 
                     </Grid>
 
