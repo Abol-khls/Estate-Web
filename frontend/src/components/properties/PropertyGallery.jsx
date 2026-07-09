@@ -29,17 +29,21 @@ export default function PropertyGallery({ images, title }) {
     if (!images?.length) {
         return null;
     }
-    
+
 
     return (
 
         <Box>
 
             <Card
+                elevation={0}
                 sx={{
-                    mb: 3,
+                    mb: 2,
                     borderRadius: 3,
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    boxShadow: "0 4px 16px rgba(16,24,40,0.08)",
                 }}
             >
 
@@ -52,7 +56,7 @@ export default function PropertyGallery({ images, title }) {
                     alt={title}
 
                     sx={{
-                        height: 520,
+                        height: 480,
                         objectFit: "cover"
                     }}
 
@@ -60,7 +64,7 @@ export default function PropertyGallery({ images, title }) {
 
             </Card>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={1.5}>
 
                 {images.map(image => (
 
@@ -71,6 +75,8 @@ export default function PropertyGallery({ images, title }) {
 
                         <Card
 
+                            elevation={0}
+
                             onClick={() =>
                                 setSelectedImage(image)
                             }
@@ -79,15 +85,26 @@ export default function PropertyGallery({ images, title }) {
 
                                 cursor: "pointer",
 
-                                border:
+                                borderRadius: 2,
+
+                                border: "3px solid",
+
+                                borderColor:
 
                                     selectedImage?.id === image.id
 
-                                        ? "3px solid #1976d2"
+                                        ? "secondary.main"
 
-                                        : "2px solid transparent",
+                                        : "transparent",
 
-                                transition: ".2s"
+                                opacity:
+                                    selectedImage?.id === image.id
+                                        ? 1
+                                        : 0.75,
+
+                                transition: ".2s",
+
+                                "&:hover": { opacity: 1 },
 
                             }}
 
@@ -100,7 +117,7 @@ export default function PropertyGallery({ images, title }) {
                                 image={`${API_BASE_URL}${image.image}`}
 
                                 sx={{
-                                    height: 100,
+                                    height: 90,
                                     objectFit: "cover"
                                 }}
 

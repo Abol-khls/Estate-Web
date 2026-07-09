@@ -4,8 +4,11 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    Button
+    Button,
+    Box
 } from "@mui/material";
+
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 export default function DeleteDialog({
 
@@ -26,9 +29,30 @@ export default function DeleteDialog({
         <Dialog
             open={open}
             onClose={onClose}
+            PaperProps={{
+                sx: {
+                    borderRadius: 4,
+                    p: 1,
+                    minWidth: 340,
+                },
+            }}
         >
 
-            <DialogTitle>
+            <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+
+                <Box
+                    sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        bgcolor: "rgba(214, 69, 69, 0.1)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <WarningAmberRoundedIcon color="error" />
+                </Box>
 
                 {title}
 
@@ -44,10 +68,11 @@ export default function DeleteDialog({
 
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions sx={{ px: 3, pb: 2 }}>
 
                 <Button
                     onClick={onClose}
+                    color="inherit"
                 >
 
                     انصراف
