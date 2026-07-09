@@ -22,6 +22,10 @@ export default function PropertyRow({
 
     onToggleFavorite,
 
+    gridColumns = "130px 200px 140px 1fr 100px 170px",
+
+    striped = false,
+
 }) {
 
     const coverImage =
@@ -36,7 +40,7 @@ export default function PropertyRow({
 
                 display: "grid",
 
-                gridTemplateColumns: "130px 200px 140px 1fr 100px 170px",
+                gridTemplateColumns: gridColumns,
 
                 columnGap: 2,
 
@@ -46,15 +50,21 @@ export default function PropertyRow({
 
                 py: 2.5,
 
+                bgcolor: striped ? "rgba(31, 59, 87, 0.02)" : "transparent",
+
                 borderBottom: "1px solid",
 
                 borderColor: "divider",
+
+                borderInlineStart: "3px solid transparent",
 
                 transition: ".2s",
 
                 "&:hover": {
 
-                    bgcolor: "action.hover",
+                    bgcolor: "rgba(31, 59, 87, 0.05)",
+
+                    borderInlineStartColor: "secondary.main",
 
                 }
 
@@ -89,6 +99,8 @@ export default function PropertyRow({
                                     objectFit: "cover",
 
                                     borderRadius: 2,
+
+                                    boxShadow: "0 1px 2px rgba(16,24,40,0.12)",
 
                                 }}
 
@@ -172,23 +184,37 @@ export default function PropertyRow({
                 sx={{ textAlign: "center" }}
             >
 
-                <Typography
-                    fontWeight={700}
-                    fontSize={16}
+                <Box
+                    sx={{
+                        display: "inline-flex",
+                        flexDirection: "column",
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: 2,
+                        bgcolor: "rgba(200, 155, 60, 0.12)",
+                    }}
                 >
 
-                    {Number(property.price).toLocaleString("fa-IR")}
+                    <Typography
+                        fontWeight={700}
+                        fontSize={15}
+                        sx={{ color: "#8A6A1F" }}
+                    >
 
-                </Typography>
+                        {Number(property.price).toLocaleString("fa-IR")}
 
-                <Typography
-                    variant="caption"
-                    color="text.secondary"
-                >
+                    </Typography>
 
-                    تومان
+                    <Typography
+                        variant="caption"
+                        sx={{ color: "#8A6A1F", opacity: 0.8 }}
+                    >
 
-                </Typography>
+                        تومان
+
+                    </Typography>
+
+                </Box>
 
             </Box>
 
