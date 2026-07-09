@@ -1,5 +1,13 @@
 import axios from "axios";
 
+
+import {
+    getAccessToken,
+    getRefreshToken,
+    saveTokens,
+    clearTokens,
+} from "./tokenService";
+
 const api = axios.create({
     baseURL: "http://127.0.0.1:8000/api/",
 });
@@ -8,7 +16,7 @@ api.interceptors.request.use(
 
     (config) => {
 
-        const token = localStorage.getItem("access");
+        const token = getAccessToken();
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -39,7 +47,7 @@ api.interceptors.response.use(
 
             try {
 
-                const refresh = localStorage.getItem("refresh");
+                const refresh = getRefreshToken();
 
                 const response = await axios.post(
                     "http://127.0.0.1:8000/api/token/refresh/",
@@ -48,9 +56,9 @@ api.interceptors.response.use(
                     }
                 );
 
-                localStorage.setItem(
-                    "access",
-                    response.data.access
+                saveTokens(
+                    response.data.access,
+                    refresh
                 );
 
                 originalRequest.headers.Authorization =
@@ -60,8 +68,7 @@ api.interceptors.response.use(
 
             } catch {
 
-                localStorage.removeItem("access");
-                localStorage.removeItem("refresh");
+                clearTokens();
 
                 window.location.href = "/";
 
