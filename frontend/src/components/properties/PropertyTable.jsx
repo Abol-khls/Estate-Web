@@ -1,13 +1,4 @@
-import {
-    Paper,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    TableContainer
-} from "@mui/material";
-
+import { Paper, Box, Typography } from "@mui/material";
 import PropertyRow from "./PropertyRow";
 
 export default function PropertyTable({
@@ -30,125 +21,98 @@ export default function PropertyTable({
             elevation={2}
             sx={{
                 borderRadius: 3,
-                overflow: "hidden"
+                overflow: "hidden",
             }}
         >
 
-            <TableContainer>
+            <Box
 
-                <Table>
+                sx={{
 
-                    <TableHead>
+                    display: "grid",
 
-                        <TableRow
-                            sx={{
-                                bgcolor: "grey.100"
-                            }}
-                        >
+                    gridTemplateColumns: "130px 200px 140px 1fr 100px 170px",
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                تصویر
-                            </TableCell>
+                    columnGap: 2,
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                عنوان
-                            </TableCell>
+                    alignItems: "center",
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                قیمت
-                            </TableCell>
+                    px: 3,
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                آدرس
-                            </TableCell>
+                    py: 2.5,
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                علاقه‌مندی
-                            </TableCell>
+                    bgcolor: "grey.100",
 
-                            <TableCell
-                                sx={{
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    py: 2,
-                                }}
-                            >
-                                عملیات
-                            </TableCell>
+                    borderBottom: "1px solid",
 
-                        </TableRow>
+                    borderColor: "divider",
 
-                    </TableHead>
+                }}
 
-                    <TableBody>
+            >
 
-                        {
+                <Typography
+                    align="center"
+                    fontWeight={700}
+                >
+                    تصویر
+                </Typography>
 
-                            properties.map(property => (
+                <Typography
+                    align="center"
+                    fontWeight={700}
+                >
+                    عنوان
+                </Typography>
 
-                                <PropertyRow
+                <Typography
+                    align="center"
+                    fontWeight={700}
+                >
+                    قیمت
+                </Typography>
 
-                                    key={property.id}
+                <Typography fontWeight={700}>
+                    آدرس
+                </Typography>
 
-                                    property={property}
+                <Typography
+                    align="center"
+                    fontWeight={700}
+                >
+                    علاقه‌مندی
+                </Typography>
 
-                                    onView={onView}
+                <Typography
+                    align="center"
+                    fontWeight={700}
+                >
+                    عملیات
+                </Typography>
 
-                                    onEdit={onEdit}
+            </Box>
 
-                                    onDelete={onDelete}
+            {properties.map(property => (
 
-                                    onToggleFavorite={onToggleFavorite}
+                <PropertyRow
 
-                                />
+                    key={property.id}
 
-                            ))
+                    property={property}
 
-                        }
+                    onView={onView}
 
-                    </TableBody>
+                    onEdit={onEdit}
 
-                </Table>
+                    onDelete={onDelete}
 
-            </TableContainer>
+                    onToggleFavorite={onToggleFavorite}
+
+                />
+
+            ))}
 
         </Paper>
-
-
-
-
-
-
 
     );
 

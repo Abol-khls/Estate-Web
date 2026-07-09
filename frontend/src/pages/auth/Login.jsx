@@ -2,23 +2,32 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import {
+    Box,
+    Paper,
+    Typography,
+    TextField,
+    Button,
+    Alert,
+    Stack,
+} from "@mui/material";
 
-export default function Login(){
+export default function Login() {
 
 
     const navigate = useNavigate();
 
 
-    const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
-    const [error,setError] = useState("");
+    const [error, setError] = useState("");
 
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
 
-    async function handleSubmit(e){
+    async function handleSubmit(e) {
 
         e.preventDefault();
 
@@ -54,7 +63,7 @@ export default function Login(){
 
 
         }
-        catch(err){
+        catch (err) {
 
             setError(
                 "نام کاربری یا رمز عبور اشتباه است"
@@ -71,77 +80,135 @@ export default function Login(){
 
     return (
 
-        <div className="login-page">
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "primary.dark",
+                backgroundImage:
+                    "radial-gradient(circle at 20% 20%, rgba(200,155,60,0.15), transparent 40%)," +
+                    "radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06), transparent 40%)",
+                p: 2,
+            }}
+        >
 
-
-            <form
-                className="login-box"
+            <Paper
+                component="form"
                 onSubmit={handleSubmit}
+                sx={{
+                    width: 360,
+                    p: 4,
+                    borderRadius: 4,
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+                }}
             >
 
+                <Stack
+                    direction="row"
+                    spacing={1.2}
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ mb: 3 }}
+                >
 
-                <h1>
+                    <Box
+                        sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: "50%",
+                            bgcolor: "secondary.main",
+                        }}
+                    />
+
+                    <Typography
+                        variant="h6"
+                        color="primary.main"
+                    >
+                        Estate CRM
+                    </Typography>
+
+                </Stack>
+
+                <Typography
+                    variant="h5"
+                    textAlign="center"
+                    sx={{ mb: 3 }}
+                >
                     ورود به پنل
-                </h1>
-
-
+                </Typography>
 
                 {error && (
 
-                    <p className="error">
+                    <Alert
+                        severity="error"
+                        sx={{ mb: 2, borderRadius: 2 }}
+                    >
                         {error}
-                    </p>
+                    </Alert>
 
                 )}
 
+                <Stack spacing={2}>
 
+                    <TextField
 
-                <input
+                        fullWidth
 
-                    placeholder="نام کاربری"
+                        size="small"
 
-                    value={username}
+                        label="نام کاربری"
 
-                    onChange={
-                        e=>setUsername(e.target.value)
-                    }
+                        value={username}
 
-                />
+                        onChange={e => setUsername(e.target.value)}
 
+                    />
 
+                    <TextField
 
-                <input
+                        fullWidth
 
-                    type="password"
+                        size="small"
 
-                    placeholder="رمز عبور"
+                        type="password"
 
-                    value={password}
+                        label="رمز عبور"
 
-                    onChange={
-                        e=>setPassword(e.target.value)
-                    }
+                        value={password}
 
-                />
+                        onChange={e => setPassword(e.target.value)}
 
+                    />
 
+                    <Button
 
-                <button>
+                        type="submit"
 
-                    {
-                        loading
-                        ? "در حال ورود..."
-                        : "ورود"
-                    }
+                        variant="contained"
 
-                </button>
+                        size="large"
 
+                        fullWidth
 
+                        disabled={loading}
 
-            </form>
+                    >
 
+                        {
+                            loading
+                                ? "در حال ورود..."
+                                : "ورود"
+                        }
 
-        </div>
+                    </Button>
+
+                </Stack>
+
+            </Paper>
+
+        </Box>
 
     );
 

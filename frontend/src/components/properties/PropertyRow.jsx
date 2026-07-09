@@ -1,18 +1,13 @@
 import {
-
-    TableRow,
-    TableCell,
+    Box,
+    Typography,
     IconButton,
-    Stack
-
 } from "@mui/material";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
-
 import PropertyActions from "./PropertyActions";
-
 import { API_BASE_URL } from "../../config";
 
 export default function PropertyRow({
@@ -25,7 +20,7 @@ export default function PropertyRow({
 
     onDelete,
 
-    onToggleFavorite
+    onToggleFavorite,
 
 }) {
 
@@ -35,110 +30,190 @@ export default function PropertyRow({
 
     return (
 
-        <TableRow
-            hover
+        <Box
+
             sx={{
-                transition: "all .2s",
+
+                display: "grid",
+
+                gridTemplateColumns: "130px 200px 140px 1fr 100px 170px",
+
+                columnGap: 2,
+
+                alignItems: "center",
+
+                px: 3,
+
+                py: 2.5,
+
+                borderBottom: "1px solid",
+
+                borderColor: "divider",
+
+                transition: ".2s",
+
                 "&:hover": {
+
                     bgcolor: "action.hover",
-                },
-            }}
-        >
-
-            <TableCell
-                sx={{
-                    py: 2,
-                    verticalAlign: "middle",
-                }}
-                width={140}>
-
-                {
-
-                    coverImage ? (
-
-                        <img
-
-                            src={`${API_BASE_URL}${coverImage.image}`}
-
-                            alt={property.title}
-
-                            style={{
-
-                                width: 120,
-
-                                height: 80,
-
-                                objectFit: "cover",
-
-                                borderRadius: 8
-
-                            }}
-
-                        />
-
-                    ) : (
-
-                        <div
-                            style={{
-                                width: 120,
-                                height: 80,
-                                borderRadius: 8,
-                                background: "#f3f4f6",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "#999",
-                                fontSize: 12,
-                                border: "1px solid #ddd"
-                            }}
-                        >
-                            بدون تصویر
-                        </div>
-
-                    )
 
                 }
 
-            </TableCell>
+            }}
 
-            <TableCell
-                sx={{
-                    py: 2,
-                    verticalAlign: "middle",
-                }}
+        >
+
+            <Box
+                sx={{ display: "flex", justifyContent: "center" }}
             >
 
-                {property.title}
+                {
 
-            </TableCell>
+                    coverImage ?
 
-            <TableCell
-                sx={{
-                    py: 2,
-                    verticalAlign: "middle",
-                }}
+                        (
+
+                            <Box
+
+                                component="img"
+
+                                src={`${API_BASE_URL}${coverImage.image}`}
+
+                                alt={property.title}
+
+                                sx={{
+
+                                    width: 110,
+
+                                    height: 72,
+
+                                    objectFit: "cover",
+
+                                    borderRadius: 2,
+
+                                }}
+
+                            />
+
+                        )
+
+                        :
+
+                        (
+
+                            <Box
+
+                                sx={{
+
+                                    width: 110,
+
+                                    height: 72,
+
+                                    bgcolor: "grey.100",
+
+                                    borderRadius: 2,
+
+                                    display: "flex",
+
+                                    justifyContent: "center",
+
+                                    alignItems: "center",
+
+                                    color: "text.secondary",
+
+                                    fontSize: 12,
+
+                                }}
+
+                            >
+
+                                بدون تصویر
+
+                            </Box>
+
+                        )
+
+                }
+
+            </Box>
+
+            <Box sx={{ textAlign: "center" }}>
+
+                <Typography
+
+                    fontWeight={700}
+
+                    fontSize={16}
+
+                    noWrap
+
+                >
+
+                    {property.title}
+
+                </Typography>
+
+                <Typography
+
+                    variant="body2"
+
+                    color="text.secondary"
+
+                    sx={{ mt: 0.3 }}
+
+                >
+
+                    کد ملک: <bdi>{property.code}</bdi>
+
+                </Typography>
+
+            </Box>
+
+            <Box
+                sx={{ textAlign: "center" }}
             >
 
-                {property.price}
+                <Typography
+                    fontWeight={700}
+                    fontSize={16}
+                >
 
-            </TableCell>
+                    {Number(property.price).toLocaleString("fa-IR")}
 
-            <TableCell
+                </Typography>
+
+                <Typography
+                    variant="caption"
+                    color="text.secondary"
+                >
+
+                    تومان
+
+                </Typography>
+
+            </Box>
+
+            <Typography
+
+                color="text.primary"
+
                 sx={{
-                    py: 2,
-                    verticalAlign: "middle",
+
+                    whiteSpace: "normal",
+
+                    lineHeight: 1.7,
+
+                    pr: 1,
+
                 }}
+
             >
 
                 {property.address}
 
-            </TableCell>
+            </Typography>
 
-            <TableCell
-                sx={{
-                    py: 2,
-                    verticalAlign: "middle",
-                }}
+            <Box
+                sx={{ display: "flex", justifyContent: "center" }}
             >
 
                 <IconButton
@@ -151,9 +226,7 @@ export default function PropertyRow({
 
                     {
 
-                        property.is_favorite
-
-                            ?
+                        property.is_favorite ?
 
                             <FavoriteIcon />
 
@@ -165,40 +238,27 @@ export default function PropertyRow({
 
                 </IconButton>
 
-            </TableCell>
-            <TableCell
-                sx={{
-                    py: 2,
-                }}
+            </Box>
+
+            <Box
+                sx={{ display: "flex", justifyContent: "center" }}
             >
 
-                <Stack direction="row" spacing={1}>
+                <PropertyActions
 
-                    <PropertyActions
+                    property={property}
 
-                        property={property}
+                    onView={onView}
 
-                        onView={onView}
+                    onEdit={onEdit}
 
-                        onEdit={onEdit}
+                    onDelete={onDelete}
 
-                        onDelete={onDelete}
+                />
 
-                    />
+            </Box>
 
-                </Stack>
-
-            </TableCell>
-
-
-
-
-
-
-
-
-
-        </TableRow>
+        </Box>
 
     );
 

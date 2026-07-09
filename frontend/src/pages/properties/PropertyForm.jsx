@@ -4,11 +4,11 @@ import {
     Typography,
     Stack,
     Box,
-    Button,
     IconButton,
     Card,
     CardMedia,
-    Chip
+    Paper,
+    Divider,
 } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
@@ -27,8 +27,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-
-
+import SaveIcon from "@mui/icons-material/Save";
 
 import VideoUploader from "../../components/properties/VideoUploader";
 
@@ -38,6 +37,38 @@ import { useParams } from "react-router-dom";
 
 import { MenuItem } from "@mui/material";
 
+
+function FormSection({ title, children }) {
+
+    return (
+
+        <Paper
+            sx={{
+                p: { xs: 2.5, md: 3 },
+                borderRadius: 4,
+                border: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 1px 3px rgba(16,24,40,0.06)",
+                mb: 3,
+            }}
+        >
+
+            <Typography
+                variant="subtitle1"
+                sx={{ mb: 2, color: "primary.main" }}
+            >
+                {title}
+            </Typography>
+
+            <Grid container spacing={2}>
+                {children}
+            </Grid>
+
+        </Paper>
+
+    );
+
+}
 
 
 export default function PropertyForm() {
@@ -178,38 +209,6 @@ export default function PropertyForm() {
         }));
 
     }
-    function handleImages(e) {
-
-        setNewImages(
-            [...e.target.files]
-        );
-        setErrors(prev => ({
-            ...prev,
-            images: ""
-        }));
-
-    }
-
-
-    function handleVideos(e) {
-
-        setVideos(
-            [...e.target.files]
-        );
-
-    }
-
-    function handleRemoveImage(image) {
-
-        if (!image.isNew && image.id) {
-            setDeletedImages(prev => [...prev, image.id]);
-
-            setExistingImages(prev =>
-                prev.filter(img => img.id !== image.id)
-            );
-        }
-
-    }
 
     function handleRemoveVideo(video, index, isNew) {
 
@@ -288,10 +287,6 @@ export default function PropertyForm() {
             newErrors.address = "آدرس الزامی است";
         }
 
-
-
-
-
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
@@ -341,19 +336,14 @@ export default function PropertyForm() {
     async function handleSubmit(e) {
 
         e.preventDefault();
-        console.log("Submit Clicked");
 
         if (!validateForm()) {
             return;
         }
-        console.log("1");
 
         try {
 
-
             const formData = new FormData();
-
-            console.log("2");
 
             Object.keys(form).forEach(key => {
 
@@ -369,26 +359,20 @@ export default function PropertyForm() {
                 formData.append(key, value);
 
             });
-            console.log("3");
 
             newImages.forEach(image => {
                 formData.append("images", image.file ?? image);
             });
-            console.log("4");
 
             newVideos.forEach(video => {
                 formData.append("videos", video.file);
             });
-            console.log("5");
 
-            for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
             formData.append(
                 "deleted_images",
                 JSON.stringify(deletedImages)
             );
-            console.log("6");
+
             formData.append(
 
                 "deleted_videos",
@@ -396,13 +380,8 @@ export default function PropertyForm() {
                 JSON.stringify(deletedVideos)
 
             );
-            console.log("7");
-
-            console.log("Before API Request");
-
 
             if (isEdit) {
-
 
                 await api.patch(
                     `properties/${id}/`,
@@ -447,64 +426,42 @@ export default function PropertyForm() {
 
             <form onSubmit={handleSubmit}>
 
-
-                <Grid container spacing={2}>
-
+                <FormSection title="اطلاعات پایه">
 
                     <Grid size={{ xs: 12, md: 6 }}>
                         <AppTextField
-
                             label="کد ملک"
-
                             name="code"
-
                             value={form.code}
-
                             onChange={handleChange}
                             error={!!errors.code}
                             helperText={errors.code}
-
                         />
                     </Grid>
-
-
 
                     <Grid size={{ xs: 12, md: 6 }}>
 
                         <AppTextField
-
                             label="عنوان"
-
                             name="title"
-
                             value={form.title}
-
                             onChange={handleChange}
                             error={!!errors.title}
                             helperText={errors.title}
-
                         />
 
                     </Grid>
-
-
 
                     <Grid size={{ xs: 12, md: 6 }}>
 
                         <AppSelect
-
                             label="نوع ملک"
-
                             name="property_type"
-
                             value={form.property_type}
-
                             onChange={handleChange}
                             error={!!errors.property_type}
                             helperText={errors.property_type}
-
                         >
-
 
                             <MenuItem value="">
                                 انتخاب کنید
@@ -521,30 +478,19 @@ export default function PropertyForm() {
 
                             ))}
 
-
                         </AppSelect>
-
 
                     </Grid>
 
-
-
-
                     <Grid size={{ xs: 12, md: 6 }}>
 
-
                         <AppSelect
-
                             label="نوع معامله"
-
                             name="transaction_type"
-
                             value={form.transaction_type}
-
                             onChange={handleChange}
                             error={!!errors.transaction_type}
                             helperText={errors.transaction_type}
-
                         >
 
                             <MenuItem value="">
@@ -562,62 +508,58 @@ export default function PropertyForm() {
 
                             ))}
 
-
                         </AppSelect>
-
 
                     </Grid>
 
+                </FormSection>
 
-
+                <FormSection title="قیمت و مشخصات">
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
                         <AppTextField
-
-                            label="قیمت"
-
+                            label="قیمت (تومان)"
                             name="price"
-
                             value={form.price}
-
                             onChange={handleNumberChange}
                             error={!!errors.price}
                             helperText={errors.price}
-                            type="text"
                             slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
+                                htmlInput: { inputMode: "numeric" }
                             }}
-
                         />
 
                     </Grid>
 
+                    <Grid size={{ xs: 12, md: 4 }}>
 
+                        <AppTextField
+                            label="متراژ"
+                            name="area"
+                            value={form.area}
+                            onChange={handleNumberChange}
+                            error={!!errors.area}
+                            helperText={errors.area}
+                            slotProps={{
+                                htmlInput: { inputMode: "numeric" }
+                            }}
+                        />
 
+                    </Grid>
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
                         <AppTextField
-
-                            label="متراژ"
-
-                            name="area"
-
-                            value={form.area}
-
+                            label="اتاق"
+                            name="rooms"
+                            value={form.rooms}
                             onChange={handleNumberChange}
-                            error={!!errors.area}
-                            helperText={errors.area}
-                            type="text"
+                            error={!!errors.rooms}
+                            helperText={errors.rooms}
                             slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
+                                htmlInput: { inputMode: "numeric" }
                             }}
-
                         />
 
                     </Grid>
@@ -627,272 +569,201 @@ export default function PropertyForm() {
                         <AppTextField
                             label="طبقه"
                             name="floor"
-                            type="number"
                             value={form.floor}
                             onChange={handleNumberChange}
-                            type="text"
                             slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
+                                htmlInput: { inputMode: "numeric" }
                             }}
                         />
 
                     </Grid>
-
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
                         <AppTextField
                             label="تعداد طبقات"
                             name="total_floors"
-                            type="number"
                             value={form.total_floors}
                             onChange={handleNumberChange}
-                            type="text"
                             slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
+                                htmlInput: { inputMode: "numeric" }
                             }}
                         />
 
                     </Grid>
-
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
                         <AppTextField
                             label="سال ساخت"
                             name="year_built"
-                            type="number"
                             value={form.year_built}
                             onChange={handleNumberChange}
-                            type="text"
                             slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
+                                htmlInput: { inputMode: "numeric" }
                             }}
                         />
 
                     </Grid>
 
+                </FormSection>
 
-
-                    <Grid size={{ xs: 12, md: 4 }}>
-
-                        <AppTextField
-
-                            label="اتاق"
-
-                            name="rooms"
-
-                            value={form.rooms}
-
-                            onChange={handleNumberChange}
-                            error={!!errors.rooms}
-                            helperText={errors.rooms}
-                            type="text"
-                            slotProps={{
-                                htmlInput: {
-                                    inputMode: "numeric"
-                                }
-                            }}
-
-                        />
-
-                    </Grid>
-
-
-
+                <FormSection title="امکانات">
 
                     <Grid size={{ xs: 12 }}>
 
-                        <AppTextField
+                        <Stack direction="row" spacing={3} flexWrap="wrap">
 
-                            label="آدرس"
+                            <AppCheckbox
+                                label="پارکینگ"
+                                name="parking"
+                                checked={form.parking}
+                                onChange={handleCheckbox}
+                            />
 
-                            name="address"
+                            <AppCheckbox
+                                label="آسانسور"
+                                name="elevator"
+                                checked={form.elevator}
+                                onChange={handleCheckbox}
+                            />
 
-                            multiline
-
-                            rows={3}
-
-                            value={form.address}
-
-                            onChange={handleChange}
-                            error={!!errors.address}
-                            helperText={errors.address}
-
-                        />
-
-                    </Grid>
-
-
-
-
-                    <Grid size={{ xs: 12 }}>
-
-                        <AppTextField
-
-                            label="توضیحات"
-
-                            name="description"
-
-                            multiline
-
-                            rows={4}
-
-                            value={form.description}
-
-                            onChange={handleChange}
-
-                        />
-
-                    </Grid>
-
-
-
-
-                    <Grid size={{ xs: 12 }}>
-
-
-                        <AppCheckbox
-
-                            label="پارکینگ"
-
-                            name="parking"
-
-                            checked={form.parking}
-
-                            onChange={handleCheckbox}
-
-                        />
-
-
-                        <AppCheckbox
-
-                            label="آسانسور"
-
-                            name="elevator"
-
-                            checked={form.elevator}
-
-                            onChange={handleCheckbox}
-
-                        />
-
-
-
-                        <AppCheckbox
-
-                            label="انباری"
-
-                            name="storage"
-
-                            checked={form.storage}
-
-                            onChange={handleCheckbox}
-
-                        />
-
-
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-
-                        <Typography variant="h6">
-
-                            تصاویر فعلی
-
-                        </Typography>
-
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }}>
-
-                        <Stack
-                            direction="row"
-                            spacing={2}
-                            sx={{
-                                flexWrap: "wrap"
-                            }}
-                        >
-
-                            {existingImages.map((image, index) => (
-
-                                <Card
-                                    key={image.id}
-                                    sx={{
-                                        width: 170,
-                                        position: "relative",
-                                        overflow: "hidden"
-                                    }}
-                                >
-
-                                    <IconButton
-                                        color={image.is_cover ? "warning" : "default"}
-                                        size="small"
-                                        onClick={() => handleSetCover(image.id)}
-                                        sx={{
-                                            position: "absolute",
-                                            top: 5,
-                                            left: 5,
-                                            bgcolor: "rgba(255,255,255,.9)",
-                                            zIndex: 2
-                                        }}
-                                    >
-                                        {
-                                            image.is_cover
-                                                ? <StarIcon />
-                                                : <StarBorderIcon />
-                                        }
-                                    </IconButton>
-
-                                    <IconButton
-                                        color="error"
-                                        size="small"
-                                        sx={{
-                                            position: "absolute",
-                                            top: 5,
-                                            right: 5,
-                                            bgcolor: "white",
-                                            zIndex: 2
-                                        }}
-                                        onClick={() => handleRemoveExisting(image, index)}
-                                    >
-                                        <DeleteIcon
-                                         />
-                                    </IconButton>
-
-                                    <CardMedia
-                                        component="img"
-                                        image={`${API_BASE_URL}${image.image}`}
-                                        height="120"
-                                        sx={{
-                                            objectFit: "cover"
-                                        }}
-                                    />
-
-                                </Card>
-
-                            ))}
+                            <AppCheckbox
+                                label="انباری"
+                                name="storage"
+                                checked={form.storage}
+                                onChange={handleCheckbox}
+                            />
 
                         </Stack>
 
                     </Grid>
 
-                    <ImageUploader
-                        newImages={newImages}
-                        setNewImages={setNewImages}
-                    />
+                </FormSection>
 
+                <FormSection title="آدرس و توضیحات">
 
                     <Grid size={{ xs: 12 }}>
 
-                        <label>
-                            ویدیوهای ملک
-                        </label>
+                        <AppTextField
+                            label="آدرس"
+                            name="address"
+                            multiline
+                            rows={3}
+                            value={form.address}
+                            onChange={handleChange}
+                            error={!!errors.address}
+                            helperText={errors.address}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <AppTextField
+                            label="توضیحات"
+                            name="description"
+                            multiline
+                            rows={4}
+                            value={form.description}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+                </FormSection>
+
+                <FormSection title="تصاویر">
+
+                    {existingImages.length > 0 && (
+
+                        <Grid size={{ xs: 12 }}>
+
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                sx={{ flexWrap: "wrap", rowGap: 2 }}
+                            >
+
+                                {existingImages.map((image, index) => (
+
+                                    <Card
+                                        key={image.id}
+                                        sx={{
+                                            width: 160,
+                                            position: "relative",
+                                            overflow: "hidden",
+                                            borderRadius: 2,
+                                            boxShadow: "0 1px 3px rgba(16,24,40,0.15)",
+                                        }}
+                                    >
+
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleSetCover(image.id)}
+                                            sx={{
+                                                position: "absolute",
+                                                top: 5,
+                                                left: 5,
+                                                bgcolor: "rgba(255,255,255,.9)",
+                                                zIndex: 2,
+                                                color: image.is_cover ? "secondary.main" : "text.secondary",
+                                            }}
+                                        >
+                                            {
+                                                image.is_cover
+                                                    ? <StarIcon fontSize="small" />
+                                                    : <StarBorderIcon fontSize="small" />
+                                            }
+                                        </IconButton>
+
+                                        <IconButton
+                                            color="error"
+                                            size="small"
+                                            sx={{
+                                                position: "absolute",
+                                                top: 5,
+                                                right: 5,
+                                                bgcolor: "white",
+                                                zIndex: 2,
+                                                "&:hover": { bgcolor: "error.main", color: "#fff" },
+                                            }}
+                                            onClick={() => handleRemoveExisting(image, index)}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+
+                                        <CardMedia
+                                            component="img"
+                                            image={`${API_BASE_URL}${image.image}`}
+                                            height="110"
+                                            sx={{
+                                                objectFit: "cover"
+                                            }}
+                                        />
+
+                                    </Card>
+
+                                ))}
+
+                            </Stack>
+
+                            <Divider sx={{ my: 3 }} />
+
+                        </Grid>
+
+                    )}
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <ImageUploader
+                            newImages={newImages}
+                            setNewImages={setNewImages}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
 
                         <VideoUploader
 
@@ -908,33 +779,26 @@ export default function PropertyForm() {
 
                     </Grid>
 
+                </FormSection>
 
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 
+                    <AppButton
+                        type="submit"
+                        startIcon={<SaveIcon />}
+                    >
 
+                        {
+                            isEdit
+                                ? "ذخیره تغییرات"
+                                : "ثبت ملک"
+                        }
 
+                    </AppButton>
 
-                    <Grid size={{ xs: 12 }}>
+                </Box>
 
-                        <AppButton
-                            type="submit"
-                        >
-
-                            {
-                                isEdit
-                                    ? "ذخیره تغییرات"
-                                    : "ثبت ملک"
-                            }
-
-                        </AppButton>
-
-                    </Grid>
-
-
-
-                </Grid>
             </form>
-
-
 
         </PageContainer>
 

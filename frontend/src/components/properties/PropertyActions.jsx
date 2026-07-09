@@ -1,8 +1,20 @@
-import Button from "@mui/material/Button";
+import {
+    Box,
+    Tooltip,
+    IconButton,
+} from "@mui/material";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+
+const actionButtonSx = {
+
+    borderRadius: 2,
+
+    border: "1px solid",
+
+};
 
 export default function PropertyActions({
 
@@ -18,47 +30,59 @@ export default function PropertyActions({
 
     return (
 
-        <>
+        <Box
+            sx={{ display: "flex", justifyContent: "center", gap: 1.5 }}
+        >
 
-            <Button
+            <Tooltip title="مشاهده">
 
-                startIcon={<VisibilityIcon />}
+                <IconButton
+                    size="small"
+                    color="info"
+                    onClick={() => onView(property)}
+                    sx={{
+                        ...actionButtonSx,
+                        borderColor: "info.main",
+                    }}
+                >
+                    <VisibilityIcon fontSize="small" />
+                </IconButton>
 
-                onClick={() => onView(property)}
+            </Tooltip>
 
-            >
+            <Tooltip title="ویرایش">
 
-                مشاهده
+                <IconButton
+                    size="small"
+                    color="primary"
+                    onClick={() => onEdit(property)}
+                    sx={{
+                        ...actionButtonSx,
+                        borderColor: "primary.main",
+                    }}
+                >
+                    <EditIcon fontSize="small" />
+                </IconButton>
 
-            </Button>
+            </Tooltip>
 
-            <Button
+            <Tooltip title="حذف">
 
-                startIcon={<EditIcon />}
+                <IconButton
+                    size="small"
+                    color="error"
+                    onClick={() => onDelete(property)}
+                    sx={{
+                        ...actionButtonSx,
+                        borderColor: "error.main",
+                    }}
+                >
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
 
-                onClick={() => onEdit(property)}
+            </Tooltip>
 
-            >
-
-                ویرایش
-
-            </Button>
-
-            <Button
-
-                color="error"
-
-                startIcon={<DeleteIcon />}
-
-                onClick={() => onDelete(property)}
-
-            >
-
-                حذف
-
-            </Button>
-
-        </>
+        </Box>
 
     );
 

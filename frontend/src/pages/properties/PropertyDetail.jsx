@@ -5,18 +5,18 @@ import api from "../../services/api";
 
 import { API_BASE_URL } from "../../config";
 import PropertyGallery from "../../components/properties/PropertyGallery";
+import PageContainer from "../../components/common/PageContainer";
+import Loading from "../../components/common/Loading";
 
 import {
-    Container,
     Paper,
     Typography,
-    CircularProgress,
     Grid,
     Divider,
     Chip,
     Button,
-    Card,
-    CardMedia,
+    Box,
+    Stack,
 } from "@mui/material";
 
 import {
@@ -28,8 +28,36 @@ import {
 import IconButton from "@mui/material/IconButton";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import LocalParkingIcon from "@mui/icons-material/LocalParking";
+import ElevatorIcon from "@mui/icons-material/Elevator";
+import InventoryIcon from "@mui/icons-material/Inventory2";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+function InfoItem({ label, value }) {
+
+    return (
+
+        <Box>
+
+            <Typography
+                variant="caption"
+                color="text.secondary"
+            >
+                {label}
+            </Typography>
+
+            <Typography fontWeight={600}>
+                {value ?? "-"}
+            </Typography>
+
+        </Box>
+
+    );
+
+}
 
 export default function PropertyDetail() {
 
@@ -79,11 +107,27 @@ export default function PropertyDetail() {
 
         return (
 
-            <Container sx={{ mt: 4 }}>
+            <PageContainer>
 
-                <CircularProgress />
+                <Loading />
 
-            </Container>
+            </PageContainer>
+
+        );
+
+    }
+
+    if (!property) {
+
+        return (
+
+            <PageContainer>
+
+                <Typography color="text.secondary">
+                    این ملک پیدا نشد.
+                </Typography>
+
+            </PageContainer>
 
         );
 
@@ -131,286 +175,207 @@ export default function PropertyDetail() {
     }
 
 
-    const coverImage =
-        property?.images?.find(image => image.is_cover)
-        || property?.images?.[0];
-
-
-
     return (
 
-        <Container
-            maxWidth="lg"
-            sx={{ mt: 4, mb: 4 }}
-        >
+        <PageContainer>
 
-            <Paper
-                sx={{ p: 4 }}
+            <Button
+
+                startIcon={<ArrowBackIcon />}
+
+                onClick={() => navigate("/properties")}
+
+                color="inherit"
+
+                sx={{ mb: 2 }}
+
             >
 
-                <div
+                بازگشت به لیست املاک
 
-                    style={{
+            </Button>
 
-                        display: "flex",
+            <Paper
+                sx={{
+                    p: { xs: 2.5, md: 4 },
+                    borderRadius: 4,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    boxShadow: "0 1px 3px rgba(16,24,40,0.06)",
+                }}
+            >
 
+                <Stack
+                    direction="row"
+                    sx={{
                         justifyContent: "space-between",
-
-                        alignItems: "center",
-
-                        marginBottom: 24
-
+                        alignItems: "flex-start",
+                        flexWrap: "wrap",
+                        gap: 2,
+                        mb: 3,
                     }}
-
                 >
 
-                    <Typography
+                    <Box>
 
-                        variant="h4"
+                        <Typography variant="h4">
 
-                    >
+                            {property.title}
 
-                        {property.title}
+                        </Typography>
 
-                    </Typography>
+                        <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+                            کد ملک: <bdi>{property.code}</bdi>
+                        </Typography>
 
-                    <IconButton
+                    </Box>
 
-                        color="error"
+                    <Stack direction="row" spacing={1} alignItems="center">
 
-                        onClick={toggleFavorite}
+                        <Box
+                            sx={{
+                                px: 2,
+                                py: 1,
+                                borderRadius: 2,
+                                bgcolor: "rgba(200, 155, 60, 0.12)",
+                                textAlign: "center",
+                            }}
+                        >
 
-                    >
+                            <Typography fontWeight={800} sx={{ color: "#8A6A1F" }}>
+                                {Number(property.price).toLocaleString("fa-IR")}
+                            </Typography>
 
-                        {
+                            <Typography variant="caption" sx={{ color: "#8A6A1F" }}>
+                                تومان
+                            </Typography>
 
-                            property.is_favorite
+                        </Box>
 
-                                ?
+                        <IconButton
+                            color="error"
+                            onClick={toggleFavorite}
+                            sx={{ border: "1px solid", borderColor: "error.main" }}
+                        >
 
-                                <FavoriteIcon />
+                            {
 
-                                :
+                                property.is_favorite
 
-                                <FavoriteBorderIcon />
+                                    ?
 
-                        }
+                                    <FavoriteIcon />
 
-                    </IconButton>
+                                    :
 
-                </div>
+                                    <FavoriteBorderIcon />
+
+                            }
+
+                        </IconButton>
+
+                    </Stack>
+
+                </Stack>
 
                 <Divider sx={{ mb: 3 }} />
 
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            کد ملک:
-                            <strong>
-                                {" "}
-                                {property.code}
-                            </strong>
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem
+                            label="نوع ملک"
+                            value={getPropertyTypeLabel(property.property_type)}
+                        />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            نوع ملک:
-                            {" "}
-                            {getPropertyTypeLabel(property.property_type)}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem
+                            label="نوع معامله"
+                            value={getTransactionTypeLabel(property.transaction_type)}
+                        />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            نوع معامله:
-                            {" "}
-                            {getTransactionTypeLabel(property.transaction_type)}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem label="متراژ" value={`${property.area} متر`} />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            قیمت:
-                            {" "}
-                            {property.price}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem label="تعداد اتاق" value={property.rooms} />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            متراژ:
-                            {" "}
-                            {property.area}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem label="طبقه" value={property.floor ?? "-"} />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            اتاق:
-                            {" "}
-                            {property.rooms}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem label="تعداد طبقات" value={property.total_floors ?? "-"} />
                     </Grid>
 
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            طبقه:
-                            {" "}
-                            {property.floor ?? "-"}
-
-                        </Typography>
-
+                    <Grid size={{ xs: 6, md: 3 }}>
+                        <InfoItem label="سال ساخت" value={property.year_built ?? "-"} />
                     </Grid>
-
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            تعداد طبقات:
-                            {" "}
-                            {property.total_floors ?? "-"}
-
-                        </Typography>
-
-                    </Grid>
-
-
-                    <Grid size={{ xs: 12, md: 6 }}>
-
-                        <Typography>
-
-                            سال ساخت:
-                            {" "}
-                            {property.year_built ?? "-"}
-
-                        </Typography>
-
-                    </Grid>
-
 
                     <Grid size={{ xs: 12 }}>
 
-                        <Typography>
-
-                            آدرس
-
-                        </Typography>
-
-                        <Typography>
-
-                            {property.address}
-
-                        </Typography>
+                        <Divider sx={{ my: 1 }} />
 
                     </Grid>
 
+                    <Grid size={{ xs: 12 }}>
+                        <InfoItem label="آدرس" value={property.address} />
+                    </Grid>
 
                     <Grid size={{ xs: 12 }}>
 
-                        <Typography>
-
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
+                        >
                             توضیحات
-
                         </Typography>
 
-                        <Typography>
-
+                        <Typography sx={{ whiteSpace: "pre-line" }}>
                             {property.description || "-"}
-
                         </Typography>
 
                     </Grid>
-
 
                     <Grid size={{ xs: 12 }}>
 
-                        <Chip
+                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 
-                            label="پارکینگ"
+                            <Chip
+                                icon={<LocalParkingIcon />}
+                                label="پارکینگ"
+                                color={property.parking ? "success" : "default"}
+                                variant={property.parking ? "filled" : "outlined"}
+                            />
 
-                            color={
-                                property.parking
-                                    ? "success"
-                                    : "default"
-                            }
+                            <Chip
+                                icon={<ElevatorIcon />}
+                                label="آسانسور"
+                                color={property.elevator ? "success" : "default"}
+                                variant={property.elevator ? "filled" : "outlined"}
+                            />
 
-                            sx={{ mr: 1 }}
+                            <Chip
+                                icon={<InventoryIcon />}
+                                label="انباری"
+                                color={property.storage ? "success" : "default"}
+                                variant={property.storage ? "filled" : "outlined"}
+                            />
 
-                        />
-
-
-                        <Chip
-
-                            label="آسانسور"
-
-                            color={
-                                property.elevator
-                                    ? "success"
-                                    : "default"
-                            }
-
-                            sx={{ mr: 1 }}
-
-                        />
-
-
-                        <Chip
-
-                            label="انباری"
-
-                            color={
-                                property.storage
-                                    ? "success"
-                                    : "default"
-                            }
-
-                        />
+                        </Stack>
 
                     </Grid>
 
-
-                    <Grid size={{ xs: 12 }} sx={{ mt: 3 }}>
+                    <Grid size={{ xs: 12 }}>
 
                         <Divider sx={{ my: 3 }} />
 
                         <Typography
-                            variant="h5"
+                            variant="h6"
                             sx={{ mb: 2 }}
                         >
                             تصاویر
@@ -421,55 +386,58 @@ export default function PropertyDetail() {
                             title={property.title}
                         />
 
-                       
-
                     </Grid>
 
+                    <Grid size={{ xs: 12 }}>
 
+                        <Divider sx={{ my: 3 }} />
 
-
-                    <Divider sx={{ my: 3 }} />
-
-                    <Typography
-                        variant="h5"
-                        sx={{ mb: 2 }}
-                    >
-                        ویدیوها
-                    </Typography>
-
-
-                    <Grid container spacing={2}>
+                        <Typography
+                            variant="h6"
+                            sx={{ mb: 2 }}
+                        >
+                            ویدیوها
+                        </Typography>
 
                         {(property?.videos ?? []).length > 0 ? (
 
-                            property.videos.map(video => (
+                            <Grid container spacing={2}>
 
-                                <Grid
-                                    size={{ xs: 12, md: 6 }}
-                                    key={video.id}
-                                >
+                                {property.videos.map(video => (
 
-                                    <video
-                                        controls
-                                        width="100%"
+                                    <Grid
+                                        size={{ xs: 12, md: 6 }}
+                                        key={video.id}
                                     >
 
-                                        <source
-                                            src={`${API_BASE_URL}${video.video}`}
-                                            type="video/mp4"
-                                        />
+                                        <Box
+                                            component="video"
+                                            controls
+                                            sx={{
+                                                width: "100%",
+                                                borderRadius: 2,
+                                                display: "block",
+                                            }}
+                                        >
 
-                                        مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                            <source
+                                                src={`${API_BASE_URL}${video.video}`}
+                                                type="video/mp4"
+                                            />
 
-                                    </video>
+                                            مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
 
-                                </Grid>
+                                        </Box>
 
-                            ))
+                                    </Grid>
+
+                                ))}
+
+                            </Grid>
 
                         ) : (
 
-                            <Typography>
+                            <Typography color="text.secondary">
                                 ویدیویی ثبت نشده است.
                             </Typography>
 
@@ -477,49 +445,40 @@ export default function PropertyDetail() {
 
                     </Grid>
 
+                    <Grid size={{ xs: 12 }}>
 
+                        <Divider sx={{ my: 3 }} />
 
-                    <Button
-                        variant="contained"
-                        onClick={() =>
-                            navigate(`/properties/${property.id}/edit`)
-                        }
-                    >
-                        ویرایش
-                    </Button>
+                        <Stack direction="row" spacing={1.5}>
 
+                            <Button
+                                variant="contained"
+                                startIcon={<EditIcon />}
+                                onClick={() =>
+                                    navigate(`/properties/${property.id}/edit`)
+                                }
+                            >
+                                ویرایش
+                            </Button>
 
-                    <Button
-                        color="error"
-                        sx={{ ml: 2 }}
-                        onClick={handleDelete}
-                    >
-                        حذف
-                    </Button>
+                            <Button
+                                color="error"
+                                variant="outlined"
+                                startIcon={<DeleteIcon />}
+                                onClick={handleDelete}
+                            >
+                                حذف
+                            </Button>
 
+                        </Stack>
 
-                    <Button
-
-                        sx={{ ml: 2 }}
-
-                        onClick={() =>
-                            navigate("/properties")
-                        }
-
-                    >
-
-                        بازگشت
-
-                    </Button>
+                    </Grid>
 
                 </Grid>
 
-
-
-
             </Paper>
 
-        </Container >
+        </PageContainer>
 
     );
 

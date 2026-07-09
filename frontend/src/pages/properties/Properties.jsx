@@ -1,41 +1,16 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import {
-    Container,
-    Typography,
-    Paper,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Button,
-    Stack
-} from "@mui/material";
+import { Box, Pagination } from "@mui/material";
 
-import PropertyRow from "../../components/properties/PropertyRow";
+import PageContainer from "../../components/common/PageContainer";
+import PageHeader from "../../components/common/PageHeader";
 import PropertyTable from "../../components/properties/PropertyTable";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
-import PropertyActions from "../../components/properties/PropertyActions";
-
-import Avatar from "@mui/material/Avatar";
-import TableContainer from "@mui/material/TableContainer";
-
-import IconButton from "@mui/material/IconButton";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AppButton from "../../components/common/AppButton";
-import SearchIcon from "@mui/icons-material/Search";
-import InputAdornment from "@mui/material/InputAdornment";
-import AppTextField from "../../components/common/AppTextField";
-import PropertyFilters from "../../components/properties/PropertyFilters";
-import { useNavigate } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteDialog from "../../components/common/DeleteDialog";
 
-import Pagination from "@mui/material/Pagination";
+import { useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 
 
 
@@ -206,37 +181,28 @@ export default function Properties() {
 
     return (
 
-        <Container>
+        <PageContainer>
 
+            <PageHeader
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "24px"
-                }}
-            >
+                title="املاک"
 
-                <Typography
-                    variant="h4"
-                >
-                    املاک
-                </Typography>
+                subtitle={`${count} ملک ثبت‌شده`}
 
+                action={
 
-                <AppButton
-                    onClick={() =>
-                        navigate("/properties/create")
-                    }
-                >
-                    افزودن ملک
-                </AppButton>
+                    <AppButton
+                        startIcon={<AddIcon />}
+                        onClick={() =>
+                            navigate("/properties/create")
+                        }
+                    >
+                        افزودن ملک
+                    </AppButton>
 
+                }
 
-
-
-            </div>
+            />
 
             <PropertyToolbar
 
@@ -256,8 +222,6 @@ export default function Properties() {
                 setOrdering={setOrdering}
 
             />
-
-
 
             <PropertyTable
 
@@ -281,22 +245,27 @@ export default function Properties() {
 
             />
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: 24,
-                }}
-            >
-                <Pagination
-                    page={page}
-                    count={Math.ceil(count / pageSize)}
-                    color="primary"
-                    onChange={(event, value) => {
-                        setPage(value);
+            {count > pageSize && (
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        mt: 4,
                     }}
-                />
-            </div>
+                >
+                    <Pagination
+                        page={page}
+                        count={Math.ceil(count / pageSize)}
+                        color="primary"
+                        shape="rounded"
+                        onChange={(event, value) => {
+                            setPage(value);
+                        }}
+                    />
+                </Box>
+
+            )}
 
             <DeleteDialog
 
@@ -318,10 +287,7 @@ export default function Properties() {
 
             />
 
-
-
-        </Container>
-
+        </PageContainer>
 
     );
 
