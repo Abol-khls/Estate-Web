@@ -7,9 +7,13 @@ import {
     saveTokens,
     clearTokens,
 } from "./tokenService";
+import { API_BASE_URL } from "../config";
+console.log(API_BASE_URL);
+
+
 
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api/",
+    baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use(

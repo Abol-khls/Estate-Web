@@ -38,7 +38,7 @@ import ImageUploader from "../../components/properties/ImageUploader";
 import { useParams } from "react-router-dom";
 
 import { MenuItem } from "@mui/material";
-
+import { BASE_URL } from "../../config";
 
 function FormSection({ title, children }) {
 
@@ -117,7 +117,6 @@ export default function PropertyForm() {
     const { id } = useParams();
 
     const isEdit = Boolean(id);
-    const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
 
@@ -762,7 +761,7 @@ export default function PropertyForm() {
 
                                         <CardMedia
                                             component="img"
-                                            image={`${API_BASE_URL}${image.image}`}
+                                            image={`${BASE_URL}${image.image}`}
                                             height="110"
                                             sx={{
                                                 objectFit: "cover"

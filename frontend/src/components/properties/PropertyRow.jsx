@@ -8,7 +8,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import PropertyActions from "./PropertyActions";
-import { API_BASE_URL } from "../../config";
+import { BASE_URL } from "../../config";
 
 export default function PropertyRow({
 
@@ -86,7 +86,7 @@ export default function PropertyRow({
 
                                 component="img"
 
-                                src={`${API_BASE_URL}${coverImage.image}`}
+                                src={`${BASE_URL}${coverImage.image}`}
 
                                 alt={property.title}
 

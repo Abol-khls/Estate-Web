@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../services/api";
 
-import { API_BASE_URL } from "../../config";
+import { BASE_URL } from "../../config";
 import PropertyGallery from "../../components/properties/PropertyGallery";
 import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
@@ -469,7 +469,7 @@ export default function PropertyDetail() {
                                         >
 
                                             <source
-                                                src={`${API_BASE_URL}${video.video}`}
+                                                src={`${BASE_URL}${video.video}`}
                                                 type="video/mp4"
                                             />
 

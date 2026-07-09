@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ImageNotSupportedOutlinedIcon from "@mui/icons-material/ImageNotSupportedOutlined";
 
-import { API_BASE_URL } from "../../config";
+import { BASE_URL } from "../../config";
 
 export default function PropertyGallery({ images, title }) {
 
@@ -59,6 +59,7 @@ export default function PropertyGallery({ images, title }) {
         );
 
     }
+    
 
 
     return (
@@ -81,7 +82,7 @@ export default function PropertyGallery({ images, title }) {
 
                     component="img"
 
-                    image={`${API_BASE_URL}${selectedImage.image}`}
+                    image={`${BASE_URL}${selectedImage.image}`}
 
                     alt={title}
 
@@ -144,7 +145,7 @@ export default function PropertyGallery({ images, title }) {
 
                                 component="img"
 
-                                image={`${API_BASE_URL}${image.image}`}
+                                image={`${BASE_URL}${image.image}`}
 
                                 sx={{
                                     height: 90,

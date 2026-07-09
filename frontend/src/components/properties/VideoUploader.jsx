@@ -10,7 +10,7 @@ import {
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { API_BASE_URL } from "../../config";
+import { BASE_URL } from "../../config";
 
 export default function VideoUploader({
 
@@ -179,7 +179,7 @@ export default function VideoUploader({
                                 style={{ display: "block" }}
                             >
                                 <source
-                                    src={`${API_BASE_URL}${video.video}`}
+                                    src={`${BASE_URL}${video.video}`}
                                     type="video/mp4"
                                 />
                             </video>
