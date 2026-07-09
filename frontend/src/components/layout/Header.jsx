@@ -1,35 +1,58 @@
-import {useAuth} from "../../context/AuthContext";
+import { Box, Typography, Avatar, Stack } from "@mui/material";
 
+import { useAuth } from "../../context/AuthContext";
 
-export default function Header(){
+export default function Header() {
 
+    const { user } = useAuth();
 
-const {user}=useAuth();
+    const initial = user?.username?.charAt(0)?.toUpperCase() ?? "؟";
 
+    return (
 
-return (
+        <Box
+            component="header"
+            sx={{
+                height: 72,
+                bgcolor: "background.paper",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+                px: { xs: 2, md: 4 },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+            }}
+        >
 
-<header>
+            <Typography variant="h6" color="text.primary">
+                داشبورد
+            </Typography>
 
+            <Stack
+                direction="row"
+                spacing={1.5}
+                alignItems="center"
+            >
 
-<h3>
-داشبورد
-</h3>
+                <Typography variant="body2" color="text.secondary">
+                    {user?.username}
+                </Typography>
 
+                <Avatar
+                    sx={{
+                        bgcolor: "primary.main",
+                        width: 36,
+                        height: 36,
+                        fontSize: 14,
+                    }}
+                >
+                    {initial}
+                </Avatar>
 
-<div>
+            </Stack>
 
-{
-user?.username
-}
+        </Box>
 
-
-</div>
-
-
-</header>
-
-
-)
+    );
 
 }

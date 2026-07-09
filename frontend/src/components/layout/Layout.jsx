@@ -1,25 +1,43 @@
+import { Box } from "@mui/material";
+
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
 
     return (
 
-        <div className="app-layout">
+        <Box
+            sx={{
+                display: "flex",
+                minHeight: "100vh",
+                bgcolor: "background.default",
+            }}
+        >
 
             <Sidebar />
 
-            <div className="main">
+            <Box
+                sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    minWidth: 0,
+                }}
+            >
 
                 <Header />
 
-                <main>
+                <Box
+                    component="main"
+                    sx={{ flex: 1 }}
+                >
                     {children}
-                </main>
+                </Box>
 
-            </div>
+            </Box>
 
-        </div>
+        </Box>
 
     );
 }

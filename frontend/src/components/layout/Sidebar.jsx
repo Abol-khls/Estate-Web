@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 import {
     Home,
     Building2,
@@ -7,72 +9,135 @@ import {
     LogOut
 } from "lucide-react";
 
-import {useAuth} from "../../context/AuthContext";
+import { Box, Stack, Typography, Button } from "@mui/material";
 
+import { useAuth } from "../../context/AuthContext";
 
-export default function Sidebar(){
+const NAV_ITEMS = [
+    { label: "داشبورد", icon: Home, to: "/dashboard" },
+    { label: "املاک", icon: Building2, to: "/properties" },
+    { label: "مشتریان", icon: Users, to: "/clients" },
+    { label: "قراردادها", icon: FileText, to: "/contracts" },
+    { label: "بازدیدها", icon: Calendar, to: "/visits" },
+];
 
+export default function Sidebar() {
 
-    const {logout}=useAuth();
-
+    const { logout } = useAuth();
 
     return (
 
-        <aside className="sidebar">
+        <Box
+            component="aside"
+            sx={{
+                width: 260,
+                flexShrink: 0,
+                minHeight: "100vh",
+                bgcolor: "primary.dark",
+                color: "#fff",
+                px: 2.5,
+                py: 3.5,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                position: "sticky",
+                top: 0,
+            }}
+        >
 
+            <Box>
 
-            <h2>
-                Estate CRM
-            </h2>
+                <Stack
+                    direction="row"
+                    spacing={1.2}
+                    alignItems="center"
+                    sx={{ mb: 5, px: 0.5 }}
+                >
 
+                    <Box
+                        sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: "50%",
+                            bgcolor: "secondary.main",
+                        }}
+                    />
 
-            <nav>
+                    <Typography variant="h6" sx={{ color: "#fff" }}>
+                        Estate CRM
+                    </Typography>
 
+                </Stack>
 
-                <a>
-                    <Home size={18}/>
-                    داشبورد
-                </a>
+                <Stack spacing={0.5}>
 
+                    {NAV_ITEMS.map(({ label, icon: Icon, to }) => (
 
-                <a>
-                    <Building2 size={18}/>
-                    املاک
-                </a>
+                        <NavLink
+                            key={to}
+                            to={to}
+                            style={{ textDecoration: "none" }}
+                        >
 
+                            {({ isActive }) => (
 
-                <a>
-                    <Users size={18}/>
-                    مشتریان
-                </a>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1.5,
+                                        px: 2,
+                                        py: 1.3,
+                                        borderRadius: 2,
+                                        fontSize: 14,
+                                        transition: ".15s",
+                                        color: isActive
+                                            ? "#1A2233"
+                                            : "rgba(255,255,255,0.75)",
+                                        bgcolor: isActive
+                                            ? "secondary.main"
+                                            : "transparent",
+                                        fontWeight: isActive ? 700 : 500,
+                                        "&:hover": {
+                                            bgcolor: isActive
+                                                ? "secondary.main"
+                                                : "rgba(255,255,255,0.08)",
+                                            color: isActive ? "#1A2233" : "#fff",
+                                        },
+                                    }}
+                                >
 
+                                    <Icon size={18} />
 
-                <a>
-                    <FileText size={18}/>
-                    قراردادها
-                </a>
+                                    {label}
 
+                                </Box>
 
-                <a>
-                    <Calendar size={18}/>
-                    بازدیدها
-                </a>
+                            )}
 
+                        </NavLink>
 
-            </nav>
+                    ))}
 
+                </Stack>
 
+            </Box>
 
-            <button onClick={logout}>
-
-                <LogOut size={18}/>
-
+            <Button
+                onClick={logout}
+                startIcon={<LogOut size={18} />}
+                sx={{
+                    color: "#fff",
+                    bgcolor: "error.main",
+                    justifyContent: "flex-start",
+                    "&:hover": { bgcolor: "#B93838" },
+                }}
+            >
                 خروج
+            </Button>
 
-            </button>
-
-
-        </aside>
+        </Box>
 
     );
+
 }
