@@ -14,6 +14,9 @@ import PropertyDetail from "../pages/properties/PropertyDetail";
 import Customers from "../pages/customers/Customers";
 import CustomerForm from "../pages/customers/CustomerForm";
 
+import Contracts from "../pages/contracts/Contracts";
+import ContractForm from "../pages/contracts/ContractForm";
+
 export default function AppRoutes() {
 
 
@@ -129,6 +132,39 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <CustomerForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/contracts"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <Contracts />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/contracts/create"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ContractForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/contracts/:id/edit"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ContractForm />
                             </Layout>
                         </ProtectedRoute>
                     }

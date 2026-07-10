@@ -33,21 +33,25 @@ import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 
 import {
-    REQUEST_TYPES,
-    CUSTOMER_ORDERING_OPTIONS,
-    getRequestTypeLabel,
-} from "../../constants/customerOptions";
+    CONTRACT_TYPES,
+    CONTRACT_STATUSES,
+    CONTRACT_ORDERING_OPTIONS,
+    getContractTypeLabel,
+    getContractStatusLabel,
+    getContractStatusColor,
+} from "../../constants/contractOptions";
 
-const GRID_COLUMNS = "200px 160px 130px 150px 1fr 150px";
+const GRID_COLUMNS = "180px 180px 140px 150px 130px 120px 150px";
 
-export default function Customers() {
+export default function Contracts() {
 
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-    const [customers, setCustomers] = useState([]);
+    const [contracts, setContracts] = useState([]);
     const [search, setSearch] = useState("");
-    const [requestType, setRequestType] = useState("all");
+    const [status, setStatus] = useState("all");
+    const [contractType, setContractType] = useState("all");
     const [ordering, setOrdering] = useState("-created_at");
 
     const [page, setPage] = useState(1);
@@ -58,9 +62,9 @@ export default function Customers() {
     const isFirstRun = useRef(true);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedContract, setSelectedContract] = useState(null);
 
-    async function loadCustomers(pageToLoad = page) {
+    async function loadContracts(pageToLoad = page) {
 
         setLoading(true);
 
@@ -72,13 +76,17 @@ export default function Customers() {
                 ordering,
             };
 
-            if (requestType !== "all") {
-                params.request_type = requestType;
+            if (status !== "all") {
+                params.status = status;
             }
 
-            const response = await api.get("customers/", { params });
+            if (contractType !== "all") {
+                params.contract_type = contractType;
+            }
 
-            setCustomers(response.data.results ?? response.data);
+            const response = await api.get("contracts/", { params });
+
+            setContracts(response.data.results ?? response.data);
             setCount(response.data.count ?? 0);
 
         }
@@ -91,12 +99,12 @@ export default function Customers() {
 
             const message = getErrorMessage(
                 error,
-                "خطا در دریافت لیست مشتریان"
+                "خطا در دریافت لیست قراردادها"
             );
 
             showSnackbar(message, "error");
 
-            setCustomers([]);
+            setContracts([]);
             setCount(0);
 
         }
@@ -110,30 +118,30 @@ export default function Customers() {
 
         if (isFirstRun.current) {
             isFirstRun.current = false;
-            loadCustomers(1);
+            loadContracts(1);
             return;
         }
 
         if (page !== 1) {
             setPage(1);
         } else {
-            loadCustomers(1);
+            loadContracts(1);
         }
 
-      
-    }, [search, requestType, ordering]);
+       
+    }, [search, status, contractType, ordering]);
 
     useEffect(() => {
 
         if (isFirstRun.current) return;
 
-        loadCustomers(page);
+        loadContracts(page);
 
-    
+        
     }, [page]);
 
-    function handleDeleteClick(customer) {
-        setSelectedCustomer(customer);
+    function handleDeleteClick(contract) {
+        setSelectedContract(contract);
         setDeleteOpen(true);
     }
 
@@ -141,21 +149,21 @@ export default function Customers() {
 
         try {
 
-            await api.delete(`customers/${selectedCustomer.id}/`);
+            await api.delete(`contracts/${selectedContract.id}/`);
 
-            showSnackbar("مشتری با موفقیت حذف شد.", "success");
+            showSnackbar("قرارداد با موفقیت حذف شد.", "success");
 
             setDeleteOpen(false);
-            setSelectedCustomer(null);
+            setSelectedContract(null);
 
-            loadCustomers();
+            loadContracts();
 
         }
         catch (error) {
 
             const message = getErrorMessage(
                 error,
-                "حذف مشتری انجام نشد."
+                "حذف قرارداد انجام نشد."
             );
 
             showSnackbar(message, "error");
@@ -169,14 +177,14 @@ export default function Customers() {
         <PageContainer>
 
             <PageHeader
-                title="مشتریان"
-                subtitle={`${count} مشتری ثبت‌شده`}
+                title="قراردادها"
+                subtitle={`${count} قرارداد ثبت‌شده`}
                 action={
                     <AppButton
                         startIcon={<AddIcon />}
-                        onClick={() => navigate("/clients/create")}
+                        onClick={() => navigate("/contracts/create")}
                     >
-                        افزودن مشتری
+                        افزودن قرارداد
                     </AppButton>
                 }
             />
@@ -194,23 +202,23 @@ export default function Customers() {
 
                 <Grid container spacing={2}>
 
-                    <Grid size={{ xs: 12, md: 5 }}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <AppTextField
-                            placeholder="جستجو بر اساس نام یا شماره تماس..."
+                            placeholder="جستجو بر اساس مشتری یا ملک..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             startIcon={<SearchIcon fontSize="small" />}
                         />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
                         <AppSelect
-                            label="نوع درخواست"
-                            value={requestType}
-                            onChange={(e) => setRequestType(e.target.value)}
+                            label="نوع قرارداد"
+                            value={contractType}
+                            onChange={(e) => setContractType(e.target.value)}
                         >
                             <MenuItem value="all">همه</MenuItem>
-                            {REQUEST_TYPES.map((item) => (
+                            {CONTRACT_TYPES.map((item) => (
                                 <MenuItem key={item.value} value={item.value}>
                                     {item.label}
                                 </MenuItem>
@@ -218,13 +226,28 @@ export default function Customers() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                        <AppSelect
+                            label="وضعیت"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <MenuItem value="all">همه</MenuItem>
+                            {CONTRACT_STATUSES.map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </AppSelect>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <AppSelect
                             label="مرتب‌سازی"
                             value={ordering}
                             onChange={(e) => setOrdering(e.target.value)}
                         >
-                            {CUSTOMER_ORDERING_OPTIONS.map((item) => (
+                            {CONTRACT_ORDERING_OPTIONS.map((item) => (
                                 <MenuItem key={item.value} value={item.value}>
                                     {item.label}
                                 </MenuItem>
@@ -266,23 +289,27 @@ export default function Customers() {
                     >
 
                         <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
-                            نام مشتری
+                            مشتری
                         </Typography>
 
                         <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
-                            شماره تماس
+                            ملک
                         </Typography>
 
                         <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
-                            نوع درخواست
+                            نوع
                         </Typography>
 
                         <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
-                            بودجه
+                            مبلغ
                         </Typography>
 
-                        <Typography variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
-                            یادداشت
+                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                            وضعیت
+                        </Typography>
+
+                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                            تاریخ امضا
                         </Typography>
 
                         <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
@@ -291,7 +318,7 @@ export default function Customers() {
 
                     </Box>
 
-                    {customers.length === 0 ? (
+                    {contracts.length === 0 ? (
 
                         <Box
                             sx={{
@@ -305,16 +332,16 @@ export default function Customers() {
                         >
                             <InboxIcon sx={{ fontSize: 40, opacity: 0.5 }} />
                             <Typography variant="body2">
-                                مشتری‌ای برای نمایش پیدا نشد.
+                                قراردادی برای نمایش پیدا نشد.
                             </Typography>
                         </Box>
 
                     ) : (
 
-                        customers.map((customer, index) => (
+                        contracts.map((contract, index) => (
 
                             <Box
-                                key={customer.id}
+                                key={contract.id}
                                 sx={{
                                     display: "grid",
                                     gridTemplateColumns: GRID_COLUMNS,
@@ -335,37 +362,37 @@ export default function Customers() {
                             >
 
                                 <Typography align="center" fontWeight={700} noWrap>
-                                    {customer.full_name}
+                                    {contract.customer_name ?? contract.customer}
                                 </Typography>
 
-                                <Typography align="center" color="text.secondary">
-                                    <bdi>{customer.phone}</bdi>
+                                <Typography align="center" color="text.secondary" noWrap>
+                                    {contract.property_title ?? contract.property}
                                 </Typography>
 
                                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                                     <Chip
                                         size="small"
-                                        label={getRequestTypeLabel(customer.request_type)}
+                                        label={getContractTypeLabel(contract.contract_type)}
                                         sx={{ bgcolor: "rgba(31, 59, 87, 0.08)", fontWeight: 600 }}
                                     />
                                 </Box>
 
                                 <Typography align="center" fontWeight={600}>
-                                    {customer.budget
-                                        ? `${Number(customer.budget).toLocaleString("fa-IR")} تومان`
-                                        : "—"}
+                                    {Number(contract.amount).toLocaleString("fa-IR")} تومان
                                 </Typography>
 
-                                <Typography
-                                    color="text.secondary"
-                                    sx={{
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap",
-                                        pr: 1,
-                                    }}
-                                >
-                                    {customer.notes || "—"}
+                                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                                    <Chip
+                                        size="small"
+                                        color={getContractStatusColor(contract.status)}
+                                        label={getContractStatusLabel(contract.status)}
+                                    />
+                                </Box>
+
+                                <Typography align="center" color="text.secondary">
+                                    {contract.signed_date
+                                        ? new Date(contract.signed_date).toLocaleDateString("fa-IR")
+                                        : "—"}
                                 </Typography>
 
                                 <Box sx={{ display: "flex", justifyContent: "center", gap: 1.5 }}>
@@ -374,7 +401,7 @@ export default function Customers() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/clients/${customer.id}/edit`)}
+                                            onClick={() => navigate(`/contracts/${contract.id}/edit`)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
@@ -390,7 +417,7 @@ export default function Customers() {
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteClick(customer)}
+                                            onClick={() => handleDeleteClick(contract)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
@@ -431,11 +458,11 @@ export default function Customers() {
 
             <DeleteDialog
                 open={deleteOpen}
-                title="حذف مشتری"
-                message={`آیا از حذف "${selectedCustomer?.full_name ?? ""}" مطمئن هستید؟`}
+                title="حذف قرارداد"
+                message="آیا از حذف این قرارداد مطمئن هستید؟"
                 onClose={() => {
                     setDeleteOpen(false);
-                    setSelectedCustomer(null);
+                    setSelectedContract(null);
                 }}
                 onConfirm={handleDelete}
             />

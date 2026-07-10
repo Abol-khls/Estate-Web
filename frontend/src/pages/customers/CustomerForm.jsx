@@ -104,7 +104,6 @@ export default function CustomerForm() {
 
         loadCustomer();
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     function handleChange(e) {
