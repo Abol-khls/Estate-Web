@@ -219,23 +219,16 @@ export default function PropertyRow({
             </Box>
 
             <Typography
-
                 color="text.primary"
-
                 sx={{
-
                     whiteSpace: "normal",
-
                     lineHeight: 1.7,
-
                     pr: 1,
-
+                    wordBreak: "break-word",
+                    overflowWrap: "anywhere",
                 }}
-
             >
-
                 {property.address}
-
             </Typography>
 
             <Box

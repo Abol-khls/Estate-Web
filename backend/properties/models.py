@@ -1,5 +1,9 @@
 from django.db import models
 from agencies.models import Agency
+from .validators import (
+    validate_image,
+    validate_video,
+)
 
 class Property(models.Model):
     
@@ -107,8 +111,10 @@ class PropertyImage(models.Model):
         related_name="images"
     )
 
+    
     image = models.ImageField(
-        upload_to="properties/"
+        upload_to="properties/",
+        validators=[validate_image],
     )
 
     is_cover = models.BooleanField(
@@ -140,8 +146,10 @@ class PropertyVideo(models.Model):
         related_name="videos"
     )
 
+    
     video = models.FileField(
-        upload_to="property_videos/"
+        upload_to="properties/videos/",
+        validators=[validate_video],
     )
 
     created_at = models.DateTimeField(

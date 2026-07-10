@@ -1,9 +1,14 @@
 from rest_framework import serializers
 
+from .validators import validate_image, validate_video
 from .models import (
     Property,
     PropertyImage,
     PropertyVideo
+)
+from .validators import (
+    validate_image,
+    validate_video,
 )
 
 
@@ -69,43 +74,72 @@ class PropertySerializer(serializers.ModelSerializer):
 
         request = self.context["request"]
 
+        
+
+
+        images = request.FILES.getlist("images")
+        videos = request.FILES.getlist("videos")
+
+        if len(images) > 10:
+            raise serializers.ValidationError({
+                "images": "حداکثر 10 تصویر مجاز است."
+            })
+
+        if len(videos) > 5:
+            raise serializers.ValidationError({
+                "videos": "حداکثر 5 ویدیو مجاز است."
+            })
+        
+        
+
+        
+        for image in images:
+
+            if image.size > 5 * 1024 * 1024:
+                raise serializers.ValidationError({
+                    "images": [
+                        "حجم تصویر نباید بیشتر از ۵ مگابایت باشد."
+                    ]
+                })
+
+            validate_image(image)
+        
+
+        for video in videos:
+
+            if video.size > 50 * 1024 * 1024:
+                raise serializers.ValidationError({
+                    "videos": [
+                        "حجم ویدیو نباید بیشتر از ۵۰ مگابایت باشد."
+                    ]
+                })
+
+            validate_video(video)
+
+        
         property = Property.objects.create(
             **validated_data
         )
 
-
-        images = request.FILES.getlist(
-            "images"
-        )
-
-
+       
         for index, image in enumerate(images):
-
             PropertyImage.objects.create(
-
                 property=property,
-
                 image=image,
-
                 is_cover=(index == 0)
+            )
 
-    )
-
-
-        videos = request.FILES.getlist(
-            "videos"
-        )
-
-
+       
         for video in videos:
-
             PropertyVideo.objects.create(
                 property=property,
                 video=video
             )
 
-
         return property
+
+
+        
     def update(self, instance, validated_data):
 
         request = self.context["request"]
@@ -149,6 +183,16 @@ class PropertySerializer(serializers.ModelSerializer):
 
 
         images = request.FILES.getlist("images")
+        for image in images:
+
+            if image.size > 5 * 1024 * 1024:
+                raise serializers.ValidationError({
+                    "images": [
+                        "حجم تصویر نباید بیشتر از ۵ مگابایت باشد."
+                    ]
+                })
+
+            validate_image(image)
 
         has_cover = PropertyImage.objects.filter(
 
@@ -157,7 +201,12 @@ class PropertySerializer(serializers.ModelSerializer):
             is_cover=True
 
         ).exists()
+        current_images = instance.images.count()
 
+        if current_images + len(images) > 10:
+            raise serializers.ValidationError({
+                "images": "حداکثر 10 تصویر مجاز است."
+            })
 
         for image in images:
 
@@ -175,6 +224,22 @@ class PropertySerializer(serializers.ModelSerializer):
 
 
         videos = request.FILES.getlist("videos")
+        for video in videos:
+
+            if video.size > 50 * 1024 * 1024:
+                raise serializers.ValidationError({
+                    "videos": [
+                        "حجم ویدیو نباید بیشتر از ۵۰ مگابایت باشد."
+                    ]
+                })
+
+            validate_video(video)
+        current_videos = instance.videos.count()
+
+        if current_videos + len(videos) > 5:
+            raise serializers.ValidationError({
+                "videos": "حداکثر 5 ویدیو مجاز است."
+            })
 
         for video in videos:
 

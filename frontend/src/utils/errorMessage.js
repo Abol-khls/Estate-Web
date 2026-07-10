@@ -94,10 +94,61 @@ export function getErrorMessage(
 
         const translated = translateKnownMessage(rawMessage);
 
-        if (translated) return translated;
+        return translated ?? rawMessage;
 
     }
 
     return fallback;
+
+}
+export function getErrorMessages(error) {
+
+    if (!error?.response) {
+        return [
+            "ارتباط با سرور برقرار نشد."
+        ];
+    }
+
+    const { data } = error.response;
+
+    if (!data || typeof data !== "object") {
+        return [
+            getErrorMessage(error)
+        ];
+    }
+
+    const messages = [];
+
+    Object.values(data).forEach(value => {
+
+        if (Array.isArray(value)) {
+
+            value.forEach(msg => {
+
+                messages.push(
+                    translateKnownMessage(msg) ?? msg
+                );
+
+            });
+
+        } else if (typeof value === "string") {
+
+            messages.push(
+                translateKnownMessage(value) ?? value
+            );
+
+        }
+
+    });
+
+    if (!messages.length) {
+
+        messages.push(
+            getErrorMessage(error)
+        );
+
+    }
+
+    return messages;
 
 }
