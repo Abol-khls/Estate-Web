@@ -1,19 +1,17 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter
+
 
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from core.viewsets import AgencyScopedViewSet
 
 from .models import Property, PropertyImage, PropertyVideo
 from .serializers import PropertySerializer, PropertyImageSerializer, PropertyVideoSerializer
 
-from .models import Property
-from .serializers import (
-    PropertySerializer,
-    PropertyImageSerializer,
-)
+
+
 
 class PropertyImageViewSet(viewsets.ModelViewSet):
     queryset = PropertyImage.objects.all()
@@ -38,7 +36,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 
 
-class PropertyViewSet(viewsets.ModelViewSet):
+class PropertyViewSet(AgencyScopedViewSet):
 
 
 
@@ -110,15 +108,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
     ]
 
 
-    def get_queryset(self):
-
-        return Property.objects.filter(
-            agency=self.request.user.agency
-        )
-    def perform_create(self, serializer):
-        serializer.save(
-            agency=self.request.user.agency
-        )
+    
     def get_serializer_context(self):
 
         context = super().get_serializer_context()

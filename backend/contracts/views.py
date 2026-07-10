@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Contract
 from .serializers import ContractSerializer
@@ -8,18 +10,29 @@ from .serializers import ContractSerializer
 class ContractViewSet(viewsets.ModelViewSet):
 
     queryset = Contract.objects.all()
+
+    serializer_class = ContractSerializer
+
+    permission_classes = [IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    filterset_fields = ["status", "contract_type"]
+
+    search_fields = ["customer__full_name", "property__title", "description"]
+
+    ordering_fields = ["created_at", "amount", "signed_date"]
+
+    ordering = ["-created_at"]
+
     def get_queryset(self):
 
         return Contract.objects.filter(
             agency=self.request.user.agency
         )
+
     def perform_create(self, serializer):
+
         serializer.save(
             agency=self.request.user.agency
         )
-
-    serializer_class = ContractSerializer
-
-    permission_classes = [
-        IsAuthenticated
-    ]
