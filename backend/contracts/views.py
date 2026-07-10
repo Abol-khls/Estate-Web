@@ -5,9 +5,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Contract
 from .serializers import ContractSerializer
+from core.viewsets import AgencyScopedViewSet
 
 
-class ContractViewSet(viewsets.ModelViewSet):
+class ContractViewSet(AgencyScopedViewSet):
 
     queryset = Contract.objects.all()
 
@@ -24,15 +25,3 @@ class ContractViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "amount", "signed_date"]
 
     ordering = ["-created_at"]
-
-    def get_queryset(self):
-
-        return Contract.objects.filter(
-            agency=self.request.user.agency
-        )
-
-    def perform_create(self, serializer):
-
-        serializer.save(
-            agency=self.request.user.agency
-        )

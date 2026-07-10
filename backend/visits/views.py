@@ -3,20 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Visit
 from .serializers import VisitSerializer
+from core.viewsets import AgencyScopedViewSet
 
 
-class VisitViewSet(viewsets.ModelViewSet):
+class VisitViewSet(AgencyScopedViewSet):
 
     queryset = Visit.objects.all()
-    def get_queryset(self):
-
-        return Visit.objects.filter(
-            agency=self.request.user.agency
-        )
-    def perform_create(self, serializer):
-        serializer.save(
-            agency=self.request.user.agency
-        )
+    
 
     serializer_class = VisitSerializer
 
