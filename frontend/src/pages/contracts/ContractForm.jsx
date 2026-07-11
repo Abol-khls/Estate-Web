@@ -20,7 +20,7 @@ import AppSelect from "../../components/common/AppSelect";
 
 import api from "../../services/api";
 import { useSnackbar } from "../../context/SnackbarContext";
-import { getErrorMessage } from "../../utils/errorMessage";
+import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { CONTRACT_TYPES, CONTRACT_STATUSES } from "../../constants/contractOptions";
 
 function FormSection({ title, children }) {
@@ -57,6 +57,15 @@ function EntityAutocomplete({ label, endpoint, getOptionLabel, value, onChange, 
     const [options, setOptions] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+
+        if (value && !inputValue) {
+            setInputValue(getOptionLabel(value) ?? "");
+        }
+
+       
+    }, [value]);
 
     useEffect(() => {
 
@@ -107,12 +116,17 @@ function EntityAutocomplete({ label, endpoint, getOptionLabel, value, onChange, 
             options={options}
             loading={loading}
             value={value}
+            inputValue={inputValue}
+            filterOptions={(opts) => opts}
             noOptionsText="موردی یافت نشد"
             loadingText="در حال جستجو..."
             isOptionEqualToValue={(option, val) => option.id === val?.id}
             getOptionLabel={(option) => getOptionLabel(option) ?? ""}
             onChange={(event, newValue) => onChange(newValue)}
-            onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+            onInputChange={(event, newInputValue, reason) => {
+                if (reason === "reset" && !newInputValue) return;
+                setInputValue(newInputValue);
+            }}
             renderInput={(params) => (
                 <AppTextField
                     {...params}
@@ -272,12 +286,27 @@ export default function ContractForm() {
         }
         catch (error) {
 
-            const message = getErrorMessage(
-                error,
-                "ثبت اطلاعات قرارداد با مشکل مواجه شد. لطفاً فیلدها را بررسی کنید."
-            );
+            const fieldErrors = getFieldErrors(error);
 
-            showSnackbar(message, "error");
+            if (fieldErrors) {
+
+                setErrors(prev => ({ ...prev, ...fieldErrors }));
+
+                showSnackbar(
+                    getFieldErrorSummary(fieldErrors, getNonFieldError(error)),
+                    "error"
+                );
+
+            } else {
+
+                const message = getErrorMessage(
+                    error,
+                    "ثبت اطلاعات قرارداد با مشکل مواجه شد."
+                );
+
+                showSnackbar(message, "error");
+
+            }
 
         }
         finally {
@@ -356,6 +385,8 @@ export default function ContractForm() {
                             name="status"
                             value={form.status}
                             onChange={handleChange}
+                            error={!!errors.status}
+                            helperText={errors.status}
                         >
                             {CONTRACT_STATUSES.map(item => (
                                 <MenuItem key={item.value} value={item.value}>
@@ -383,7 +414,18 @@ export default function ContractForm() {
                             type="date"
                             value={form.signed_date}
                             onChange={handleChange}
+                            error={!!errors.signed_date}
+                            helperText={errors.signed_date}
                             slotProps={{ inputLabel: { shrink: true } }}
+                            sx={{
+                                "& input[type='date']": {
+                                    direction: "ltr",
+                                    textAlign: "right",
+                                },
+                                "& input[type='date']::-webkit-calendar-picker-indicator": {
+                                    marginInlineStart: 1,
+                                },
+                            }}
                         />
                     </Grid>
 

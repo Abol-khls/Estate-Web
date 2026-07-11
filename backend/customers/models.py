@@ -10,6 +10,12 @@ class Customer(models.Model):
         ('mortgage', 'Mortgage'),
     )
 
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('converted', 'Converted'),
+        ('inactive', 'Inactive'),
+    )
+
     full_name = models.CharField(
         max_length=255
     )
@@ -19,9 +25,20 @@ class Customer(models.Model):
         unique=True
     )
 
+    phone_2 = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
     request_type = models.CharField(
         max_length=20,
         choices=REQUEST_TYPE_CHOICES
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
     )
 
     budget = models.BigIntegerField(

@@ -34,8 +34,11 @@ import { getErrorMessage } from "../../utils/errorMessage";
 
 import {
     REQUEST_TYPES,
+    CUSTOMER_STATUSES,
     CUSTOMER_ORDERING_OPTIONS,
     getRequestTypeLabel,
+    getCustomerStatusLabel,
+    getCustomerStatusColor,
 } from "../../constants/customerOptions";
 
 const GRID_COLUMNS = "200px 160px 130px 150px 1fr 150px";
@@ -48,6 +51,7 @@ export default function Customers() {
     const [customers, setCustomers] = useState([]);
     const [search, setSearch] = useState("");
     const [requestType, setRequestType] = useState("all");
+    const [status, setStatus] = useState("all");
     const [ordering, setOrdering] = useState("-created_at");
 
     const [page, setPage] = useState(1);
@@ -74,6 +78,10 @@ export default function Customers() {
 
             if (requestType !== "all") {
                 params.request_type = requestType;
+            }
+
+            if (status !== "all") {
+                params.status = status;
             }
 
             const response = await api.get("customers/", { params });
@@ -121,7 +129,7 @@ export default function Customers() {
         }
 
       
-    }, [search, requestType, ordering]);
+    }, [search, requestType, status, ordering]);
 
     useEffect(() => {
 
@@ -194,7 +202,7 @@ export default function Customers() {
 
                 <Grid container spacing={2}>
 
-                    <Grid size={{ xs: 12, md: 5 }}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <AppTextField
                             placeholder="جستجو بر اساس نام یا شماره تماس..."
                             value={search}
@@ -203,7 +211,7 @@ export default function Customers() {
                         />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
                         <AppSelect
                             label="نوع درخواست"
                             value={requestType}
@@ -218,7 +226,22 @@ export default function Customers() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                        <AppSelect
+                            label="وضعیت"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <MenuItem value="all">همه</MenuItem>
+                            {CUSTOMER_STATUSES.map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </AppSelect>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <AppSelect
                             label="مرتب‌سازی"
                             value={ordering}
@@ -334,13 +357,34 @@ export default function Customers() {
                                 }}
                             >
 
-                                <Typography align="center" fontWeight={700} noWrap>
-                                    {customer.full_name}
-                                </Typography>
+                                <Box sx={{ textAlign: "center" }}>
 
-                                <Typography align="center" color="text.secondary">
-                                    <bdi>{customer.phone}</bdi>
-                                </Typography>
+                                    <Typography fontWeight={700} noWrap>
+                                        {customer.full_name}
+                                    </Typography>
+
+                                    <Chip
+                                        size="small"
+                                        color={getCustomerStatusColor(customer.status)}
+                                        label={getCustomerStatusLabel(customer.status)}
+                                        sx={{ mt: 0.5 }}
+                                    />
+
+                                </Box>
+
+                                <Box sx={{ textAlign: "center" }}>
+
+                                    <Typography color="text.secondary">
+                                        <bdi>{customer.phone}</bdi>
+                                    </Typography>
+
+                                    {customer.phone_2 && (
+                                        <Typography variant="caption" color="text.secondary" display="block">
+                                            <bdi>{customer.phone_2}</bdi>
+                                        </Typography>
+                                    )}
+
+                                </Box>
 
                                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                                     <Chip

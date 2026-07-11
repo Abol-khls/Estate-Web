@@ -20,10 +20,11 @@ import AppSelect from "../../components/common/AppSelect";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { useSnackbar } from "../../context/SnackbarContext";
-import { getErrorMessage } from "../../utils/errorMessage";
+import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import {
     PROPERTY_TYPES,
-    TRANSACTION_TYPES
+    TRANSACTION_TYPES,
+    PROPERTY_STATUSES
 } from "../../constants/propertyOptions";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -82,6 +83,7 @@ export default function PropertyForm() {
 
         property_type: "",
         transaction_type: "",
+        status: "available",
 
         price: "",
         area: "",
@@ -136,6 +138,7 @@ export default function PropertyForm() {
                     title: response.data.title,
                     property_type: response.data.property_type,
                     transaction_type: response.data.transaction_type,
+                    status: response.data.status,
                     price: response.data.price,
                     area: response.data.area,
                     rooms: response.data.rooms,
@@ -415,12 +418,27 @@ export default function PropertyForm() {
 
         } catch (error) {
 
-            const message = getErrorMessage(
-                error,
-                "ثبت اطلاعات ملک با مشکل مواجه شد. لطفاً فیلدها را بررسی کنید."
-            );
+            const fieldErrors = getFieldErrors(error);
 
-            showSnackbar(message, "error");
+            if (fieldErrors) {
+
+                setErrors(prev => ({ ...prev, ...fieldErrors }));
+
+                showSnackbar(
+                    getFieldErrorSummary(fieldErrors, getNonFieldError(error)),
+                    "error"
+                );
+
+            } else {
+
+                const message = getErrorMessage(
+                    error,
+                    "ثبت اطلاعات ملک با مشکل مواجه شد."
+                );
+
+                showSnackbar(message, "error");
+
+            }
 
         }
 
@@ -530,6 +548,30 @@ export default function PropertyForm() {
 
                     </Grid>
 
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <AppSelect
+                            label="وضعیت ملک"
+                            name="status"
+                            value={form.status}
+                            onChange={handleChange}
+                        >
+
+                            {PROPERTY_STATUSES.map(item => (
+
+                                <MenuItem
+                                    key={item.value}
+                                    value={item.value}
+                                >
+                                    {item.label}
+                                </MenuItem>
+
+                            ))}
+
+                        </AppSelect>
+
+                    </Grid>
+
                 </FormSection>
 
                 <FormSection title="قیمت و مشخصات">
@@ -589,6 +631,8 @@ export default function PropertyForm() {
                             name="floor"
                             value={form.floor}
                             onChange={handleNumberChange}
+                            error={!!errors.floor}
+                            helperText={errors.floor}
                             slotProps={{
                                 htmlInput: { inputMode: "numeric" }
                             }}
@@ -603,6 +647,8 @@ export default function PropertyForm() {
                             name="total_floors"
                             value={form.total_floors}
                             onChange={handleNumberChange}
+                            error={!!errors.total_floors}
+                            helperText={errors.total_floors}
                             slotProps={{
                                 htmlInput: { inputMode: "numeric" }
                             }}
@@ -617,6 +663,8 @@ export default function PropertyForm() {
                             name="year_built"
                             value={form.year_built}
                             onChange={handleNumberChange}
+                            error={!!errors.year_built}
+                            helperText={errors.year_built}
                             slotProps={{
                                 htmlInput: { inputMode: "numeric" }
                             }}
@@ -787,6 +835,16 @@ export default function PropertyForm() {
                             setNewImages={setNewImages}
                         />
 
+                        {errors.images && (
+                            <Typography
+                                variant="caption"
+                                color="error"
+                                sx={{ display: "block", mt: 1 }}
+                            >
+                                {errors.images}
+                            </Typography>
+                        )}
+
                     </Grid>
 
                     <Grid size={{ xs: 12 }}>
@@ -802,6 +860,16 @@ export default function PropertyForm() {
                             onRemove={handleRemoveVideo}
 
                         />
+
+                        {errors.videos && (
+                            <Typography
+                                variant="caption"
+                                color="error"
+                                sx={{ display: "block", mt: 1 }}
+                            >
+                                {errors.videos}
+                            </Typography>
+                        )}
 
                     </Grid>
 

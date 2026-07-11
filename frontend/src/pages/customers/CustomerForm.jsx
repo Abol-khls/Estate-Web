@@ -19,8 +19,8 @@ import AppSelect from "../../components/common/AppSelect";
 
 import api from "../../services/api";
 import { useSnackbar } from "../../context/SnackbarContext";
-import { getErrorMessage } from "../../utils/errorMessage";
-import { REQUEST_TYPES } from "../../constants/customerOptions";
+import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
+import { REQUEST_TYPES, CUSTOMER_STATUSES } from "../../constants/customerOptions";
 
 function FormSection({ title, children }) {
 
@@ -56,7 +56,9 @@ export default function CustomerForm() {
     const [form, setForm] = useState({
         full_name: "",
         phone: "",
+        phone_2: "",
         request_type: "",
+        status: "active",
         budget: "",
         notes: "",
     });
@@ -83,7 +85,9 @@ export default function CustomerForm() {
                 setForm({
                     full_name: response.data.full_name,
                     phone: response.data.phone,
+                    phone_2: response.data.phone_2 ?? "",
                     request_type: response.data.request_type,
+                    status: response.data.status,
                     budget: response.data.budget ?? "",
                     notes: response.data.notes ?? "",
                 });
@@ -162,7 +166,9 @@ export default function CustomerForm() {
             const payload = {
                 full_name: form.full_name,
                 phone: form.phone,
+                phone_2: form.phone_2,
                 request_type: form.request_type,
+                status: form.status,
                 budget: form.budget ? Number(form.budget) : null,
                 notes: form.notes,
             };
@@ -180,12 +186,27 @@ export default function CustomerForm() {
         }
         catch (error) {
 
-            const message = getErrorMessage(
-                error,
-                "ثبت اطلاعات مشتری با مشکل مواجه شد. لطفاً فیلدها را بررسی کنید."
-            );
+            const fieldErrors = getFieldErrors(error);
 
-            showSnackbar(message, "error");
+            if (fieldErrors) {
+
+                setErrors(prev => ({ ...prev, ...fieldErrors }));
+
+                showSnackbar(
+                    getFieldErrorSummary(fieldErrors, getNonFieldError(error)),
+                    "error"
+                );
+
+            } else {
+
+                const message = getErrorMessage(
+                    error,
+                    "ثبت اطلاعات مشتری با مشکل مواجه شد."
+                );
+
+                showSnackbar(message, "error");
+
+            }
 
         }
         finally {
@@ -229,6 +250,17 @@ export default function CustomerForm() {
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 6 }}>
+                        <AppTextField
+                            label="شماره تماس دوم (اختیاری)"
+                            name="phone_2"
+                            value={form.phone_2}
+                            onChange={handleChange}
+                            error={!!errors.phone_2}
+                            helperText={errors.phone_2}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <AppSelect
                             label="نوع درخواست"
                             name="request_type"
@@ -239,6 +271,21 @@ export default function CustomerForm() {
                         >
                             <MenuItem value="">انتخاب کنید</MenuItem>
                             {REQUEST_TYPES.map(item => (
+                                <MenuItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </AppSelect>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <AppSelect
+                            label="وضعیت مشتری"
+                            name="status"
+                            value={form.status}
+                            onChange={handleChange}
+                        >
+                            {CUSTOMER_STATUSES.map(item => (
                                 <MenuItem key={item.value} value={item.value}>
                                     {item.label}
                                 </MenuItem>

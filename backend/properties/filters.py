@@ -34,6 +34,7 @@ class PropertyFilter(
         fields = [
             "property_type",
             "transaction_type",
+            "status",
             "rooms",
             "is_favorite",
         ]

@@ -1,5 +1,3 @@
-
-
 const KNOWN_MESSAGES = {
     "This field is required.": "این فیلد الزامی است.",
     "This field may not be blank.": "این فیلد نمی‌تواند خالی باشد.",
@@ -18,6 +16,16 @@ const KNOWN_MESSAGES = {
         "نشست شما منقضی شده است. لطفاً دوباره وارد شوید.",
     "No active account found with the given credentials":
         "نام کاربری یا رمز عبور اشتباه است.",
+    "This field must be unique.":
+        "این مقدار قبلاً ثبت شده است.",
+    "Invalid pk": "مورد انتخاب‌شده معتبر نیست.",
+    "Invalid choice.": "مقدار انتخاب‌شده معتبر نیست.",
+    "Date has wrong format.":
+        "قالب تاریخ وارد شده صحیح نیست.",
+    "No file was submitted.":
+        "فایلی انتخاب نشده است.",
+    "The submitted file is empty.":
+        "فایل انتخاب‌شده خالی است.",
 };
 
 function translateKnownMessage(message) {
@@ -27,7 +35,6 @@ function translateKnownMessage(message) {
     if (KNOWN_MESSAGES[message]) {
         return KNOWN_MESSAGES[message];
     }
-
 
     if (/greater than or equal to/i.test(message)) {
         return "مقدار وارد شده باید بزرگ‌تر یا مساوی حد مجاز باشد.";
@@ -45,6 +52,18 @@ function translateKnownMessage(message) {
         return "تعداد کاراکترهای وارد شده کمتر از حد مجاز است.";
     }
 
+    if (/invalid pk/i.test(message)) {
+        return "مورد انتخاب‌شده معتبر نیست.";
+    }
+
+    if (/does not exist/i.test(message)) {
+        return "مورد انتخاب‌شده وجود ندارد.";
+    }
+
+    if (/already exists/i.test(message)) {
+        return "این مقدار قبلاً ثبت شده است.";
+    }
+
     return null;
 
 }
@@ -55,10 +74,7 @@ export function getErrorMessage(
 ) {
 
     if (!error?.response) {
-
-
         return "ارتباط با سرور برقرار نشد. اتصال اینترنت یا در دسترس بودن سرور را بررسی کنید.";
-
     }
 
     const { status, data } = error.response;
@@ -83,8 +99,11 @@ export function getErrorMessage(
         return translateKnownMessage(data.detail) ?? fallback;
     }
 
-
     if (data && typeof data === "object") {
+
+        const nonFieldError = getNonFieldError(error);
+
+        if (nonFieldError) return nonFieldError;
 
         const firstEntry = Object.values(data)[0];
 
@@ -92,63 +111,76 @@ export function getErrorMessage(
             ? firstEntry[0]
             : firstEntry;
 
-        const translated = translateKnownMessage(rawMessage);
-
-        return translated ?? rawMessage;
+        return translateKnownMessage(rawMessage) ?? fallback;
 
     }
 
     return fallback;
 
 }
-export function getErrorMessages(error) {
 
-    if (!error?.response) {
-        return [
-            "ارتباط با سرور برقرار نشد."
-        ];
+export function getNonFieldError(error) {
+
+    const data = error?.response?.data;
+
+    if (!data || typeof data !== "object") return null;
+
+    const value = data.non_field_errors ?? data.non_field_error;
+
+    if (!value) return null;
+
+    const rawMessage = Array.isArray(value) ? value[0] : value;
+
+    if (typeof rawMessage !== "string") return null;
+
+    return translateKnownMessage(rawMessage) ?? rawMessage;
+
+}
+
+export function getFieldErrors(error) {
+
+    const data = error?.response?.data;
+
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+        return null;
     }
 
-    const { data } = error.response;
-
-    if (!data || typeof data !== "object") {
-        return [
-            getErrorMessage(error)
-        ];
+    if (typeof data.detail === "string") {
+        return null;
     }
 
-    const messages = [];
+    const fieldErrors = {};
 
-    Object.values(data).forEach(value => {
+    Object.entries(data).forEach(([field, value]) => {
 
-        if (Array.isArray(value)) {
-
-            value.forEach(msg => {
-
-                messages.push(
-                    translateKnownMessage(msg) ?? msg
-                );
-
-            });
-
-        } else if (typeof value === "string") {
-
-            messages.push(
-                translateKnownMessage(value) ?? value
-            );
-
+        if (field === "non_field_errors" || field === "non_field_error") {
+            return;
         }
+
+        const rawMessage = Array.isArray(value) ? value[0] : value;
+
+        if (typeof rawMessage !== "string") return;
+
+        fieldErrors[field] = translateKnownMessage(rawMessage) ?? rawMessage;
 
     });
 
-    if (!messages.length) {
+    return Object.keys(fieldErrors).length ? fieldErrors : null;
 
-        messages.push(
-            getErrorMessage(error)
-        );
+}
 
+export function getFieldErrorSummary(fieldErrors, nonFieldError) {
+
+    if (nonFieldError) return nonFieldError;
+
+    if (!fieldErrors) return "لطفاً فیلدهای مشخص‌شده در فرم را اصلاح کنید.";
+
+    const entries = Object.entries(fieldErrors);
+
+    if (entries.length === 1) {
+        return entries[0][1];
     }
 
-    return messages;
+    return "لطفاً فیلدهای مشخص‌شده در فرم را اصلاح کنید.";
 
 }

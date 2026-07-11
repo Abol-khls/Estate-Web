@@ -8,6 +8,8 @@ export default function AppTextField({
 
     slotProps,
 
+    InputProps,
+
     ...props
 
 }) {
@@ -20,35 +22,25 @@ export default function AppTextField({
 
             size="small"
 
-            slotProps={{
+            InputProps={{
 
-                input: {
+                startAdornment: startIcon ? (
+                    <InputAdornment position="start">
+                        {startIcon}
+                    </InputAdornment>
+                ) : InputProps?.startAdornment,
 
-                    startAdornment: startIcon ? (
+                endAdornment: endIcon ? (
+                    <InputAdornment position="end">
+                        {endIcon}
+                    </InputAdornment>
+                ) : InputProps?.endAdornment,
 
-                        <InputAdornment position="start">
-
-                            {startIcon}
-
-                        </InputAdornment>
-
-                    ) : undefined,
-
-                    endAdornment: endIcon ? (
-
-                        <InputAdornment position="end">
-
-                            {endIcon}
-
-                        </InputAdornment>
-
-                    ) : undefined,
-
-                    ...(slotProps?.input ?? {})
-
-                }
+                ...InputProps
 
             }}
+
+            slotProps={slotProps}
 
             {...props}
 

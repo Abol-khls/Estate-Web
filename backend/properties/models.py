@@ -15,6 +15,13 @@ class Property(models.Model):
         ('mortgage', 'Mortgage'),
     )
 
+    STATUS_CHOICES = (
+        ('available', 'Available'),
+        ('reserved', 'Reserved'),
+        ('sold', 'Sold'),
+        ('rented', 'Rented'),
+    )
+
     PROPERTY_TYPE_CHOICES = (
         ('apartment', 'Apartment'),
         ('villa', 'Villa'),
@@ -98,6 +105,12 @@ class Property(models.Model):
     )
     is_favorite = models.BooleanField(
         default=False
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='available'
     )
 
     def __str__(self):

@@ -290,6 +290,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "images",
             "cover_image",
             "is_favorite",
+            "status",
         ]
 
     def to_representation(self, instance):
@@ -302,7 +303,3 @@ class PropertySerializer(serializers.ModelSerializer):
         ).data
 
         return data
-    
-    
-
-    

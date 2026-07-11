@@ -18,9 +18,9 @@ class CustomerViewSet(AgencyScopedViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-    filterset_fields = ["request_type"]
+    filterset_fields = ["request_type", "status"]
 
-    search_fields = ["full_name", "phone", "notes"]
+    search_fields = ["full_name", "phone", "phone_2", "notes"]
 
     ordering_fields = ["created_at", "budget", "full_name"]
 

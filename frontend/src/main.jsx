@@ -5,7 +5,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
-import theme from "./theme.js";
+import theme from "./Theme.js";
 import rtlCache from "./rtlCache.js";
 import { SnackbarProvider } from "./context/SnackbarContext";
 

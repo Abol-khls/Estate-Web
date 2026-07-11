@@ -2,6 +2,7 @@ import {
     Box,
     Typography,
     IconButton,
+    Chip,
 } from "@mui/material";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -9,6 +10,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import PropertyActions from "./PropertyActions";
 import { BASE_URL } from "../../config";
+import { getPropertyStatusLabel, getPropertyStatusColor } from "../../constants/propertyOptions";
 
 export default function PropertyRow({
 
@@ -177,6 +179,13 @@ export default function PropertyRow({
                     کد ملک: <bdi>{property.code}</bdi>
 
                 </Typography>
+
+                <Chip
+                    size="small"
+                    color={getPropertyStatusColor(property.status)}
+                    label={getPropertyStatusLabel(property.status)}
+                    sx={{ mt: 0.7 }}
+                />
 
             </Box>
 

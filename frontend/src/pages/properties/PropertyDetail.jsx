@@ -27,6 +27,11 @@ import {
     getTransactionTypeLabel
 } from "../../constants/propertyHelpers";
 
+import {
+    getPropertyStatusLabel,
+    getPropertyStatusColor
+} from "../../constants/propertyOptions";
+
 
 import IconButton from "@mui/material/IconButton";
 
@@ -252,11 +257,18 @@ export default function PropertyDetail() {
 
                     <Box>
 
-                        <Typography variant="h4">
+                        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 0.5 }}>
 
-                            {property.title}
+                            <Typography variant="h4">
+                                {property.title}
+                            </Typography>
 
-                        </Typography>
+                            <Chip
+                                color={getPropertyStatusColor(property.status)}
+                                label={getPropertyStatusLabel(property.status)}
+                            />
+
+                        </Stack>
 
                         <Typography color="text.secondary" sx={{ mt: 0.5 }}>
                             کد ملک: <bdi>{property.code}</bdi>
