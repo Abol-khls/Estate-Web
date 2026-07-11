@@ -391,4 +391,4 @@ and the backend server is running.
 
 ## License
 
-This project is intended for educational and portfolio purposes.
+MIT License
