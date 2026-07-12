@@ -27,6 +27,7 @@ export default function EntityPickerDialog({
     searchPlaceholder,
     renderItem,
     onSelect,
+    pageSize = 10,
 
 }) {
 
@@ -35,18 +36,17 @@ export default function EntityPickerDialog({
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
     const [loading, setLoading] = useState(true);
-    const pageSize = 10;
 
-    const isFirstRun = useRef(true);
+    const searchTimeoutRef = useRef(null);
 
-    async function loadItems(pageToLoad = page) {
+    async function loadItems(pageToLoad, searchTerm) {
 
         setLoading(true);
 
         try {
 
             const response = await api.get(endpoint, {
-                params: { page: pageToLoad, search },
+                params: { page: pageToLoad, search: searchTerm },
             });
 
             setItems(response.data.results ?? response.data);
@@ -57,6 +57,7 @@ export default function EntityPickerDialog({
 
             if (pageToLoad !== 1) {
                 setPage(1);
+                loadItems(1, searchTerm);
                 return;
             }
 
@@ -76,38 +77,32 @@ export default function EntityPickerDialog({
 
         setSearch("");
         setPage(1);
-        isFirstRun.current = true;
-        loadItems(1);
+        loadItems(1, "");
 
-        
+        return () => clearTimeout(searchTimeoutRef.current);
+
+      
     }, [open]);
 
-    useEffect(() => {
+    function handleSearchChange(e) {
 
-        if (!open) return;
+        const value = e.target.value;
 
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
-        }
+        setSearch(value);
+        setPage(1);
 
-        if (page !== 1) {
-            setPage(1);
-        } else {
-            loadItems(1);
-        }
+        clearTimeout(searchTimeoutRef.current);
 
-        
-    }, [search]);
+        searchTimeoutRef.current = setTimeout(() => {
+            loadItems(1, value);
+        }, 300);
 
-    useEffect(() => {
+    }
 
-        if (!open || isFirstRun.current) return;
-
-        loadItems(page);
-
-        
-    }, [page]);
+    function handlePageChange(event, value) {
+        setPage(value);
+        loadItems(value, search);
+    }
 
     function handleSelect(item) {
         onSelect(item);
@@ -146,7 +141,7 @@ export default function EntityPickerDialog({
                 <AppTextField
                     placeholder={searchPlaceholder}
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={handleSearchChange}
                     startIcon={<SearchIcon fontSize="small" />}
                     autoFocus
                 />
@@ -233,7 +228,7 @@ export default function EntityPickerDialog({
                         shape="rounded"
                         size="small"
                         disabled={loading}
-                        onChange={(event, value) => setPage(value)}
+                        onChange={handlePageChange}
                     />
                 </Box>
 

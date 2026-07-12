@@ -42,7 +42,7 @@ export default function Properties() {
 
     const [count, setCount] = useState(0);
 
-    const pageSize = 10;
+    const pageSize = 20;
 
     const [ordering, setOrdering] = useState("all");
 

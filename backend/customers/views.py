@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Customer
 from .serializers import CustomerSerializer
 from core.viewsets import AgencyScopedViewSet
+from core.pagination import TwentyPerPagePagination
 
 
 class CustomerViewSet(AgencyScopedViewSet):
@@ -15,6 +16,8 @@ class CustomerViewSet(AgencyScopedViewSet):
     serializer_class = CustomerSerializer
 
     permission_classes = [IsAuthenticated]
+
+    pagination_class = TwentyPerPagePagination
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 

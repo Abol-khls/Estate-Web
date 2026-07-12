@@ -191,7 +191,7 @@ export default function ContractForm() {
 
         loadContract();
 
-        
+   
     }, [id]);
 
     function handleChange(e) {
@@ -439,6 +439,7 @@ export default function ContractForm() {
                 onClose={() => setCustomerDialogOpen(false)}
                 title="انتخاب مشتری"
                 endpoint="customers/"
+                pageSize={20}
                 searchPlaceholder="جستجو بر اساس نام یا شماره تماس..."
                 onSelect={(customer) => {
                     setForm(prev => ({ ...prev, customer }));

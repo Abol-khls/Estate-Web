@@ -56,7 +56,7 @@ export default function Customers() {
 
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
-    const pageSize = 10;
+    const pageSize = 20;
 
     const [loading, setLoading] = useState(true);
     const isFirstRun = useRef(true);
