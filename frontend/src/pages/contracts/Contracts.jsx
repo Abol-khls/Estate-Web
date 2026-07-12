@@ -41,7 +41,8 @@ import {
     getContractStatusColor,
 } from "../../constants/contractOptions";
 
-const GRID_COLUMNS = "180px 180px 140px 150px 130px 120px 150px";
+const GRID_COLUMNS =
+"minmax(170px,2fr) minmax(170px,2fr) minmax(120px,1fr) minmax(140px,1.2fr) minmax(120px,1fr) minmax(120px,1fr) 90px";
 
 export default function Contracts() {
 
@@ -128,7 +129,7 @@ export default function Contracts() {
             loadContracts(1);
         }
 
-       
+
     }, [search, status, contractType, ordering]);
 
     useEffect(() => {
@@ -137,7 +138,7 @@ export default function Contracts() {
 
         loadContracts(page);
 
-        
+
     }, [page]);
 
     function handleDeleteClick(contract) {
