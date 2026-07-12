@@ -39,6 +39,49 @@ class ContractSerializer(serializers.ModelSerializer):
 
         return value
 
+    def create(self, validated_data):
+
+        contract = super().create(validated_data)
+
+        self._sync_related_statuses(contract)
+
+        return contract
+
+    def update(self, instance, validated_data):
+
+        contract = super().update(instance, validated_data)
+
+        self._sync_related_statuses(contract)
+
+        return contract
+
+    def _sync_related_statuses(self, contract):
+
+        property_obj = contract.property
+
+        customer_obj = contract.customer
+
+        if contract.status == 'signed':
+
+            property_obj.status = 'rented' if contract.contract_type == 'rent' else 'sold'
+
+            customer_obj.status = 'converted'
+
+        elif contract.status == 'cancelled':
+
+            property_obj.status = 'available'
+
+            if customer_obj.status == 'converted':
+                customer_obj.status = 'active'
+
+        elif contract.status == 'draft':
+
+            property_obj.status = 'reserved'
+
+        property_obj.save(update_fields=['status'])
+
+        customer_obj.save(update_fields=['status'])
+
     class Meta:
         model = Contract
         fields = '__all__'

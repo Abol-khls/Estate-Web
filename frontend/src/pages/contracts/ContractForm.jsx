@@ -7,21 +7,25 @@ import {
     Box,
     Paper,
     MenuItem,
-    Autocomplete,
+    Chip,
 } from "@mui/material";
 
 import SaveIcon from "@mui/icons-material/Save";
+import SearchIcon from "@mui/icons-material/Search";
 
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import AppButton from "../../components/common/AppButton";
 import AppTextField from "../../components/common/AppTextField";
 import AppSelect from "../../components/common/AppSelect";
+import EntityPickerDialog from "../../components/common/EntityPickerDialog";
 
 import api from "../../services/api";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { CONTRACT_TYPES, CONTRACT_STATUSES } from "../../constants/contractOptions";
+import { getCustomerStatusLabel, getCustomerStatusColor } from "../../constants/customerOptions";
+import { getPropertyStatusLabel, getPropertyStatusColor } from "../../constants/propertyOptions";
 
 function FormSection({ title, children }) {
 
@@ -52,90 +56,70 @@ function FormSection({ title, children }) {
 
 }
 
-function EntityAutocomplete({ label, endpoint, getOptionLabel, value, onChange, error, helperText }) {
-
-    const [options, setOptions] = useState([]);
-    const [inputValue, setInputValue] = useState("");
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-
-        if (value && !inputValue) {
-            setInputValue(getOptionLabel(value) ?? "");
-        }
-
-       
-    }, [value]);
-
-    useEffect(() => {
-
-        let active = true;
-
-        const timeout = setTimeout(async () => {
-
-            setLoading(true);
-
-            try {
-
-                const response = await api.get(endpoint, {
-                    params: { search: inputValue },
-                });
-
-                if (active) {
-                    setOptions(response.data.results ?? response.data);
-                }
-
-            }
-            catch {
-
-                if (active) {
-                    setOptions([]);
-                }
-
-            }
-            finally {
-
-                if (active) {
-                    setLoading(false);
-                }
-
-            }
-
-        }, 300);
-
-        return () => {
-            active = false;
-            clearTimeout(timeout);
-        };
-
-    }, [inputValue, endpoint]);
+function PickerField({ label, placeholder, displayValue, error, helperText, onClick }) {
 
     return (
 
-        <Autocomplete
-            options={options}
-            loading={loading}
-            value={value}
-            inputValue={inputValue}
-            filterOptions={(opts) => opts}
-            noOptionsText="موردی یافت نشد"
-            loadingText="در حال جستجو..."
-            isOptionEqualToValue={(option, val) => option.id === val?.id}
-            getOptionLabel={(option) => getOptionLabel(option) ?? ""}
-            onChange={(event, newValue) => onChange(newValue)}
-            onInputChange={(event, newInputValue, reason) => {
-                if (reason === "reset" && !newInputValue) return;
-                setInputValue(newInputValue);
-            }}
-            renderInput={(params) => (
-                <AppTextField
-                    {...params}
-                    label={label}
-                    error={error}
-                    helperText={helperText}
-                />
+        <Box>
+
+            <Typography
+                variant="caption"
+                sx={{
+                    display: "block",
+                    mb: 0.6,
+                    ml: 0.5,
+                    color: error ? "error.main" : "text.secondary",
+                }}
+            >
+                {label}
+            </Typography>
+
+            <Box
+                onClick={onClick}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 1,
+                    px: 2,
+                    py: 1.25,
+                    borderRadius: 2.5,
+                    border: "1px solid",
+                    borderColor: error ? "error.main" : "divider",
+                    bgcolor: "background.paper",
+                    cursor: "pointer",
+                    transition: ".15s",
+                    "&:hover": {
+                        borderColor: error ? "error.main" : "primary.main",
+                    },
+                }}
+            >
+
+                <Typography
+                    color={displayValue ? "text.primary" : "text.secondary"}
+                    noWrap
+                    sx={{ fontWeight: displayValue ? 600 : 400 }}
+                >
+                    {displayValue ?? placeholder}
+                </Typography>
+
+                <SearchIcon fontSize="small" color="action" />
+
+            </Box>
+
+            {helperText && (
+
+                <Typography
+                    variant="caption"
+                    color="error"
+                    sx={{ display: "block", mt: 0.6, mx: 1.5 }}
+                >
+                    {helperText}
+                </Typography>
+
             )}
-        />
+
+        </Box>
 
     );
 
@@ -155,6 +139,9 @@ export default function ContractForm() {
 
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
+
+    const [customerDialogOpen, setCustomerDialogOpen] = useState(false);
+    const [propertyDialogOpen, setPropertyDialogOpen] = useState(false);
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
@@ -204,6 +191,7 @@ export default function ContractForm() {
 
         loadContract();
 
+        
     }, [id]);
 
     function handleChange(e) {
@@ -328,32 +316,24 @@ export default function ContractForm() {
                 <FormSection title="طرفین قرارداد">
 
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <EntityAutocomplete
+                        <PickerField
                             label="مشتری"
-                            endpoint="customers/"
-                            getOptionLabel={(option) => option.full_name}
-                            value={form.customer}
-                            onChange={(newValue) => {
-                                setForm(prev => ({ ...prev, customer: newValue }));
-                                setErrors(prev => ({ ...prev, customer: "" }));
-                            }}
+                            placeholder="برای انتخاب مشتری کلیک کنید"
+                            displayValue={form.customer?.full_name}
                             error={!!errors.customer}
                             helperText={errors.customer}
+                            onClick={() => setCustomerDialogOpen(true)}
                         />
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 6 }}>
-                        <EntityAutocomplete
+                        <PickerField
                             label="ملک"
-                            endpoint="properties/"
-                            getOptionLabel={(option) => option.title}
-                            value={form.property}
-                            onChange={(newValue) => {
-                                setForm(prev => ({ ...prev, property: newValue }));
-                                setErrors(prev => ({ ...prev, property: "" }));
-                            }}
+                            placeholder="برای انتخاب ملک کلیک کنید"
+                            displayValue={form.property?.title}
                             error={!!errors.property}
                             helperText={errors.property}
+                            onClick={() => setPropertyDialogOpen(true)}
                         />
                     </Grid>
 
@@ -453,6 +433,70 @@ export default function ContractForm() {
                 </Box>
 
             </form>
+
+            <EntityPickerDialog
+                open={customerDialogOpen}
+                onClose={() => setCustomerDialogOpen(false)}
+                title="انتخاب مشتری"
+                endpoint="customers/"
+                searchPlaceholder="جستجو بر اساس نام یا شماره تماس..."
+                onSelect={(customer) => {
+                    setForm(prev => ({ ...prev, customer }));
+                    setErrors(prev => ({ ...prev, customer: "" }));
+                }}
+                renderItem={(customer) => (
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+
+                        <Box>
+                            <Typography fontWeight={700}>
+                                {customer.full_name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <bdi>{customer.phone}</bdi>
+                            </Typography>
+                        </Box>
+
+                        <Chip
+                            size="small"
+                            color={getCustomerStatusColor(customer.status)}
+                            label={getCustomerStatusLabel(customer.status)}
+                        />
+
+                    </Box>
+                )}
+            />
+
+            <EntityPickerDialog
+                open={propertyDialogOpen}
+                onClose={() => setPropertyDialogOpen(false)}
+                title="انتخاب ملک"
+                endpoint="properties/"
+                searchPlaceholder="جستجو بر اساس عنوان یا کد ملک..."
+                onSelect={(property) => {
+                    setForm(prev => ({ ...prev, property }));
+                    setErrors(prev => ({ ...prev, property: "" }));
+                }}
+                renderItem={(property) => (
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+
+                        <Box sx={{ minWidth: 0 }}>
+                            <Typography fontWeight={700} noWrap>
+                                {property.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                کد: <bdi>{property.code}</bdi>
+                            </Typography>
+                        </Box>
+
+                        <Chip
+                            size="small"
+                            color={getPropertyStatusColor(property.status)}
+                            label={getPropertyStatusLabel(property.status)}
+                        />
+
+                    </Box>
+                )}
+            />
 
         </PageContainer>
 
