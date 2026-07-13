@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Contract
 from .serializers import ContractSerializer
 from core.viewsets import AgencyScopedViewSet
+from core.permissions import IsAgentOrManager
 
 
 class ContractViewSet(AgencyScopedViewSet):
@@ -14,7 +15,7 @@ class ContractViewSet(AgencyScopedViewSet):
 
     serializer_class = ContractSerializer
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAgentOrManager]
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 

@@ -21,8 +21,7 @@ class Customer(models.Model):
     )
 
     phone = models.CharField(
-        max_length=20,
-        unique=True
+        max_length=20
     )
 
     phone_2 = models.CharField(
@@ -64,6 +63,9 @@ class Customer(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        unique_together = ('agency', 'phone')
 
     def __str__(self):
         return self.full_name

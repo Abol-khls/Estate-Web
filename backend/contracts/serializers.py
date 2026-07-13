@@ -13,11 +13,7 @@ class ContractSerializer(serializers.ModelSerializer):
         source="property.title",
         read_only=True
     )
-    extra_kwargs = {
-        "agency": {
-            "read_only": True
-        }
-    }
+
     def validate_property(self, value):
         request = self.context["request"]
 
@@ -85,3 +81,8 @@ class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = '__all__'
+        extra_kwargs = {
+            "agency": {
+                "read_only": True
+            }
+        }

@@ -8,8 +8,6 @@ import {
     clearTokens,
 } from "./tokenService";
 import { API_BASE_URL } from "../config";
-console.log(API_BASE_URL);
-
 
 
 const api = axios.create({
@@ -55,7 +53,7 @@ api.interceptors.response.use(
                 const refresh = getRefreshToken();
 
                 const response = await axios.post(
-                    "http://127.0.0.1:8000/api/token/refresh/",
+                    `${API_BASE_URL}/token/refresh/`,
                     {
                         refresh,
                     }

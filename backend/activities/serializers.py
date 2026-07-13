@@ -3,12 +3,12 @@ from .models import Activity
 
 
 class ActivitySerializer(serializers.ModelSerializer):
-    extra_kwargs = {
-        "agency": {
-            "read_only": True
-        }
-    }
 
     class Meta:
         model = Activity
         fields = '__all__'
+        extra_kwargs = {
+            "agency": {
+                "read_only": True
+            }
+        }

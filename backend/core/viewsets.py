@@ -17,3 +17,8 @@ class AgencyScopedViewSet(ModelViewSet):
         serializer.save(
             agency=self.request.user.agency
         )
+
+    def perform_update(self, serializer):
+        serializer.save(
+            agency=self.request.user.agency
+        )

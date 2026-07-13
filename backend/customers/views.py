@@ -7,6 +7,7 @@ from .models import Customer
 from .serializers import CustomerSerializer
 from core.viewsets import AgencyScopedViewSet
 from core.pagination import TwentyPerPagePagination
+from core.permissions import IsAgentOrManager
 
 
 class CustomerViewSet(AgencyScopedViewSet):
@@ -15,7 +16,7 @@ class CustomerViewSet(AgencyScopedViewSet):
 
     serializer_class = CustomerSerializer
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAgentOrManager]
 
     pagination_class = TwentyPerPagePagination
 

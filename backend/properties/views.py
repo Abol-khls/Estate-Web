@@ -1,92 +1,46 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-
-
 from rest_framework.filters import SearchFilter, OrderingFilter
-
-from django_filters.rest_framework import DjangoFilterBackend
-from core.viewsets import AgencyScopedViewSet
-
-from .models import Property, PropertyImage, PropertyVideo
-from .serializers import PropertySerializer, PropertyImageSerializer, PropertyVideoSerializer
-
-
-
-
-class PropertyImageViewSet(viewsets.ModelViewSet):
-    queryset = PropertyImage.objects.all()
-    serializer_class = PropertyImageSerializer
-
-from .filters import PropertyFilter
-
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.parsers import (
     MultiPartParser,
     FormParser,
     JSONParser
 )
+from rest_framework.exceptions import ValidationError
 
+from django_filters.rest_framework import DjangoFilterBackend
+
+from core.viewsets import AgencyScopedViewSet
+from core.permissions import IsAgentOrManager
+
+from .models import Property, PropertyImage, PropertyVideo
 from .serializers import (
     PropertySerializer,
-    PropertyImageSerializer
+    PropertyImageSerializer,
+    PropertyVideoSerializer
 )
-
-from .models import PropertyImage
-from rest_framework import permissions
-from rest_framework.response import Response
+from .filters import PropertyFilter
 
 
 class PropertyViewSet(AgencyScopedViewSet):
 
-
-
     queryset = Property.objects.all()
 
     serializer_class = PropertySerializer
-    from rest_framework.decorators import action
-    from rest_framework.response import Response
-    @action(detail=True, methods=["post"])
-
-    def set_cover(self, request, pk=None):
-
-        property = self.get_object()
-
-        image_id = request.data.get("image_id")
-
-        PropertyImage.objects.filter(
-
-            property=property
-
-        ).update(
-
-            is_cover=False
-
-        )
-
-        PropertyImage.objects.filter(
-
-            id=image_id,
-
-            property=property
-
-        ).update(
-
-            is_cover=True
-
-        )
-
-        return Response({"success": True})
 
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,
+        IsAgentOrManager
     ]
-    
 
     filter_backends = [
         DjangoFilterBackend,
         SearchFilter,
         OrderingFilter
     ]
+
     ordering_fields = [
         "created_at",
         "price",
@@ -107,8 +61,12 @@ class PropertyViewSet(AgencyScopedViewSet):
         'rooms',
     ]
 
+    parser_classes = [
+        MultiPartParser,
+        FormParser,
+        JSONParser
+    ]
 
-    
     def get_serializer_context(self):
 
         context = super().get_serializer_context()
@@ -117,19 +75,41 @@ class PropertyViewSet(AgencyScopedViewSet):
 
         return context
 
-    parser_classes = [
-    MultiPartParser,
-    FormParser,
-    JSONParser
-]
-    
+    @action(detail=True, methods=["post"])
+    def set_cover(self, request, pk=None):
+
+        property = self.get_object()
+
+        image_id = request.data.get("image_id")
+
+        image = PropertyImage.objects.filter(
+            id=image_id,
+            property=property
+        ).first()
+
+        if not image:
+            raise ValidationError({"image_id": "تصویر یافت نشد."})
+
+        PropertyImage.objects.filter(
+            property=property
+        ).update(
+            is_cover=False
+        )
+
+        image.is_cover = True
+        image.save(update_fields=["is_cover"])
+
+        return Response({"success": True})
+
+
 class PropertyImageViewSet(viewsets.ModelViewSet):
 
     queryset = PropertyImage.objects.all()
     serializer_class = PropertyImageSerializer
 
     permission_classes = [
-        IsAuthenticated
+        IsAuthenticated,
+        IsAgentOrManager
     ]
 
     http_method_names = [

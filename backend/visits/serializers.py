@@ -3,11 +3,7 @@ from .models import Visit
 
 
 class VisitSerializer(serializers.ModelSerializer):
-    extra_kwargs = {
-        "agency": {
-            "read_only": True
-        }
-    }
+
     def validate_property(self, value):
         request = self.context["request"]
 
@@ -32,3 +28,8 @@ class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
         fields = '__all__'
+        extra_kwargs = {
+            "agency": {
+                "read_only": True
+            }
+        }

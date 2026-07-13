@@ -1,4 +1,5 @@
 from rest_framework.exceptions import ValidationError
+from PIL import Image
 import os
 
 
@@ -20,6 +21,15 @@ VIDEO_EXTENSIONS = [
     ".mkv",
 ]
 
+VIDEO_SIGNATURES = [
+    b"\x00\x00\x00\x18ftyp",
+    b"\x00\x00\x00\x1cftyp",
+    b"\x00\x00\x00\x20ftyp",
+    b"ftyp",
+    b"\x1aE\xdf\xa3",
+    b"RIFF",
+]
+
 
 def validate_image(file):
 
@@ -28,7 +38,15 @@ def validate_image(file):
     if ext not in IMAGE_EXTENSIONS:
         raise ValidationError("فرمت تصویر مجاز نیست.")
 
+    position = file.tell()
 
+    try:
+        image = Image.open(file)
+        image.verify()
+    except Exception:
+        raise ValidationError("فایل ارسال‌شده یک تصویر معتبر نیست.")
+    finally:
+        file.seek(position)
 
 
 def validate_video(file):
@@ -37,3 +55,12 @@ def validate_video(file):
 
     if ext not in VIDEO_EXTENSIONS:
         raise ValidationError("فرمت ویدیو مجاز نیست.")
+
+    position = file.tell()
+
+    header = file.read(64)
+
+    file.seek(position)
+
+    if not any(signature in header for signature in VIDEO_SIGNATURES):
+        raise ValidationError("فایل ارسال‌شده یک ویدیوی معتبر نیست.")

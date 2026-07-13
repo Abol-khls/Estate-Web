@@ -13,11 +13,6 @@ from .validators import (
 
 
 class PropertyImageSerializer(serializers.ModelSerializer):
-    extra_kwargs = {
-        "agency": {
-            "read_only": True
-        }
-    }
 
     class Meta:
         model = PropertyImage
