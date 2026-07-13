@@ -151,19 +151,16 @@ export default function PropertyDetail() {
 
         try {
 
-            const response = await api.patch(
+            const response = await api.post(
 
-                `properties/${property.id}/`,
-
-                {
-
-                    is_favorite: !property.is_favorite
-
-                }
+                `properties/${property.id}/toggle_favorite/`
 
             );
 
-            setProperty(response.data);
+            setProperty(prev => ({
+                ...prev,
+                is_favorite: response.data.is_favorite
+            }));
 
         }
 

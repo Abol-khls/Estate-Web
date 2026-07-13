@@ -36,5 +36,4 @@ class PropertyFilter(
             "transaction_type",
             "status",
             "rooms",
-            "is_favorite",
         ]

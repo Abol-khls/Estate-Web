@@ -4,7 +4,8 @@ from .validators import validate_image, validate_video
 from .models import (
     Property,
     PropertyImage,
-    PropertyVideo
+    PropertyVideo,
+    PropertyFavorite
 )
 from .validators import (
     validate_image,
@@ -56,6 +57,8 @@ class PropertyVideoSerializer(serializers.ModelSerializer):
 
 class PropertySerializer(serializers.ModelSerializer):
     cover_image = serializers.SerializerMethodField()
+
+    is_favorite = serializers.SerializerMethodField()
 
     images = PropertyImageSerializer(
         many=True,
@@ -244,6 +247,18 @@ class PropertySerializer(serializers.ModelSerializer):
             )
 
         return instance
+    def get_is_favorite(self, obj):
+
+        request = self.context.get("request")
+
+        if not request or not request.user.is_authenticated:
+            return False
+
+        return PropertyFavorite.objects.filter(
+            user=request.user,
+            property=obj
+        ).exists()
+
     def get_cover_image(self, obj):
 
         cover = obj.images.filter(is_cover=True).first()

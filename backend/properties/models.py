@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from agencies.models import Agency
 from .validators import (
     validate_image,
@@ -103,10 +104,6 @@ class Property(models.Model):
         null=True,
         blank=True
     )
-    is_favorite = models.BooleanField(
-        default=False
-    )
-
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -115,6 +112,31 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.title}"
+
+
+class PropertyFavorite(models.Model):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="favorite_properties"
+    )
+
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE,
+        related_name="favorited_by"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        unique_together = ('user', 'property')
+
+    def __str__(self):
+        return f"{self.user} - {self.property}"
     
 class PropertyImage(models.Model):
 

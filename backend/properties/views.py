@@ -15,7 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from core.viewsets import AgencyScopedViewSet
 from core.permissions import IsAgentOrManager
 
-from .models import Property, PropertyImage, PropertyVideo
+from .models import Property, PropertyImage, PropertyVideo, PropertyFavorite
 from .serializers import (
     PropertySerializer,
     PropertyImageSerializer,
@@ -74,6 +74,42 @@ class PropertyViewSet(AgencyScopedViewSet):
         context["request"] = self.request
 
         return context
+
+    def get_queryset(self):
+
+        queryset = super().get_queryset()
+
+        is_favorite = self.request.query_params.get("is_favorite")
+
+        if is_favorite in ("true", "True", "1"):
+
+            queryset = queryset.filter(
+                favorited_by__user=self.request.user
+            )
+
+        return queryset
+
+    @action(detail=True, methods=["post"])
+    def toggle_favorite(self, request, pk=None):
+
+        property = self.get_object()
+
+        favorite = PropertyFavorite.objects.filter(
+            user=request.user,
+            property=property
+        ).first()
+
+        if favorite:
+            favorite.delete()
+            is_favorite = False
+        else:
+            PropertyFavorite.objects.create(
+                user=request.user,
+                property=property
+            )
+            is_favorite = True
+
+        return Response({"is_favorite": is_favorite})
 
     @action(detail=True, methods=["post"])
     def set_cover(self, request, pk=None):

@@ -17,6 +17,12 @@ import CustomerForm from "../pages/customers/CustomerForm";
 import Contracts from "../pages/contracts/Contracts";
 import ContractForm from "../pages/contracts/ContractForm";
 
+import Visits from "../pages/visits/Visits";
+import VisitForm from "../pages/visits/VisitForm";
+
+import Activities from "../pages/activities/Activities";
+import ActivityForm from "../pages/activities/ActivityForm";
+
 export default function AppRoutes() {
 
 
@@ -165,6 +171,72 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <ContractForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/visits"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <Visits />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/visits/create"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <VisitForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/visits/:id/edit"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <VisitForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/activities"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <Activities />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/activities/create"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ActivityForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/activities/:id/edit"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ActivityForm />
                             </Layout>
                         </ProtectedRoute>
                     }

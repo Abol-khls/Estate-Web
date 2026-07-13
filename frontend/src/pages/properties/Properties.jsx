@@ -215,15 +215,9 @@ export default function Properties() {
 
         try {
 
-            await api.patch(
+            await api.post(
 
-                `properties/${property.id}/`,
-
-                {
-
-                    is_favorite: !property.is_favorite
-
-                }
+                `properties/${property.id}/toggle_favorite/`
 
             );
 

@@ -6,6 +6,7 @@ import {
     Users,
     FileText,
     Calendar,
+    ListChecks,
     LogOut
 } from "lucide-react";
 
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
     { label: "مشتریان", icon: Users, to: "/clients" },
     { label: "قراردادها", icon: FileText, to: "/contracts" },
     { label: "بازدیدها", icon: Calendar, to: "/visits" },
+    { label: "فعالیت‌ها", icon: ListChecks, to: "/activities" },
 ];
 
 export default function Sidebar() {
