@@ -162,6 +162,13 @@ export default function PropertyDetail() {
                 is_favorite: response.data.is_favorite
             }));
 
+            showSnackbar(
+                response.data.is_favorite
+                    ? "به علاقه‌مندی‌ها اضافه شد."
+                    : "از علاقه‌مندی‌ها حذف شد.",
+                "success"
+            );
+
         }
 
         catch (error) {

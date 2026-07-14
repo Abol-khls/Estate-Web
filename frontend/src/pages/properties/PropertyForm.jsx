@@ -336,6 +336,8 @@ export default function PropertyForm() {
                 }))
             );
 
+            showSnackbar("تصویر کاور با موفقیت تغییر کرد.", "success");
+
         } catch (error) {
 
             const message = getErrorMessage(
@@ -404,12 +406,16 @@ export default function PropertyForm() {
                     formData
                 );
 
+                showSnackbar("ملک با موفقیت ویرایش شد.", "success");
+
             } else {
 
                 await api.post(
                     "properties/",
                     formData
                 );
+
+                showSnackbar("ملک با موفقیت ثبت شد.", "success");
 
             }
 

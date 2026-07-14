@@ -215,7 +215,7 @@ export default function Properties() {
 
         try {
 
-            await api.post(
+            const response = await api.post(
 
                 `properties/${property.id}/toggle_favorite/`
 
@@ -223,7 +223,13 @@ export default function Properties() {
 
 
             loadProperties();
-            
+
+            showSnackbar(
+                response.data.is_favorite
+                    ? "به علاقه‌مندی‌ها اضافه شد."
+                    : "از علاقه‌مندی‌ها حذف شد.",
+                "success"
+            );
 
         }
 
