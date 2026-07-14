@@ -32,8 +32,7 @@ class Property(models.Model):
     )
 
     code = models.CharField(
-        max_length=20,
-        unique=True
+        max_length=20
     )
 
     title = models.CharField(
@@ -109,6 +108,9 @@ class Property(models.Model):
         choices=STATUS_CHOICES,
         default='available'
     )
+
+    class Meta:
+        unique_together = ('agency', 'code')
 
     def __str__(self):
         return f"{self.code} - {self.title}"
