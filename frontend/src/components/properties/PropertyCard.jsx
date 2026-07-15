@@ -139,8 +139,8 @@ export default function PropertyCard({
                     label={getPropertyStatusLabel(property.status)}
                     sx={{
                         position: "absolute",
-                        top: 10,
-                        insetInlineStart: 10,
+                        top: 16,
+                        insetInlineStart: 16,
                         fontWeight: 700,
                         boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
                     }}
@@ -157,9 +157,9 @@ export default function PropertyCard({
 
                         position: "absolute",
 
-                        top: 8,
+                        top: 14,
 
-                        insetInlineEnd: 8,
+                        insetInlineEnd: 14,
 
                         bgcolor: "rgba(255,255,255,0.9)",
 
