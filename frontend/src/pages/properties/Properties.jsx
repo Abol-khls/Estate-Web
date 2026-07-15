@@ -4,7 +4,7 @@ import { Box, Pagination } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
-import PropertyTable from "../../components/properties/PropertyTable";
+import PropertyGrid from "../../components/properties/PropertyGrid";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
@@ -21,6 +21,8 @@ export default function Properties() {
 
 
     const [properties, setProperties] = useState([]);
+
+    const [searchInput, setSearchInput] = useState("");
 
     const [search, setSearch] = useState("");
 
@@ -128,6 +130,18 @@ export default function Properties() {
     }
 
 
+
+    useEffect(() => {
+
+        const timeoutId = setTimeout(() => {
+
+            setSearch(searchInput);
+
+        }, 400);
+
+        return () => clearTimeout(timeoutId);
+
+    }, [searchInput]);
 
     useEffect(() => {
 
@@ -275,8 +289,8 @@ export default function Properties() {
 
             <PropertyToolbar
 
-                search={search}
-                setSearch={setSearch}
+                search={searchInput}
+                setSearch={setSearchInput}
 
                 propertyType={propertyType}
                 setPropertyType={setPropertyType}
@@ -298,7 +312,7 @@ export default function Properties() {
 
             ) : (
 
-                <PropertyTable
+                <PropertyGrid
 
                     properties={properties}
 
