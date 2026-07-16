@@ -8,6 +8,7 @@ import { CacheProvider } from "@emotion/react";
 import theme from "./Theme.js";
 import rtlCache from "./rtlCache.js";
 import { SnackbarProvider } from "./context/SnackbarContext";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 createRoot(
     document.getElementById("root")
@@ -26,7 +27,9 @@ createRoot(
 
                         <AuthProvider>
 
-                            <App />
+                            <ErrorBoundary>
+                                <App />
+                            </ErrorBoundary>
 
                         </AuthProvider>
 

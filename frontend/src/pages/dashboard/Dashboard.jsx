@@ -20,7 +20,7 @@ import ArrowLeft from "@mui/icons-material/ArrowBackIosNew";
 import api from "../../services/api";
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
-import Loading from "../../components/common/Loading";
+import DashboardSkeleton from "../../components/common/skeletons/DashboardSkeleton";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 
@@ -184,12 +184,12 @@ function MonthlyOverviewChart({ data }) {
 
             <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
 
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                     <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "primary.main" }} />
                     <Typography variant="caption" color="text.secondary">بازدید</Typography>
                 </Stack>
 
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                     <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "secondary.main" }} />
                     <Typography variant="caption" color="text.secondary">قرارداد</Typography>
                 </Stack>
@@ -326,7 +326,7 @@ export default function Dashboard() {
 
         return (
             <PageContainer>
-                <Loading />
+                <DashboardSkeleton />
             </PageContainer>
         );
 

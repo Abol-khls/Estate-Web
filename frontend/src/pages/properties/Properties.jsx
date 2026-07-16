@@ -8,9 +8,10 @@ import PropertyGrid from "../../components/properties/PropertyGrid";
 import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
-import Loading from "../../components/common/Loading";
+import PropertyGridSkeleton from "../../components/common/skeletons/PropertyGridSkeleton";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
+import useDebouncedValue from "../../hooks/useDebouncedValue";
 
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,7 +25,7 @@ export default function Properties() {
 
     const [searchInput, setSearchInput] = useState("");
 
-    const [search, setSearch] = useState("");
+    const search = useDebouncedValue(searchInput, 400);
 
     const { showSnackbar } = useSnackbar();
 
@@ -130,18 +131,6 @@ export default function Properties() {
     }
 
 
-
-    useEffect(() => {
-
-        const timeoutId = setTimeout(() => {
-
-            setSearch(searchInput);
-
-        }, 400);
-
-        return () => clearTimeout(timeoutId);
-
-    }, [searchInput]);
 
     useEffect(() => {
 
@@ -308,7 +297,7 @@ export default function Properties() {
 
             {loading ? (
 
-                <Loading />
+                <PropertyGridSkeleton />
 
             ) : (
 

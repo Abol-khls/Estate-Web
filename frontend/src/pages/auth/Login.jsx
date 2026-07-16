@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { saveTokens } from "../../services/tokenService";
 import { useAuth } from "../../context/AuthContext";
 import { useSnackbar } from "../../context/SnackbarContext";
+import { API_BASE_URL } from "../../config";
 
 import {
     Box,
@@ -44,7 +45,7 @@ export default function Login() {
 
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/token/",
+                `${API_BASE_URL}/token/`,
                 {
                     username,
                     password

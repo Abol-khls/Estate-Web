@@ -73,7 +73,7 @@ api.interceptors.response.use(
 
                 clearTokens();
 
-                window.location.href = "/";
+                window.location.href = "/session-expired";
 
             }
 

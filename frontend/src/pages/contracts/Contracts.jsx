@@ -27,10 +27,11 @@ import AppButton from "../../components/common/AppButton";
 import AppTextField from "../../components/common/AppTextField";
 import AppSelect from "../../components/common/AppSelect";
 import DeleteDialog from "../../components/common/DeleteDialog";
-import Loading from "../../components/common/Loading";
+import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
+import useDebouncedValue from "../../hooks/useDebouncedValue";
 
 import {
     CONTRACT_TYPES,
@@ -50,7 +51,8 @@ export default function Contracts() {
     const { showSnackbar } = useSnackbar();
 
     const [contracts, setContracts] = useState([]);
-    const [search, setSearch] = useState("");
+    const [searchInput, setSearchInput] = useState("");
+    const search = useDebouncedValue(searchInput, 400);
     const [status, setStatus] = useState("all");
     const [contractType, setContractType] = useState("all");
     const [ordering, setOrdering] = useState("-created_at");
@@ -206,8 +208,8 @@ export default function Contracts() {
                     <Grid size={{ xs: 12, md: 4 }}>
                         <AppTextField
                             placeholder="جستجو بر اساس مشتری یا ملک..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
                             startIcon={<SearchIcon fontSize="small" />}
                         />
                     </Grid>
@@ -262,7 +264,7 @@ export default function Contracts() {
 
             {loading ? (
 
-                <Loading />
+                <TableSkeleton gridColumns={GRID_COLUMNS} columnsCount={7} />
 
             ) : (
 

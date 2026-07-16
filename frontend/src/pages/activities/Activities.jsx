@@ -27,10 +27,11 @@ import AppButton from "../../components/common/AppButton";
 import AppTextField from "../../components/common/AppTextField";
 import AppSelect from "../../components/common/AppSelect";
 import DeleteDialog from "../../components/common/DeleteDialog";
-import Loading from "../../components/common/Loading";
+import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
+import useDebouncedValue from "../../hooks/useDebouncedValue";
 
 import {
     ACTIVITY_STATUSES,
@@ -58,7 +59,8 @@ export default function Activities() {
     const { showSnackbar } = useSnackbar();
 
     const [activities, setActivities] = useState([]);
-    const [search, setSearch] = useState("");
+    const [searchInput, setSearchInput] = useState("");
+    const search = useDebouncedValue(searchInput, 400);
     const [status, setStatus] = useState("all");
     const [ordering, setOrdering] = useState("-follow_date");
 
@@ -207,8 +209,8 @@ export default function Activities() {
                     <Grid size={{ xs: 12, md: 5 }}>
                         <AppTextField
                             placeholder="جستجو بر اساس مشتری، عنوان یا توضیحات..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
                             startIcon={<SearchIcon fontSize="small" />}
                         />
                     </Grid>
@@ -248,7 +250,7 @@ export default function Activities() {
 
             {loading ? (
 
-                <Loading />
+                <TableSkeleton gridColumns={GRID_COLUMNS} columnsCount={6} />
 
             ) : (
 
