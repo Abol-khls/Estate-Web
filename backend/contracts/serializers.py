@@ -84,5 +84,8 @@ class ContractSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "agency": {
                 "read_only": True
+            },
+            "agent": {
+                "read_only": True
             }
         }

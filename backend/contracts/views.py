@@ -26,3 +26,9 @@ class ContractViewSet(AgencyScopedViewSet):
     ordering_fields = ["created_at", "amount", "signed_date"]
 
     ordering = ["-created_at"]
+
+    def perform_create(self, serializer):
+        serializer.save(
+            agency=self.request.user.agency,
+            agent=self.request.user
+        )
