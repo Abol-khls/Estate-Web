@@ -261,7 +261,7 @@ export default function PropertyDetail() {
 
                     <Box>
 
-                        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 0.5 }}>
+                        <Stack direction="row" spacing={1.5} sx={{ mb: 0.5, alignItems: "center" }}>
 
                             <Typography variant="h4">
                                 {property.title}
