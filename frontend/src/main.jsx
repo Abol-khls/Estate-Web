@@ -9,6 +9,8 @@ import theme from "./Theme.js";
 import rtlCache from "./rtlCache.js";
 import { SnackbarProvider } from "./context/SnackbarContext";
 import ErrorBoundary from "./components/common/ErrorBoundary";
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "./lib/queryClient";
 
 createRoot(
     document.getElementById("root")
@@ -17,6 +19,8 @@ createRoot(
     .render(
 
         <StrictMode>
+
+            <QueryClientProvider client={queryClient}>
 
             <CacheProvider value={rtlCache}>
 
@@ -38,6 +42,8 @@ createRoot(
                 </ThemeProvider>
 
             </CacheProvider>
+
+            </QueryClientProvider>
 
         </StrictMode>
 
