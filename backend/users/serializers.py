@@ -6,6 +6,7 @@ from visits.models import Visit
 from contracts.models import Contract
 from .models import User
 
+
 class AgencySerializer(
     serializers.ModelSerializer
 ):
@@ -20,6 +21,8 @@ class AgencySerializer(
             "phone",
             "address",
         ]
+
+
 class UserSerializer(
     serializers.ModelSerializer
 ):
@@ -80,10 +83,116 @@ class UserSerializer(
         fields = [
             "id",
             "username",
+            "first_name",
+            "last_name",
+            "email",
             "phone",
+            "role",
             "agency",
             "properties_count",
             "customers_count",
             "visits_count",
             "contracts_count",
         ]
+
+        extra_kwargs = {
+            "username": {"read_only": True},
+            "role": {"read_only": True},
+        }
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+
+    old_password = serializers.CharField(write_only=True)
+
+    new_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate_old_password(self, value):
+
+        user = self.context["request"].user
+
+        if not user.check_password(value):
+            raise serializers.ValidationError("رمز عبور فعلی صحیح نیست.")
+
+        return value
+
+    def save(self, **kwargs):
+
+        user = self.context["request"].user
+
+        user.set_password(self.validated_data["new_password"])
+
+        user.save(update_fields=["password"])
+
+        return user
+
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+
+    password = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        min_length=8
+    )
+
+    class Meta:
+
+        model = User
+
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "role",
+            "is_active",
+            "date_joined",
+            "password",
+        ]
+
+        extra_kwargs = {
+            "date_joined": {"read_only": True},
+        }
+
+    def validate_role(self, value):
+
+        if value not in ("agent", "manager"):
+            raise serializers.ValidationError(
+                "نقش باید مشاور یا مدیر باشد."
+            )
+
+        return value
+
+    def create(self, validated_data):
+
+        password = validated_data.pop("password", None)
+
+        if not password:
+            raise serializers.ValidationError(
+                {"password": "رمز عبور برای عضو جدید الزامی است."}
+            )
+
+        user = User(**validated_data)
+
+        user.set_password(password)
+
+        user.save()
+
+        return user
+
+    def update(self, instance, validated_data):
+
+        password = validated_data.pop("password", None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+
+        return instance

@@ -1,10 +1,24 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import MeView
+from .views import MeView, ChangePasswordView, TeamViewSet
 
+router = DefaultRouter()
+router.register("team", TeamViewSet, basename="team")
 
 urlpatterns = [
     path(
         "me/",
-        MeView.as_view(),name="me"),
+        MeView.as_view(),
+        name="me"
+    ),
+    path(
+        "me/change-password/",
+        ChangePasswordView.as_view(),
+        name="change-password"
+    ),
+    path(
+        "",
+        include(router.urls)
+    ),
 ]
