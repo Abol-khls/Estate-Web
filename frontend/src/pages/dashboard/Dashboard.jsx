@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -17,12 +17,12 @@ import Calendar from "@mui/icons-material/Event";
 import FileText from "@mui/icons-material/Description";
 import ArrowLeft from "@mui/icons-material/ArrowBackIosNew";
 
+import { useQuery } from "@tanstack/react-query";
 import api from "../../services/api";
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import DashboardSkeleton from "../../components/common/skeletons/DashboardSkeleton";
 import { useSnackbar } from "../../context/SnackbarContext";
-import { getErrorMessage } from "../../utils/errorMessage";
 
 import {
     getVisitStatusLabel,
@@ -277,52 +277,37 @@ function MonthlyOverviewChart({ data }) {
 
 export default function Dashboard() {
 
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
-    async function load() {
+    const {
+        data,
+        isLoading,
+        isError,
+        refetch,
+    } = useQuery({
 
-        setLoading(true);
-        setError(false);
+        queryKey: ["dashboard"],
 
-        try {
+        queryFn: async () => {
 
-            const res = await api.get("dashboard/");
+            const response = await api.get("dashboard/");
 
-            setData(res.data);
+            return response.data;
 
-        }
-        catch (err) {
+        },
 
-            setError(true);
-
-            const message = getErrorMessage(
-                err,
-                "خطا در دریافت اطلاعات داشبورد"
-            );
-
-            showSnackbar(message, "error");
-
-        }
-        finally {
-
-            setLoading(false);
-
-        }
-
-    }
+    });
 
     useEffect(() => {
 
-        load();
+        if (!isError) return;
 
-    }, []);
+        showSnackbar("خطا در دریافت اطلاعات داشبورد", "error");
 
-    if (loading) {
+    }, [isError]);
+
+    if (isLoading) {
 
         return (
             <PageContainer>
@@ -332,7 +317,7 @@ export default function Dashboard() {
 
     }
 
-    if (error || !data) {
+    if (isError || !data) {
 
         return (
             <PageContainer>
@@ -352,7 +337,7 @@ export default function Dashboard() {
                     <Button
                         variant="outlined"
                         startIcon={<RefreshIcon />}
-                        onClick={load}
+                        onClick={() => refetch()}
                     >
                         تلاش مجدد
                     </Button>
