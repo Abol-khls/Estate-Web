@@ -72,6 +72,10 @@ urlpatterns = [
     include('users.urls')
     ),
     path(
+    'api/',
+    include('agencies.urls')
+    ),
+    path(
     'api/schema/',
     SpectacularAPIView.as_view(),
     name='schema'
@@ -92,4 +96,3 @@ if settings.DEBUG:
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
     )
-
