@@ -21,6 +21,7 @@ import AppSelect from "../../components/common/AppSelect";
 import EntityPickerDialog from "../../components/common/EntityPickerDialog";
 
 import api from "../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { ACTIVITY_STATUSES } from "../../constants/activityOptions";
@@ -141,6 +142,7 @@ export default function ActivityForm() {
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { id } = useParams();
 
     const isEdit = Boolean(id);
@@ -243,6 +245,8 @@ export default function ActivityForm() {
                 await api.post("activities/", payload);
                 showSnackbar("فعالیت با موفقیت ثبت شد.", "success");
             }
+
+            queryClient.invalidateQueries({ queryKey: ["activities", "list"] });
 
             navigate("/activities");
 

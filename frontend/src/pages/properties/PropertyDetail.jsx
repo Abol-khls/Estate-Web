@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import api from "../../services/api";
 
@@ -9,6 +10,8 @@ import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
+import useDeleteResource from "../../hooks/queries/useDeleteResource";
+import useToggleFavorite from "../../hooks/queries/useToggleFavorite";
 
 import {
     Paper,
@@ -74,50 +77,43 @@ export default function PropertyDetail() {
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-    const [property, setProperty] = useState(null);
+    const {
+        data: property,
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
 
-    const [loading, setLoading] = useState(true);
+        queryKey: ["properties", "detail", id],
+
+        queryFn: async () => {
+
+            const response = await api.get(`properties/${id}/`);
+
+            return response.data;
+
+        },
+
+    });
 
     useEffect(() => {
 
-        async function loadProperty() {
+        if (!isError) return;
 
-            try {
+        const message = getErrorMessage(
+            error,
+            "خطا در دریافت اطلاعات ملک"
+        );
 
-                const response = await api.get(
-                    `properties/${id}/`
-                );
+        showSnackbar(message, "error");
 
-                setProperty(response.data);
+    }, [isError, error]);
 
-            }
+    const toggleFavoriteMutation = useToggleFavorite();
 
-            catch (error) {
+    const deleteMutation = useDeleteResource("properties");
 
-                const message = getErrorMessage(
-                    error,
-                    "خطا در دریافت اطلاعات ملک"
-                );
-
-                showSnackbar(message, "error");
-
-            }
-
-            finally {
-
-                setLoading(false);
-
-            }
-
-        }
-
-        loadProperty();
-
-    }, [id]);
-
-
-
-    if (loading) {
+    if (isLoading) {
 
         return (
 
@@ -147,72 +143,66 @@ export default function PropertyDetail() {
 
     }
 
-    async function toggleFavorite() {
+    function toggleFavorite() {
 
-        try {
+        toggleFavoriteMutation.mutate(property.id, {
 
-            const response = await api.post(
+            onSuccess: (result) => {
 
-                `properties/${property.id}/toggle_favorite/`
+                showSnackbar(
+                    result.is_favorite
+                        ? "به علاقه‌مندی‌ها اضافه شد."
+                        : "از علاقه‌مندی‌ها حذف شد.",
+                    "success"
+                );
 
-            );
+            },
 
-            setProperty(prev => ({
-                ...prev,
-                is_favorite: response.data.is_favorite
-            }));
+            onError: (mutationError) => {
 
-            showSnackbar(
-                response.data.is_favorite
-                    ? "به علاقه‌مندی‌ها اضافه شد."
-                    : "از علاقه‌مندی‌ها حذف شد.",
-                "success"
-            );
+                const message = getErrorMessage(
+                    mutationError,
+                    "خطا در افزودن به علاقه‌مندی‌ها"
+                );
 
-        }
+                showSnackbar(message, "error");
 
-        catch (error) {
+            },
 
-            const message = getErrorMessage(
-                error,
-                "خطا در افزودن به علاقه‌مندی‌ها"
-            );
-
-            showSnackbar(message, "error");
-
-        }
+        });
 
     }
 
-    async function handleDelete() {
+    function handleDelete() {
 
         if (!window.confirm("از حذف این ملک مطمئن هستید؟"))
             return;
 
-        try {
+        deleteMutation.mutate(property.id, {
 
-            await api.delete(
-                `properties/${property.id}/`
-            );
+            onSuccess: () => {
 
-            showSnackbar(
-                "ملک با موفقیت حذف شد.",
-                "success"
-            );
+                showSnackbar(
+                    "ملک با موفقیت حذف شد.",
+                    "success"
+                );
 
-            navigate("/properties");
+                navigate("/properties");
 
-        }
-        catch (error) {
+            },
 
-            const message = getErrorMessage(
-                error,
-                "حذف ملک انجام نشد."
-            );
+            onError: (mutationError) => {
 
-            showSnackbar(message, "error");
+                const message = getErrorMessage(
+                    mutationError,
+                    "حذف ملک انجام نشد."
+                );
 
-        }
+                showSnackbar(message, "error");
+
+            },
+
+        });
 
     }
 

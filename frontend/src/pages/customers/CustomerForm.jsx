@@ -18,6 +18,7 @@ import AppTextField from "../../components/common/AppTextField";
 import AppSelect from "../../components/common/AppSelect";
 
 import api from "../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { REQUEST_TYPES, CUSTOMER_STATUSES } from "../../constants/customerOptions";
@@ -68,6 +69,7 @@ export default function CustomerForm() {
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { id } = useParams();
 
     const isEdit = Boolean(id);
@@ -180,6 +182,8 @@ export default function CustomerForm() {
                 await api.post("customers/", payload);
                 showSnackbar("مشتری با موفقیت ثبت شد.", "success");
             }
+
+            queryClient.invalidateQueries({ queryKey: ["customers", "list"] });
 
             navigate("/clients");
 

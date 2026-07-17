@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import api from "../../services/api";
+import { useEffect, useMemo, useState } from "react";
 import { Box, Pagination } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
@@ -12,16 +11,16 @@ import PropertyGridSkeleton from "../../components/common/skeletons/PropertyGrid
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
+import useResourceList from "../../hooks/queries/useResourceList";
+import useDeleteResource from "../../hooks/queries/useDeleteResource";
+import useToggleFavorite from "../../hooks/queries/useToggleFavorite";
 
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 
-
+const PAGE_SIZE = 20;
 
 export default function Properties() {
-
-
-    const [properties, setProperties] = useState([]);
 
     const [searchInput, setSearchInput] = useState("");
 
@@ -43,134 +42,69 @@ export default function Properties() {
 
     const [page, setPage] = useState(1);
 
-    const [count, setCount] = useState(0);
-
-    const pageSize = 20;
-
     const [ordering, setOrdering] = useState("all");
 
-    const [loading, setLoading] = useState(true);
+    useEffect(() => {
 
+        setPage(1);
 
-    const isFirstRun = useRef(true);
+    }, [search, propertyType, transactionType, favoriteOnly, ordering]);
 
+    const params = useMemo(() => {
 
+        const value = { page, search };
 
-    async function loadProperties(pageToLoad = page) {
-
-        setLoading(true);
-
-        try {
-
-            const params = {
-                page: pageToLoad,
-                search,
-            };
-
-            if (propertyType !== "all") {
-                params.property_type = propertyType;
-            }
-
-            if (transactionType !== "all") {
-                params.transaction_type = transactionType;
-            }
-
-            if (ordering !== "all") {
-                params.ordering = ordering;
-            }
-
-            if (favoriteOnly) {
-                params.is_favorite = true;
-            }
-
-
-            const response = await api.get(
-                "properties/",
-                {
-                    params
-                }
-            );
-
-            setProperties(
-                response.data.results ?? response.data
-            );
-
-            setCount(
-                response.data.count ?? 0
-            );
-
-
-        }
-        catch (error) {
-
-            if (error.response?.status === 404 && pageToLoad !== 1) {
-
-                setPage(1);
-                return;
-
-            }
-
-            const message = getErrorMessage(
-                error,
-                "خطا در دریافت لیست املاک"
-            );
-
-            showSnackbar(message, "error");
-
-            setProperties([]);
-            setCount(0);
-
-        }
-        finally {
-
-            setLoading(false);
-
+        if (propertyType !== "all") {
+            value.property_type = propertyType;
         }
 
+        if (transactionType !== "all") {
+            value.transaction_type = transactionType;
+        }
 
-    }
+        if (ordering !== "all") {
+            value.ordering = ordering;
+        }
 
+        if (favoriteOnly) {
+            value.is_favorite = true;
+        }
 
+        return value;
+
+    }, [page, search, propertyType, transactionType, ordering, favoriteOnly]);
+
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useResourceList("properties", params);
+
+    const properties = data?.results ?? [];
+    const count = data?.count ?? 0;
 
     useEffect(() => {
 
-        if (isFirstRun.current) {
+        if (!isError) return;
 
-            isFirstRun.current = false;
-            loadProperties(1);
-            return;
-
-        }
-
-        if (page !== 1) {
+        if (error?.response?.status === 404 && page !== 1) {
             setPage(1);
-        } else {
-            loadProperties(1);
+            return;
         }
 
-    
-    }, [
+        const message = getErrorMessage(
+            error,
+            "خطا در دریافت لیست املاک"
+        );
 
-        search,
+        showSnackbar(message, "error");
 
-        propertyType,
+    }, [isError, error]);
 
-        transactionType,
+    const deleteMutation = useDeleteResource("properties");
 
-        favoriteOnly,
-
-        ordering
-
-    ]);
-
-
-    useEffect(() => {
-
-        if (isFirstRun.current) return;
-
-        loadProperties(page);
-
-    }, [page]);
+    const toggleFavoriteMutation = useToggleFavorite();
 
     function handleDeleteClick(property) {
 
@@ -180,76 +114,63 @@ export default function Properties() {
 
     }
 
-    async function handleDelete() {
+    function handleDelete() {
 
-        try {
+        deleteMutation.mutate(selectedProperty.id, {
 
-            await api.delete(
-                `properties/${selectedProperty.id}/`
-            );
-            showSnackbar(
-                "ملک با موفقیت حذف شد.",
-                "success"
-            );
+            onSuccess: () => {
 
-            setDeleteOpen(false);
+                showSnackbar("ملک با موفقیت حذف شد.", "success");
 
-            setSelectedProperty(null);
+                setDeleteOpen(false);
+                setSelectedProperty(null);
 
-            loadProperties();
+            },
 
-        }
+            onError: (mutationError) => {
 
-        catch (error) {
+                const message = getErrorMessage(
+                    mutationError,
+                    "حذف ملک انجام نشد."
+                );
 
-            const message = getErrorMessage(
-                error,
-                "حذف ملک انجام نشد."
-            );
+                showSnackbar(message, "error");
 
-            showSnackbar(message, "error");
+            },
 
-        }
-
+        });
 
     }
 
-    async function toggleFavorite(property) {
+    function toggleFavorite(property) {
 
-        try {
+        toggleFavoriteMutation.mutate(property.id, {
 
-            const response = await api.post(
+            onSuccess: (result) => {
 
-                `properties/${property.id}/toggle_favorite/`
+                showSnackbar(
+                    result.is_favorite
+                        ? "به علاقه‌مندی‌ها اضافه شد."
+                        : "از علاقه‌مندی‌ها حذف شد.",
+                    "success"
+                );
 
-            );
+            },
 
+            onError: (mutationError) => {
 
-            loadProperties();
+                const message = getErrorMessage(
+                    mutationError,
+                    "تغییر وضعیت علاقه‌مندی انجام نشد."
+                );
 
-            showSnackbar(
-                response.data.is_favorite
-                    ? "به علاقه‌مندی‌ها اضافه شد."
-                    : "از علاقه‌مندی‌ها حذف شد.",
-                "success"
-            );
+                showSnackbar(message, "error");
 
-        }
+            },
 
-        catch (error) {
-
-            const message = getErrorMessage(
-                error,
-                "تغییر وضعیت علاقه‌مندی انجام نشد."
-            );
-
-            showSnackbar(message, "error");
-
-        }
+        });
 
     }
-
-
 
     return (
 
@@ -295,7 +216,7 @@ export default function Properties() {
 
             />
 
-            {loading ? (
+            {isLoading ? (
 
                 <PropertyGridSkeleton />
 
@@ -325,7 +246,7 @@ export default function Properties() {
 
             )}
 
-            {count > pageSize && (
+            {count > PAGE_SIZE && (
 
                 <Box
                     sx={{
@@ -336,10 +257,9 @@ export default function Properties() {
                 >
                     <Pagination
                         page={page}
-                        count={Math.ceil(count / pageSize)}
+                        count={Math.ceil(count / PAGE_SIZE)}
                         color="primary"
                         shape="rounded"
-                        disabled={loading}
                         onChange={(event, value) => {
                             setPage(value);
                         }}

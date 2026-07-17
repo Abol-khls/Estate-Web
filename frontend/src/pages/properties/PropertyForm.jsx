@@ -28,6 +28,7 @@ import {
 } from "../../constants/propertyOptions";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
@@ -115,6 +116,7 @@ export default function PropertyForm() {
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { id } = useParams();
 
@@ -336,6 +338,8 @@ export default function PropertyForm() {
                 }))
             );
 
+            queryClient.invalidateQueries({ queryKey: ["properties"] });
+
             showSnackbar("تصویر کاور با موفقیت تغییر کرد.", "success");
 
         } catch (error) {
@@ -418,6 +422,8 @@ export default function PropertyForm() {
                 showSnackbar("ملک با موفقیت ثبت شد.", "success");
 
             }
+
+            queryClient.invalidateQueries({ queryKey: ["properties"] });
 
             navigate("/properties");
 

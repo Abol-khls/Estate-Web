@@ -21,6 +21,7 @@ import AppSelect from "../../components/common/AppSelect";
 import EntityPickerDialog from "../../components/common/EntityPickerDialog";
 
 import api from "../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { CONTRACT_TYPES, CONTRACT_STATUSES } from "../../constants/contractOptions";
@@ -145,6 +146,7 @@ export default function ContractForm() {
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { id } = useParams();
 
     const isEdit = Boolean(id);
@@ -268,6 +270,10 @@ export default function ContractForm() {
                 await api.post("contracts/", payload);
                 showSnackbar("قرارداد با موفقیت ثبت شد.", "success");
             }
+
+            queryClient.invalidateQueries({ queryKey: ["contracts", "list"] });
+            queryClient.invalidateQueries({ queryKey: ["properties", "list"] });
+            queryClient.invalidateQueries({ queryKey: ["customers", "list"] });
 
             navigate("/contracts");
 

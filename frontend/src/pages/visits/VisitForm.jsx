@@ -21,6 +21,7 @@ import AppSelect from "../../components/common/AppSelect";
 import EntityPickerDialog from "../../components/common/EntityPickerDialog";
 
 import api from "../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { VISIT_STATUSES } from "../../constants/visitOptions";
@@ -143,6 +144,7 @@ export default function VisitForm() {
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { id } = useParams();
 
     const isEdit = Boolean(id);
@@ -248,6 +250,8 @@ export default function VisitForm() {
                 await api.post("visits/", payload);
                 showSnackbar("بازدید با موفقیت ثبت شد.", "success");
             }
+
+            queryClient.invalidateQueries({ queryKey: ["visits", "list"] });
 
             navigate("/visits");
 

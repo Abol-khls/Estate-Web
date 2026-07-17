@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -19,8 +19,6 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import api from "../../services/api";
-
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import AppButton from "../../components/common/AppButton";
@@ -32,6 +30,8 @@ import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
+import useResourceList from "../../hooks/queries/useResourceList";
+import useDeleteResource from "../../hooks/queries/useDeleteResource";
 
 import {
     VISIT_STATUSES,
@@ -41,6 +41,7 @@ import {
 } from "../../constants/visitOptions";
 
 const GRID_COLUMNS = "200px 200px 170px 140px 1fr 130px";
+const PAGE_SIZE = 20;
 
 function formatDateTime(value) {
 
@@ -58,121 +59,94 @@ export default function Visits() {
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-    const [visits, setVisits] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const search = useDebouncedValue(searchInput, 400);
     const [status, setStatus] = useState("all");
     const [ordering, setOrdering] = useState("-visit_date");
 
     const [page, setPage] = useState(1);
-    const [count, setCount] = useState(0);
-    const pageSize = 20;
-
-    const [loading, setLoading] = useState(true);
-    const isFirstRun = useRef(true);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [selectedVisit, setSelectedVisit] = useState(null);
 
-    async function loadVisits(pageToLoad = page) {
-
-        setLoading(true);
-
-        try {
-
-            const params = {
-                page: pageToLoad,
-                search,
-                ordering,
-            };
-
-            if (status !== "all") {
-                params.status = status;
-            }
-
-            const response = await api.get("visits/", { params });
-
-            setVisits(response.data.results ?? response.data);
-            setCount(response.data.count ?? 0);
-
-        }
-        catch (error) {
-
-            if (error.response?.status === 404 && pageToLoad !== 1) {
-                setPage(1);
-                return;
-            }
-
-            const message = getErrorMessage(
-                error,
-                "خطا در دریافت لیست بازدیدها"
-            );
-
-            showSnackbar(message, "error");
-
-            setVisits([]);
-            setCount(0);
-
-        }
-        finally {
-            setLoading(false);
-        }
-
-    }
-
     useEffect(() => {
 
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            loadVisits(1);
-            return;
-        }
-
-        if (page !== 1) {
-            setPage(1);
-        } else {
-            loadVisits(1);
-        }
+        setPage(1);
 
     }, [search, status, ordering]);
 
+    const params = useMemo(() => {
+
+        const value = { page, search, ordering };
+
+        if (status !== "all") {
+            value.status = status;
+        }
+
+        return value;
+
+    }, [page, search, status, ordering]);
+
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useResourceList("visits", params);
+
+    const visits = data?.results ?? [];
+    const count = data?.count ?? 0;
+
     useEffect(() => {
 
-        if (isFirstRun.current) return;
+        if (!isError) return;
 
-        loadVisits(page);
+        if (error?.response?.status === 404 && page !== 1) {
+            setPage(1);
+            return;
+        }
 
-    }, [page]);
+        const message = getErrorMessage(
+            error,
+            "خطا در دریافت لیست بازدیدها"
+        );
+
+        showSnackbar(message, "error");
+
+    }, [isError, error]);
+
+    const deleteMutation = useDeleteResource("visits");
 
     function handleDeleteClick(visit) {
         setSelectedVisit(visit);
         setDeleteOpen(true);
     }
 
-    async function handleDelete() {
+    function handleDelete() {
 
-        try {
+        deleteMutation.mutate(selectedVisit.id, {
 
-            await api.delete(`visits/${selectedVisit.id}/`);
+            onSuccess: () => {
 
-            showSnackbar("بازدید با موفقیت حذف شد.", "success");
+                showSnackbar("بازدید با موفقیت حذف شد.", "success");
 
-            setDeleteOpen(false);
-            setSelectedVisit(null);
+                setDeleteOpen(false);
+                setSelectedVisit(null);
 
-            loadVisits();
+            },
 
-        }
-        catch (error) {
+            onError: (mutationError) => {
 
-            const message = getErrorMessage(
-                error,
-                "حذف بازدید انجام نشد."
-            );
+                const message = getErrorMessage(
+                    mutationError,
+                    "حذف بازدید انجام نشد."
+                );
 
-            showSnackbar(message, "error");
+                showSnackbar(message, "error");
 
-        }
+            },
+
+        });
 
     }
 
@@ -248,7 +222,7 @@ export default function Visits() {
 
             </Paper>
 
-            {loading ? (
+            {isLoading ? (
 
                 <TableSkeleton gridColumns={GRID_COLUMNS} columnsCount={6} />
 
@@ -424,15 +398,14 @@ export default function Visits() {
 
             )}
 
-            {count > pageSize && (
+            {count > PAGE_SIZE && (
 
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                     <Pagination
                         page={page}
-                        count={Math.ceil(count / pageSize)}
+                        count={Math.ceil(count / PAGE_SIZE)}
                         color="primary"
                         shape="rounded"
-                        disabled={loading}
                         onChange={(event, value) => setPage(value)}
                     />
                 </Box>

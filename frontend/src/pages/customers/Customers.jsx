@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -19,8 +19,6 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import api from "../../services/api";
-
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import AppButton from "../../components/common/AppButton";
@@ -32,6 +30,8 @@ import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
+import useResourceList from "../../hooks/queries/useResourceList";
+import useDeleteResource from "../../hooks/queries/useDeleteResource";
 
 import {
     REQUEST_TYPES,
@@ -43,13 +43,13 @@ import {
 } from "../../constants/customerOptions";
 
 const GRID_COLUMNS = "200px 160px 130px 150px 1fr 150px";
+const PAGE_SIZE = 20;
 
 export default function Customers() {
 
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-    const [customers, setCustomers] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const search = useDebouncedValue(searchInput, 400);
     const [requestType, setRequestType] = useState("all");
@@ -57,120 +57,92 @@ export default function Customers() {
     const [ordering, setOrdering] = useState("-created_at");
 
     const [page, setPage] = useState(1);
-    const [count, setCount] = useState(0);
-    const pageSize = 20;
-
-    const [loading, setLoading] = useState(true);
-    const isFirstRun = useRef(true);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-    async function loadCustomers(pageToLoad = page) {
+    useEffect(() => {
 
-        setLoading(true);
+        setPage(1);
 
-        try {
+    }, [search, requestType, status, ordering]);
 
-            const params = {
-                page: pageToLoad,
-                search,
-                ordering,
-            };
+    const params = useMemo(() => {
 
-            if (requestType !== "all") {
-                params.request_type = requestType;
-            }
+        const value = { page, search, ordering };
 
-            if (status !== "all") {
-                params.status = status;
-            }
-
-            const response = await api.get("customers/", { params });
-
-            setCustomers(response.data.results ?? response.data);
-            setCount(response.data.count ?? 0);
-
-        }
-        catch (error) {
-
-            if (error.response?.status === 404 && pageToLoad !== 1) {
-                setPage(1);
-                return;
-            }
-
-            const message = getErrorMessage(
-                error,
-                "خطا در دریافت لیست مشتریان"
-            );
-
-            showSnackbar(message, "error");
-
-            setCustomers([]);
-            setCount(0);
-
-        }
-        finally {
-            setLoading(false);
+        if (requestType !== "all") {
+            value.request_type = requestType;
         }
 
-    }
+        if (status !== "all") {
+            value.status = status;
+        }
+
+        return value;
+
+    }, [page, search, requestType, status, ordering]);
+
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useResourceList("customers", params);
+
+    const customers = data?.results ?? [];
+    const count = data?.count ?? 0;
 
     useEffect(() => {
 
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            loadCustomers(1);
+        if (!isError) return;
+
+        if (error?.response?.status === 404 && page !== 1) {
+            setPage(1);
             return;
         }
 
-        if (page !== 1) {
-            setPage(1);
-        } else {
-            loadCustomers(1);
-        }
+        const message = getErrorMessage(
+            error,
+            "خطا در دریافت لیست مشتریان"
+        );
 
-      
-    }, [search, requestType, status, ordering]);
+        showSnackbar(message, "error");
 
-    useEffect(() => {
+    }, [isError, error]);
 
-        if (isFirstRun.current) return;
-
-        loadCustomers(page);
-
-    
-    }, [page]);
+    const deleteMutation = useDeleteResource("customers");
 
     function handleDeleteClick(customer) {
         setSelectedCustomer(customer);
         setDeleteOpen(true);
     }
 
-    async function handleDelete() {
+    function handleDelete() {
 
-        try {
+        deleteMutation.mutate(selectedCustomer.id, {
 
-            await api.delete(`customers/${selectedCustomer.id}/`);
+            onSuccess: () => {
 
-            showSnackbar("مشتری با موفقیت حذف شد.", "success");
+                showSnackbar("مشتری با موفقیت حذف شد.", "success");
 
-            setDeleteOpen(false);
-            setSelectedCustomer(null);
+                setDeleteOpen(false);
+                setSelectedCustomer(null);
 
-            loadCustomers();
+            },
 
-        }
-        catch (error) {
+            onError: (mutationError) => {
 
-            const message = getErrorMessage(
-                error,
-                "حذف مشتری انجام نشد."
-            );
+                const message = getErrorMessage(
+                    mutationError,
+                    "حذف مشتری انجام نشد."
+                );
 
-            showSnackbar(message, "error");
+                showSnackbar(message, "error");
 
-        }
+            },
+
+        });
 
     }
 
@@ -261,7 +233,7 @@ export default function Customers() {
 
             </Paper>
 
-            {loading ? (
+            {isLoading ? (
 
                 <TableSkeleton gridColumns={GRID_COLUMNS} columnsCount={6} />
 
@@ -460,15 +432,14 @@ export default function Customers() {
 
             )}
 
-            {count > pageSize && (
+            {count > PAGE_SIZE && (
 
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                     <Pagination
                         page={page}
-                        count={Math.ceil(count / pageSize)}
+                        count={Math.ceil(count / PAGE_SIZE)}
                         color="primary"
                         shape="rounded"
-                        disabled={loading}
                         onChange={(event, value) => setPage(value)}
                     />
                 </Box>
