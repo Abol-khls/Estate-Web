@@ -23,6 +23,8 @@ import VisitForm from "../pages/visits/VisitForm";
 import Activities from "../pages/activities/Activities";
 import ActivityForm from "../pages/activities/ActivityForm";
 
+import Settings from "../pages/settings/Settings";
+
 import NotFound from "../pages/errors/NotFound";
 import Forbidden from "../pages/errors/Forbidden";
 import SessionExpired from "../pages/errors/SessionExpired";
@@ -241,6 +243,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <ActivityForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <Settings />
                             </Layout>
                         </ProtectedRoute>
                     }
