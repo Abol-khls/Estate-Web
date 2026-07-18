@@ -27,6 +27,8 @@ class UserSerializer(
     serializers.ModelSerializer
 ):
 
+    username = serializers.CharField(validators=[])
+
     agency = AgencySerializer(
         read_only=True
     )
@@ -76,6 +78,20 @@ class UserSerializer(
         ).count()
 
 
+    def validate_username(self, value):
+
+        queryset = User.objects.filter(username=value)
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "این نام کاربری قبلاً استفاده شده است."
+            )
+
+        return value
+
     class Meta:
 
         model = User
@@ -96,7 +112,6 @@ class UserSerializer(
         ]
 
         extra_kwargs = {
-            "username": {"read_only": True},
             "role": {"read_only": True},
         }
 

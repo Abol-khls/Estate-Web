@@ -18,6 +18,7 @@ export default function ProfileTab() {
     const { showSnackbar } = useSnackbar();
 
     const [form, setForm] = useState({
+        username: "",
         first_name: "",
         last_name: "",
         email: "",
@@ -32,6 +33,7 @@ export default function ProfileTab() {
         if (!user) return;
 
         setForm({
+            username: user.username ?? "",
             first_name: user.first_name ?? "",
             last_name: user.last_name ?? "",
             email: user.email ?? "",
@@ -105,7 +107,7 @@ export default function ProfileTab() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
 
                 <Typography color="text.secondary">
-                    نام کاربری: <bdi>{user.username}</bdi>
+                    نقش شما:
                 </Typography>
 
                 <Chip
@@ -117,6 +119,18 @@ export default function ProfileTab() {
             </Box>
 
             <Grid container spacing={2}>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <AppTextField
+                        label="نام کاربری"
+                        name="username"
+                        value={form.username}
+                        onChange={handleChange}
+                        error={!!errors.username}
+                        helperText={errors.username}
+                        sx={{ "& input": { direction: "ltr", textAlign: "right" } }}
+                    />
+                </Grid>
 
                 <Grid size={{ xs: 12, md: 6 }}>
                     <AppTextField
