@@ -187,7 +187,7 @@ export default function PropertyDetail() {
                     "success"
                 );
 
-                navigate("/properties");
+                navigate("/admin/properties");
 
             },
 
@@ -216,7 +216,7 @@ export default function PropertyDetail() {
 
                 startIcon={<ArrowBackIcon />}
 
-                onClick={() => navigate("/properties")}
+                onClick={() => navigate("/admin/properties")}
 
                 color="inherit"
 
@@ -509,7 +509,7 @@ export default function PropertyDetail() {
                                 variant="contained"
                                 startIcon={<EditIcon />}
                                 onClick={() =>
-                                    navigate(`/properties/${property.id}/edit`)
+                                    navigate(`/admin/properties/${property.id}/edit`)
                                 }
                             >
                                 ویرایش

@@ -160,7 +160,7 @@ export default function Visits() {
                 action={
                     <AppButton
                         startIcon={<AddIcon />}
-                        onClick={() => navigate("/visits/create")}
+                        onClick={() => navigate("/admin/visits/create")}
                     >
                         افزودن بازدید
                     </AppButton>
@@ -358,7 +358,7 @@ export default function Visits() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/visits/${visit.id}/edit`)}
+                                            onClick={() => navigate(`/admin/visits/${visit.id}/edit`)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

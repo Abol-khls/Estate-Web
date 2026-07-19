@@ -253,7 +253,7 @@ export default function VisitForm() {
 
             queryClient.invalidateQueries({ queryKey: ["visits", "list"] });
 
-            navigate("/visits");
+            navigate("/admin/visits");
 
         }
         catch (error) {

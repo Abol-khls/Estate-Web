@@ -248,7 +248,7 @@ export default function ActivityForm() {
 
             queryClient.invalidateQueries({ queryKey: ["activities", "list"] });
 
-            navigate("/activities");
+            navigate("/admin/activities");
 
         }
         catch (error) {

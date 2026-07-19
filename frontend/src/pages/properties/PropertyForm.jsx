@@ -425,7 +425,7 @@ export default function PropertyForm() {
 
             queryClient.invalidateQueries({ queryKey: ["properties"] });
 
-            navigate("/properties");
+            navigate("/admin/properties");
 
 
         } catch (error) {

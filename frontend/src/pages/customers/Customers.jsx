@@ -156,7 +156,7 @@ export default function Customers() {
                 action={
                     <AppButton
                         startIcon={<AddIcon />}
-                        onClick={() => navigate("/clients/create")}
+                        onClick={() => navigate("/admin/clients/create")}
                     >
                         افزودن مشتری
                     </AppButton>
@@ -392,7 +392,7 @@ export default function Customers() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/clients/${customer.id}/edit`)}
+                                            onClick={() => navigate(`/admin/clients/${customer.id}/edit`)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

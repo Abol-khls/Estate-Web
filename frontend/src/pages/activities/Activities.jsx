@@ -160,7 +160,7 @@ export default function Activities() {
                 action={
                     <AppButton
                         startIcon={<AddIcon />}
-                        onClick={() => navigate("/activities/create")}
+                        onClick={() => navigate("/admin/activities/create")}
                     >
                         افزودن فعالیت
                     </AppButton>
@@ -358,7 +358,7 @@ export default function Activities() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/activities/${activity.id}/edit`)}
+                                            onClick={() => navigate(`/admin/activities/${activity.id}/edit`)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

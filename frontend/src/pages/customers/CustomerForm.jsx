@@ -185,7 +185,7 @@ export default function CustomerForm() {
 
             queryClient.invalidateQueries({ queryKey: ["customers", "list"] });
 
-            navigate("/clients");
+            navigate("/admin/clients");
 
         }
         catch (error) {

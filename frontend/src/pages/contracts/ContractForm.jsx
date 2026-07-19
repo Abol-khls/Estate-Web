@@ -275,7 +275,7 @@ export default function ContractForm() {
             queryClient.invalidateQueries({ queryKey: ["properties", "list"] });
             queryClient.invalidateQueries({ queryKey: ["customers", "list"] });
 
-            navigate("/contracts");
+            navigate("/admin/contracts");
 
         }
         catch (error) {

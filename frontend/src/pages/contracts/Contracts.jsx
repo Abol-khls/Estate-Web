@@ -158,7 +158,7 @@ export default function Contracts() {
                 action={
                     <AppButton
                         startIcon={<AddIcon />}
-                        onClick={() => navigate("/contracts/create")}
+                        onClick={() => navigate("/admin/contracts/create")}
                     >
                         افزودن قرارداد
                     </AppButton>
@@ -377,7 +377,7 @@ export default function Contracts() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/contracts/${contract.id}/edit`)}
+                                            onClick={() => navigate(`/admin/contracts/${contract.id}/edit`)}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

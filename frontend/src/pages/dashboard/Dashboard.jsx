@@ -374,7 +374,7 @@ export default function Dashboard() {
                     value={data.properties_count}
                     icon={Building2}
                     color="#1F3B57"
-                    onClick={() => navigate("/properties")}
+                    onClick={() => navigate("/admin/properties")}
                 />
 
                 <StatCard
@@ -382,7 +382,7 @@ export default function Dashboard() {
                     value={data.customers_count}
                     icon={Users}
                     color="#0E7C86"
-                    onClick={() => navigate("/clients")}
+                    onClick={() => navigate("/admin/clients")}
                 />
 
                 <StatCard
@@ -390,7 +390,7 @@ export default function Dashboard() {
                     value={data.visits_today_count}
                     icon={Calendar}
                     color="#B8860B"
-                    onClick={() => navigate("/visits")}
+                    onClick={() => navigate("/admin/visits")}
                 />
 
                 <StatCard
@@ -398,7 +398,7 @@ export default function Dashboard() {
                     value={data.active_contracts_count}
                     icon={FileText}
                     color="#8B3A3A"
-                    onClick={() => navigate("/contracts")}
+                    onClick={() => navigate("/admin/contracts")}
                 />
 
             </Box>
@@ -422,7 +422,7 @@ export default function Dashboard() {
                         <Button
                             size="small"
                             endIcon={<ArrowLeft sx={{ fontSize: 14 }} />}
-                            onClick={() => navigate("/activities")}
+                            onClick={() => navigate("/admin/activities")}
                         >
                             مشاهده همه
                         </Button>
@@ -487,7 +487,7 @@ export default function Dashboard() {
                     <Button
                         size="small"
                         endIcon={<ArrowLeft sx={{ fontSize: 14 }} />}
-                        onClick={() => navigate("/visits")}
+                        onClick={() => navigate("/admin/visits")}
                     >
                         مشاهده همه
                     </Button>

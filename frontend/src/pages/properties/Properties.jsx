@@ -187,7 +187,7 @@ export default function Properties() {
                     <AppButton
                         startIcon={<AddIcon />}
                         onClick={() =>
-                            navigate("/properties/create")
+                            navigate("/admin/properties/create")
                         }
                     >
                         افزودن ملک
@@ -228,13 +228,13 @@ export default function Properties() {
 
                     onView={(property) =>
 
-                        navigate(`/properties/${property.id}`)
+                        navigate(`/admin/properties/${property.id}`)
 
                     }
 
                     onEdit={(property) =>
 
-                        navigate(`/properties/${property.id}/edit`)
+                        navigate(`/admin/properties/${property.id}/edit`)
 
                     }
 
