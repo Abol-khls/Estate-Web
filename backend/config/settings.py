@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'agencies',
     'drf_spectacular',
     "corsheaders",
+    'public',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +162,10 @@ REST_FRAMEWORK = {
 
     'DEFAULT_SCHEMA_CLASS':
         'drf_spectacular.openapi.AutoSchema',
+
+    'DEFAULT_THROTTLE_RATES': {
+        'public_inquiry': '5/hour',
+    },
 }
 
 SPECTACULAR_SETTINGS = {
