@@ -25,6 +25,9 @@ import ActivityForm from "../pages/activities/ActivityForm";
 
 import Settings from "../pages/settings/Settings";
 
+import PublicProperties from "../pages/public/PublicProperties";
+import PublicPropertyDetail from "../pages/public/PublicPropertyDetail";
+
 import NotFound from "../pages/errors/NotFound";
 import Forbidden from "../pages/errors/Forbidden";
 import SessionExpired from "../pages/errors/SessionExpired";
@@ -41,13 +44,23 @@ export default function AppRoutes() {
 
                 <Route
                     path="/"
+                    element={<PublicProperties />}
+                />
+
+                <Route
+                    path="/property/:id"
+                    element={<PublicPropertyDetail />}
+                />
+
+                <Route
+                    path="/admin/login"
                     element={<Login />}
                 />
 
 
 
                 <Route
-                    path="/dashboard"
+                    path="/admin/dashboard"
                     element={
 
                         <ProtectedRoute>
@@ -66,7 +79,7 @@ export default function AppRoutes() {
 
 
                 <Route
-                    path="/properties"
+                    path="/admin/properties"
                     element={
 
                         <ProtectedRoute>
@@ -84,7 +97,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/properties/create"
+                    path="/admin/properties/create"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -95,7 +108,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/properties/:id/edit"
+                    path="/admin/properties/:id/edit"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -106,7 +119,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/properties/:id"
+                    path="/admin/properties/:id"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -117,7 +130,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/clients"
+                    path="/admin/clients"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -128,7 +141,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/clients/create"
+                    path="/admin/clients/create"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -139,7 +152,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/clients/:id/edit"
+                    path="/admin/clients/:id/edit"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -150,7 +163,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/contracts"
+                    path="/admin/contracts"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -161,7 +174,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/contracts/create"
+                    path="/admin/contracts/create"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -172,7 +185,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/contracts/:id/edit"
+                    path="/admin/contracts/:id/edit"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -183,7 +196,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/visits"
+                    path="/admin/visits"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -194,7 +207,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/visits/create"
+                    path="/admin/visits/create"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -205,7 +218,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/visits/:id/edit"
+                    path="/admin/visits/:id/edit"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -216,7 +229,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/activities"
+                    path="/admin/activities"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -227,7 +240,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/activities/create"
+                    path="/admin/activities/create"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -238,7 +251,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/activities/:id/edit"
+                    path="/admin/activities/:id/edit"
                     element={
                         <ProtectedRoute>
                             <Layout>
@@ -249,7 +262,7 @@ export default function AppRoutes() {
                 />
 
                 <Route
-                    path="/settings"
+                    path="/admin/settings"
                     element={
                         <ProtectedRoute>
                             <Layout>

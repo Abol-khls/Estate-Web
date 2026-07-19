@@ -32,7 +32,7 @@ export default function ProtectedRoute({
 
         return (
             <Navigate
-                to="/"
+                to="/admin/login"
                 replace
             />
         );
