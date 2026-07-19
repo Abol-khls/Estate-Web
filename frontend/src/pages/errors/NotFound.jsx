@@ -16,8 +16,8 @@ export default function NotFound() {
             code="404"
             title="صفحه پیدا نشد"
             message="آدرسی که وارد کردید وجود نداره یا جابه‌جا شده. لطفاً آدرس رو بررسی کنید یا به صفحه اصلی برگردید."
-            actionLabel={isAuthenticated ? "بازگشت به داشبورد" : "بازگشت به صفحه ورود"}
-            onAction={() => navigate(isAuthenticated ? "/dashboard" : "/")}
+            actionLabel={isAuthenticated ? "بازگشت به داشبورد" : "بازگشت به صفحه اصلی"}
+            onAction={() => navigate(isAuthenticated ? "/admin/dashboard" : "/")}
         />
 
     );

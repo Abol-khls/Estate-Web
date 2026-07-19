@@ -31,7 +31,7 @@ export default function Header() {
             </Typography>
 
             <Box
-                onClick={() => navigate("/settings")}
+                onClick={() => navigate("/admin/settings")}
                 sx={{
                     display: "flex",
                     flexDirection: "row",

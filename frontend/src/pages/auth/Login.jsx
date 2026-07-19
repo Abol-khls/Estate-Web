@@ -64,7 +64,7 @@ export default function Login() {
                 "success"
             );
 
-            navigate("/dashboard");
+            navigate("/admin/dashboard");
 
 
         }

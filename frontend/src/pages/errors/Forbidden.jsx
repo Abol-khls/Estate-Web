@@ -15,7 +15,7 @@ export default function Forbidden() {
             title="دسترسی غیرمجاز"
             message="شما دسترسی لازم برای مشاهده یا انجام این عملیات رو ندارید. اگه فکر می‌کنید این یه اشتباهه، با مدیر آژانس خودتون تماس بگیرید."
             actionLabel="بازگشت به داشبورد"
-            onAction={() => navigate("/dashboard")}
+            onAction={() => navigate("/admin/dashboard")}
         />
 
     );

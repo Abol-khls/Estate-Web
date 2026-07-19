@@ -16,13 +16,13 @@ import { Box, Stack, Typography, Button } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
-    { label: "داشبورد", icon: Home, to: "/dashboard" },
-    { label: "املاک", icon: Building2, to: "/properties" },
-    { label: "مشتریان", icon: Users, to: "/clients" },
-    { label: "قراردادها", icon: FileText, to: "/contracts" },
-    { label: "بازدیدها", icon: Calendar, to: "/visits" },
-    { label: "فعالیت‌ها", icon: ListChecks, to: "/activities" },
-    { label: "تنظیمات", icon: Settings, to: "/settings" },
+    { label: "داشبورد", icon: Home, to: "/admin/dashboard" },
+    { label: "املاک", icon: Building2, to: "/admin/properties" },
+    { label: "مشتریان", icon: Users, to: "/admin/clients" },
+    { label: "قراردادها", icon: FileText, to: "/admin/contracts" },
+    { label: "بازدیدها", icon: Calendar, to: "/admin/visits" },
+    { label: "فعالیت‌ها", icon: ListChecks, to: "/admin/activities" },
+    { label: "تنظیمات", icon: Settings, to: "/admin/settings" },
 ];
 
 export default function Sidebar() {
