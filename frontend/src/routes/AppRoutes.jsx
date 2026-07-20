@@ -13,15 +13,19 @@ import PropertyDetail from "../pages/properties/PropertyDetail";
 
 import Customers from "../pages/customers/Customers";
 import CustomerForm from "../pages/customers/CustomerForm";
+import CustomerDetail from "../pages/customers/CustomerDetail";
 
 import Contracts from "../pages/contracts/Contracts";
 import ContractForm from "../pages/contracts/ContractForm";
+import ContractDetail from "../pages/contracts/ContractDetail";
 
 import Visits from "../pages/visits/Visits";
 import VisitForm from "../pages/visits/VisitForm";
+import VisitDetail from "../pages/visits/VisitDetail";
 
 import Activities from "../pages/activities/Activities";
 import ActivityForm from "../pages/activities/ActivityForm";
+import ActivityDetail from "../pages/activities/ActivityDetail";
 
 import Settings from "../pages/settings/Settings";
 
@@ -163,6 +167,17 @@ export default function AppRoutes() {
                 />
 
                 <Route
+                    path="/admin/clients/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <CustomerDetail />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
                     path="/admin/contracts"
                     element={
                         <ProtectedRoute>
@@ -190,6 +205,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <ContractForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/contracts/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ContractDetail />
                             </Layout>
                         </ProtectedRoute>
                     }
@@ -229,6 +255,17 @@ export default function AppRoutes() {
                 />
 
                 <Route
+                    path="/admin/visits/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <VisitDetail />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
                     path="/admin/activities"
                     element={
                         <ProtectedRoute>
@@ -256,6 +293,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <ActivityForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/activities/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <ActivityDetail />
                             </Layout>
                         </ProtectedRoute>
                     }

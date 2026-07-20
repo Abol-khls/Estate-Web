@@ -8,7 +8,6 @@ import {
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceIcon from "@mui/icons-material/PlaceOutlined";
@@ -284,22 +283,6 @@ export default function PropertyCard({
                         gap: 1,
                     }}
                 >
-
-                    <Tooltip title="مشاهده">
-                        <IconButton
-                            size="small"
-                            color="info"
-                            onClick={() => onView(property)}
-                            sx={{
-                                borderRadius: 2,
-                                border: "1px solid",
-                                borderColor: "info.main",
-                                "&:hover": { bgcolor: "info.main", color: "#fff" },
-                            }}
-                        >
-                            <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
 
                     <Tooltip title="ویرایش">
                         <IconButton
