@@ -14,6 +14,7 @@ import {
 import PlaceIcon from "@mui/icons-material/PlaceOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PhoneIcon from "@mui/icons-material/Phone";
 
 import api from "../../services/api";
 import PublicLayout from "./PublicLayout";
@@ -131,6 +132,20 @@ export default function PublicPropertyDetail() {
 
     });
 
+    const { data: agency } = useQuery({
+
+        queryKey: ["public", "agency"],
+
+        queryFn: async () => {
+
+            const response = await api.get("public/agency/");
+
+            return response.data;
+
+        },
+
+    });
+
     if (isLoading) {
 
         return (
@@ -216,9 +231,16 @@ export default function PublicPropertyDetail() {
                             {property.title}
                         </Typography>
 
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mt: 1, color: "text.secondary" }}>
-                            <PlaceIcon sx={{ fontSize: 18 }} />
-                            <Typography variant="body2">
+                        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.75, mt: 1, color: "text.secondary" }}>
+                            <PlaceIcon sx={{ fontSize: 18, mt: 0.3, flexShrink: 0 }} />
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    minWidth: 0,
+                                    wordBreak: "break-word",
+                                    overflowWrap: "anywhere",
+                                }}
+                            >
                                 {property.address}
                             </Typography>
                         </Box>
@@ -284,6 +306,21 @@ export default function PublicPropertyDetail() {
                             درخواست بازدید از این ملک
                         </AppButton>
 
+                        {agency?.phone && (
+
+                            <AppButton
+                                fullWidth
+                                variant="outlined"
+                                startIcon={<PhoneIcon />}
+                                component="a"
+                                href={`tel:${agency.phone}`}
+                                sx={{ mt: 1.5 }}
+                            >
+                                تماس مستقیم با آژانس
+                            </AppButton>
+
+                        )}
+
                     </Paper>
 
                 </Grid>
@@ -309,6 +346,58 @@ export default function PublicPropertyDetail() {
                             <Typography color="text.secondary" sx={{ whiteSpace: "pre-line", lineHeight: 2 }}>
                                 {property.description}
                             </Typography>
+
+                        </Paper>
+
+                    </Grid>
+
+                )}
+
+                {property.videos?.length > 0 && (
+
+                    <Grid size={{ xs: 12 }}>
+
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                p: 3,
+                                borderRadius: 4,
+                                border: "1px solid",
+                                borderColor: "divider",
+                            }}
+                        >
+
+                            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
+                                ویدیوها
+                            </Typography>
+
+                            <Grid container spacing={2}>
+
+                                {property.videos.map(video => (
+
+                                    <Grid size={{ xs: 12, md: 6 }} key={video.id}>
+
+                                        <Box
+                                            component="video"
+                                            controls
+                                            sx={{
+                                                width: "100%",
+                                                borderRadius: 2,
+                                                display: "block",
+                                            }}
+                                        >
+
+                                            <source src={video.video} type="video/mp4" />
+
+                                            مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+
+                                        </Box>
+
+                                    </Grid>
+
+                                ))}
+
+                            </Grid>
 
                         </Paper>
 

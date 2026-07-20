@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
+import LoginIcon from "@mui/icons-material/Login";
 
 import api from "../../services/api";
 
@@ -73,19 +74,52 @@ export default function PublicLayout({ children }) {
 
                         </Box>
 
-                        {agency?.phone && (
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
 
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {agency?.phone && (
 
-                                <PhoneIcon sx={{ fontSize: 18, color: "secondary.main" }} />
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 
-                                <Typography variant="body2">
-                                    <bdi>{agency.phone}</bdi>
+                                    <PhoneIcon sx={{ fontSize: 18, color: "secondary.main" }} />
+
+                                    <Typography variant="body2">
+                                        <bdi>{agency.phone}</bdi>
+                                    </Typography>
+
+                                </Box>
+
+                            )}
+
+                            <Box
+                                onClick={() => navigate("/admin/login")}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 0.6,
+                                    cursor: "pointer",
+                                    color: "rgba(255,255,255,0.75)",
+                                    fontSize: 13,
+                                    px: 1.2,
+                                    py: 0.5,
+                                    borderRadius: 2,
+                                    border: "1px solid rgba(255,255,255,0.25)",
+                                    transition: ".15s",
+                                    "&:hover": {
+                                        color: "#fff",
+                                        borderColor: "rgba(255,255,255,0.5)",
+                                    },
+                                }}
+                            >
+
+                                <LoginIcon sx={{ fontSize: 16 }} />
+
+                                <Typography variant="caption" sx={{ color: "inherit" }}>
+                                    ورود مدیران
                                 </Typography>
 
                             </Box>
 
-                        )}
+                        </Box>
 
                     </Box>
 

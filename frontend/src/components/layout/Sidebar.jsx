@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import {
     Home,
@@ -28,6 +28,12 @@ const NAV_ITEMS = [
 export default function Sidebar() {
 
     const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    function handleLogout() {
+        logout();
+        navigate("/");
+    }
 
     return (
 
@@ -132,7 +138,7 @@ export default function Sidebar() {
             </Box>
 
             <Button
-                onClick={logout}
+                onClick={handleLogout}
                 startIcon={<LogOut size={18} />}
                 sx={{
                     color: "#fff",
