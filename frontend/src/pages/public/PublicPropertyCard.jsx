@@ -1,419 +1,193 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-
-import {
-    Box,
-    Grid,
-    Typography,
-    Chip,
-    Paper,
-    Divider,
-} from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 
 import PlaceIcon from "@mui/icons-material/PlaceOutlined";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PhoneIcon from "@mui/icons-material/Phone";
+import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
+import BedIcon from "@mui/icons-material/KingBedOutlined";
 
-import api from "../../services/api";
-import PublicLayout from "./PublicLayout";
-import InquiryForm from "./InquiryForm";
-import Loading from "../../components/common/Loading";
-import AppButton from "../../components/common/AppButton";
-
-import {
-    PROPERTY_TYPES,
-    TRANSACTION_TYPES,
-} from "../../constants/propertyOptions";
+import { PROPERTY_TYPES, TRANSACTION_TYPES } from "../../constants/propertyOptions";
 
 function getLabel(list, value) {
     return list.find(item => item.value === value)?.label ?? value;
 }
 
-function PublicGallery({ images, title }) {
-
-    const [selected, setSelected] = useState(
-        images?.find(img => img.is_cover) ?? images?.[0] ?? null
-    );
-
-    if (!images?.length) {
-
-        return (
-
-            <Box
-                sx={{
-                    aspectRatio: "16 / 9",
-                    borderRadius: 4,
-                    bgcolor: "grey.100",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "text.secondary",
-                }}
-            >
-                تصویری برای این ملک ثبت نشده است.
-            </Box>
-
-        );
-
-    }
+export default function PublicPropertyCard({ property, onView }) {
 
     return (
 
-        <Box>
+        <Box
+
+            onClick={() => onView(property)}
+
+            sx={{
+
+                borderRadius: 4,
+
+                border: "1px solid",
+
+                borderColor: "divider",
+
+                bgcolor: "background.paper",
+
+                boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
+
+                overflow: "hidden",
+
+                display: "flex",
+
+                flexDirection: "column",
+
+                cursor: "pointer",
+
+                transition: ".2s",
+
+                "&:hover": {
+
+                    boxShadow: "0 8px 24px rgba(16, 24, 40, 0.12)",
+
+                    transform: "translateY(-2px)",
+
+                },
+
+            }}
+
+        >
 
             <Box
-                component="img"
-                src={selected?.image}
-                alt={title}
+
                 sx={{
+
+                    position: "relative",
+
                     width: "100%",
-                    aspectRatio: "16 / 9",
-                    objectFit: "cover",
-                    borderRadius: 4,
-                    display: "block",
+
+                    aspectRatio: "16 / 10",
+
+                    bgcolor: "grey.100",
+
                 }}
-            />
 
-            {images.length > 1 && (
-
-                <Box sx={{ display: "flex", gap: 1, mt: 1.5, overflowX: "auto" }}>
-
-                    {images.map(image => (
-
-                        <Box
-                            key={image.id}
-                            component="img"
-                            src={image.image}
-                            onClick={() => setSelected(image)}
-                            sx={{
-                                width: 84,
-                                height: 64,
-                                objectFit: "cover",
-                                borderRadius: 2,
-                                cursor: "pointer",
-                                flexShrink: 0,
-                                border: "2px solid",
-                                borderColor: selected?.id === image.id ? "secondary.main" : "transparent",
-                            }}
-                        />
-
-                    ))}
-
-                </Box>
-
-            )}
-
-        </Box>
-
-    );
-
-}
-
-export default function PublicPropertyDetail() {
-
-    const { id } = useParams();
-    const navigate = useNavigate();
-
-    const [inquiryOpen, setInquiryOpen] = useState(false);
-
-    const { data: property, isLoading, isError } = useQuery({
-
-        queryKey: ["public", "properties", "detail", id],
-
-        queryFn: async () => {
-
-            const response = await api.get(`public/properties/${id}/`);
-
-            return response.data;
-
-        },
-
-    });
-
-    const { data: agency } = useQuery({
-
-        queryKey: ["public", "agency"],
-
-        queryFn: async () => {
-
-            const response = await api.get("public/agency/");
-
-            return response.data;
-
-        },
-
-    });
-
-    if (isLoading) {
-
-        return (
-            <PublicLayout>
-                <Loading />
-            </PublicLayout>
-        );
-
-    }
-
-    if (isError || !property) {
-
-        return (
-
-            <PublicLayout>
-
-                <Box sx={{ textAlign: "center", py: 8 }}>
-
-                    <Typography color="text.secondary" sx={{ mb: 2 }}>
-                        این ملک پیدا نشد یا دیگر موجود نیست.
-                    </Typography>
-
-                    <AppButton onClick={() => navigate("/")}>
-                        بازگشت به لیست ملک‌ها
-                    </AppButton>
-
-                </Box>
-
-            </PublicLayout>
-
-        );
-
-    }
-
-    const specs = [
-        { label: "متراژ", value: `${Number(property.area).toLocaleString("fa-IR")} متر` },
-        { label: "تعداد اتاق", value: property.rooms },
-        { label: "طبقه", value: property.floor ?? "—" },
-        { label: "تعداد کل طبقات", value: property.total_floors ?? "—" },
-        { label: "سال ساخت", value: property.year_built ?? "—" },
-    ];
-
-    const amenities = [
-        { label: "پارکینگ", value: property.parking },
-        { label: "آسانسور", value: property.elevator },
-        { label: "انباری", value: property.storage },
-    ].filter(item => item.value);
-
-    return (
-
-        <PublicLayout>
-
-            <AppButton
-                variant="text"
-                startIcon={<ArrowBackIcon />}
-                onClick={() => navigate("/")}
-                sx={{ mb: 2 }}
             >
-                بازگشت به لیست ملک‌ها
-            </AppButton>
 
-            <Grid container spacing={3}>
+                {property.cover_image ? (
 
-                <Grid size={{ xs: 12, md: 7 }}>
-
-                    <PublicGallery images={property.images} title={property.title} />
-
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 5 }}>
-
-                    <Paper
-                        elevation={0}
+                    <Box
+                        component="img"
+                        src={property.cover_image}
+                        alt={property.title}
                         sx={{
-                            p: 3,
-                            borderRadius: 4,
-                            border: "1px solid",
-                            borderColor: "divider",
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            display: "block",
+                        }}
+                    />
+
+                ) : (
+
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "text.secondary",
+                            fontSize: 13,
                         }}
                     >
-
-                        <Typography variant="h5" fontWeight={800}>
-                            {property.title}
-                        </Typography>
-
-                        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.75, mt: 1, color: "text.secondary" }}>
-                            <PlaceIcon sx={{ fontSize: 18, mt: 0.3, flexShrink: 0 }} />
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    minWidth: 0,
-                                    wordBreak: "break-word",
-                                    overflowWrap: "anywhere",
-                                }}
-                            >
-                                {property.address}
-                            </Typography>
-                        </Box>
-
-                        <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-                            <Chip
-                                label={getLabel(PROPERTY_TYPES, property.property_type)}
-                                size="small"
-                                variant="outlined"
-                            />
-                            <Chip
-                                label={getLabel(TRANSACTION_TYPES, property.transaction_type)}
-                                size="small"
-                                color="primary"
-                            />
-                        </Box>
-
-                        <Typography variant="h4" fontWeight={800} sx={{ mt: 2.5, color: "secondary.dark" }}>
-                            {Number(property.price).toLocaleString("fa-IR")} <Typography component="span" variant="body1" color="text.secondary">تومان</Typography>
-                        </Typography>
-
-                        <Divider sx={{ my: 2.5 }} />
-
-                        <Grid container spacing={1.5}>
-
-                            {specs.map(spec => (
-
-                                <Grid size={{ xs: 6 }} key={spec.label}>
-                                    <Typography variant="caption" color="text.secondary" display="block">
-                                        {spec.label}
-                                    </Typography>
-                                    <Typography fontWeight={700}>
-                                        {spec.value}
-                                    </Typography>
-                                </Grid>
-
-                            ))}
-
-                        </Grid>
-
-                        {amenities.length > 0 && (
-
-                            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mt: 2.5 }}>
-
-                                {amenities.map(item => (
-
-                                    <Box key={item.label} sx={{ display: "flex", alignItems: "center", gap: 0.6 }}>
-                                        <CheckCircleIcon sx={{ fontSize: 16, color: "success.main" }} />
-                                        <Typography variant="body2">{item.label}</Typography>
-                                    </Box>
-
-                                ))}
-
-                            </Box>
-
-                        )}
-
-                        <AppButton
-                            fullWidth
-                            sx={{ mt: 3 }}
-                            onClick={() => setInquiryOpen(true)}
-                        >
-                            درخواست بازدید از این ملک
-                        </AppButton>
-
-                        {agency?.phone && (
-
-                            <AppButton
-                                fullWidth
-                                variant="outlined"
-                                startIcon={<PhoneIcon />}
-                                component="a"
-                                href={`tel:${agency.phone}`}
-                                sx={{ mt: 1.5 }}
-                            >
-                                تماس مستقیم با آژانس
-                            </AppButton>
-
-                        )}
-
-                    </Paper>
-
-                </Grid>
-
-                {property.description && (
-
-                    <Grid size={{ xs: 12 }}>
-
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                borderRadius: 4,
-                                border: "1px solid",
-                                borderColor: "divider",
-                            }}
-                        >
-
-                            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
-                                توضیحات
-                            </Typography>
-
-                            <Typography color="text.secondary" sx={{ whiteSpace: "pre-line", lineHeight: 2 }}>
-                                {property.description}
-                            </Typography>
-
-                        </Paper>
-
-                    </Grid>
+                        بدون تصویر
+                    </Box>
 
                 )}
 
-                {property.videos?.length > 0 && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        insetInlineStart: 0,
+                        insetInlineEnd: 0,
+                        px: 1.5,
+                        py: 1,
+                        background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                >
 
-                    <Grid size={{ xs: 12 }}>
+                    <Typography
+                        sx={{ color: "#fff", fontWeight: 700, fontSize: 15 }}
+                    >
+                        {Number(property.price).toLocaleString("fa-IR")} تومان
+                    </Typography>
 
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                borderRadius: 4,
-                                border: "1px solid",
-                                borderColor: "divider",
-                            }}
-                        >
+                    <Typography
+                        variant="caption"
+                        sx={{ color: "rgba(255,255,255,0.85)" }}
+                    >
+                        {getLabel(TRANSACTION_TYPES, property.transaction_type)}
+                    </Typography>
 
-                            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
-                                ویدیوها
+                </Box>
+
+            </Box>
+
+            <Box sx={{ p: 2, flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+
+                <Typography fontWeight={700} fontSize={16} noWrap>
+                    {property.title}
+                </Typography>
+
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+
+                    <PlaceIcon sx={{ fontSize: 16, color: "text.secondary", mt: 0.3 }} />
+
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                            overflow: "hidden",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {property.address}
+                    </Typography>
+
+                </Box>
+
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap", mt: "auto", pt: 1 }}>
+
+                    <Chip
+                        size="small"
+                        variant="outlined"
+                        label={getLabel(PROPERTY_TYPES, property.property_type)}
+                    />
+
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, color: "text.secondary" }}>
+                        <SquareFootIcon sx={{ fontSize: 16 }} />
+                        <Typography variant="caption">
+                            {Number(property.area).toLocaleString("fa-IR")} متر
+                        </Typography>
+                    </Box>
+
+                    {property.rooms != null && (
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, color: "text.secondary" }}>
+                            <BedIcon sx={{ fontSize: 16 }} />
+                            <Typography variant="caption">
+                                {property.rooms} خواب
                             </Typography>
+                        </Box>
 
-                            <Grid container spacing={2}>
+                    )}
 
-                                {property.videos.map(video => (
+                </Box>
 
-                                    <Grid size={{ xs: 12, md: 6 }} key={video.id}>
+            </Box>
 
-                                        <Box
-                                            component="video"
-                                            controls
-                                            sx={{
-                                                width: "100%",
-                                                borderRadius: 2,
-                                                display: "block",
-                                            }}
-                                        >
-
-                                            <source src={video.video} type="video/mp4" />
-
-                                            مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
-
-                                        </Box>
-
-                                    </Grid>
-
-                                ))}
-
-                            </Grid>
-
-                        </Paper>
-
-                    </Grid>
-
-                )}
-
-            </Grid>
-
-            <InquiryForm
-                open={inquiryOpen}
-                onClose={() => setInquiryOpen(false)}
-                property={property}
-            />
-
-        </PublicLayout>
+        </Box>
 
     );
 
