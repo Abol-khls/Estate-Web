@@ -14,6 +14,8 @@ import PropertyGridSkeleton from "../../components/common/skeletons/PropertyGrid
 
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import useResourceList from "../../hooks/queries/useResourceList";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { getErrorMessage } from "../../utils/errorMessage";
 
 import { PROPERTY_TYPES, TRANSACTION_TYPES, ORDERING_OPTIONS } from "../../constants/propertyOptions";
 
@@ -22,6 +24,7 @@ const PAGE_SIZE = 20;
 export default function PublicProperties() {
 
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     const [searchInput, setSearchInput] = useState("");
     const search = useDebouncedValue(searchInput, 400);
@@ -55,10 +58,23 @@ export default function PublicProperties() {
 
     }, [page, search, propertyType, transactionType, ordering]);
 
-    const { data, isLoading } = useResourceList("public/properties", params);
+    const { data, isLoading, isError, error } = useResourceList("public/properties", params);
 
     const properties = data?.results ?? [];
     const count = data?.count ?? 0;
+
+    useEffect(() => {
+
+        if (!isError) return;
+
+        const message = getErrorMessage(
+            error,
+            "دریافت لیست ملک‌ها با مشکل مواجه شد. لطفاً بعداً دوباره تلاش کنید."
+        );
+
+        showSnackbar(message, "error");
+
+    }, [isError, error]);
 
     return (
 

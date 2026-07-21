@@ -318,6 +318,7 @@ export default function Contracts() {
 
                             <Box
                                 key={contract.id}
+                                onClick={() => navigate(`/admin/contracts/${contract.id}`)}
                                 sx={{
                                     display: "grid",
                                     gridTemplateColumns: GRID_COLUMNS,
@@ -325,6 +326,7 @@ export default function Contracts() {
                                     alignItems: "center",
                                     px: 3,
                                     py: 2.5,
+                                    cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
@@ -377,7 +379,10 @@ export default function Contracts() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/admin/contracts/${contract.id}/edit`)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/admin/contracts/${contract.id}/edit`);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
@@ -393,7 +398,10 @@ export default function Contracts() {
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteClick(contract)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteClick(contract);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

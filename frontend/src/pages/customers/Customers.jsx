@@ -312,6 +312,7 @@ export default function Customers() {
 
                             <Box
                                 key={customer.id}
+                                onClick={() => navigate(`/admin/clients/${customer.id}`)}
                                 sx={{
                                     display: "grid",
                                     gridTemplateColumns: GRID_COLUMNS,
@@ -319,6 +320,7 @@ export default function Customers() {
                                     alignItems: "center",
                                     px: 3,
                                     py: 2.5,
+                                    cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
@@ -392,7 +394,10 @@ export default function Customers() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/admin/clients/${customer.id}/edit`)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/admin/clients/${customer.id}/edit`);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
@@ -408,7 +413,10 @@ export default function Customers() {
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteClick(customer)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteClick(customer);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",

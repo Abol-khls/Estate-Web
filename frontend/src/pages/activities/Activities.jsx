@@ -301,6 +301,7 @@ export default function Activities() {
 
                             <Box
                                 key={activity.id}
+                                onClick={() => navigate(`/admin/activities/${activity.id}`)}
                                 sx={{
                                     display: "grid",
                                     gridTemplateColumns: GRID_COLUMNS,
@@ -308,6 +309,7 @@ export default function Activities() {
                                     alignItems: "center",
                                     px: 3,
                                     py: 2.5,
+                                    cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
@@ -358,7 +360,10 @@ export default function Activities() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => navigate(`/admin/activities/${activity.id}/edit`)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/admin/activities/${activity.id}/edit`);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
@@ -374,7 +379,10 @@ export default function Activities() {
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteClick(activity)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteClick(activity);
+                                            }}
                                             sx={{
                                                 borderRadius: 2,
                                                 border: "1px solid",
