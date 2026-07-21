@@ -4,6 +4,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -24,9 +25,16 @@ class InquiryRateThrottle(AnonRateThrottle):
     scope = "public_inquiry"
 
 
+class PublicPropertyPagination(PageNumberPagination):
+
+    page_size = 20
+
+
 class PublicPropertyViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [AllowAny]
+
+    pagination_class = PublicPropertyPagination
 
     filter_backends = [
         DjangoFilterBackend,

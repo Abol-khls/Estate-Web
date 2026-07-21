@@ -60,8 +60,8 @@ export default function PublicProperties() {
 
     const { data, isLoading, isError, error } = useResourceList("public/properties", params);
 
-    const properties = data?.results ?? [];
-    const count = data?.count ?? 0;
+    const properties = Array.isArray(data) ? data : (data?.results ?? []);
+    const count = Array.isArray(data) ? data.length : (data?.count ?? 0);
 
     useEffect(() => {
 

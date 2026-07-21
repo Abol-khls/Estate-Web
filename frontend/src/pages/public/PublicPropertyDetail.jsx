@@ -130,6 +130,8 @@ export default function PublicPropertyDetail() {
 
         },
 
+        enabled: Boolean(id),
+
     });
 
     const { data: agency } = useQuery({
