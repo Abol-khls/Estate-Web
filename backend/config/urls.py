@@ -80,6 +80,10 @@ urlpatterns = [
     include('public.urls')
     ),
     path(
+    'api/reports/',
+    include('reports.urls')
+    ),
+    path(
     'api/schema/',
     SpectacularAPIView.as_view(),
     name='schema'
