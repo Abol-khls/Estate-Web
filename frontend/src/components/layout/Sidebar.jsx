@@ -7,6 +7,7 @@ import {
     FileText,
     Calendar,
     ListChecks,
+    BarChart3,
     Settings,
     LogOut
 } from "lucide-react";
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
     { label: "قراردادها", icon: FileText, to: "/admin/contracts" },
     { label: "بازدیدها", icon: Calendar, to: "/admin/visits" },
     { label: "فعالیت‌ها", icon: ListChecks, to: "/admin/activities" },
+    { label: "گزارش‌ها", icon: BarChart3, to: "/admin/reports" },
     { label: "تنظیمات", icon: Settings, to: "/admin/settings" },
 ];
 

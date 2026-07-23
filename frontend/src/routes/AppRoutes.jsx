@@ -28,6 +28,7 @@ import ActivityForm from "../pages/activities/ActivityForm";
 import ActivityDetail from "../pages/activities/ActivityDetail";
 
 import Settings from "../pages/settings/Settings";
+import Reports from "../pages/reports/Reports";
 
 import PublicProperties from "../pages/public/PublicProperties";
 import PublicPropertyDetail from "../pages/public/PublicPropertyDetail";
@@ -315,6 +316,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <Settings />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/reports"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <Reports />
                             </Layout>
                         </ProtectedRoute>
                     }
