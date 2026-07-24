@@ -146,7 +146,7 @@ export default function Sidebar() {
                     color: "#fff",
                     bgcolor: "error.main",
                     justifyContent: "flex-start",
-                    "&:hover": { bgcolor: "#5c4141" },
+                    "&:hover": { bgcolor: "#B93838" },
                 }}
             >
                 خروج
