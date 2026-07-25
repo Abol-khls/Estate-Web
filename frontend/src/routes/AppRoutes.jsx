@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
@@ -28,7 +29,7 @@ import ActivityForm from "../pages/activities/ActivityForm";
 import ActivityDetail from "../pages/activities/ActivityDetail";
 
 import Settings from "../pages/settings/Settings";
-import Reports from "../pages/reports/Reports";
+const Reports = lazy(() => import("../pages/reports/Reports"));
 
 import PublicProperties from "../pages/public/PublicProperties";
 import PublicPropertyDetail from "../pages/public/PublicPropertyDetail";
@@ -36,6 +37,8 @@ import PublicPropertyDetail from "../pages/public/PublicPropertyDetail";
 import NotFound from "../pages/errors/NotFound";
 import Forbidden from "../pages/errors/Forbidden";
 import SessionExpired from "../pages/errors/SessionExpired";
+import ScrollToTop from "../components/common/ScrollToTop";
+import Loading from "../components/common/Loading";
 
 export default function AppRoutes() {
 
@@ -43,6 +46,8 @@ export default function AppRoutes() {
     return (
 
         <BrowserRouter>
+
+            <ScrollToTop />
 
             <Routes>
 
@@ -326,7 +331,9 @@ export default function AppRoutes() {
                     element={
                         <ProtectedRoute>
                             <Layout>
-                                <Reports />
+                                <Suspense fallback={<Loading />}>
+                                    <Reports />
+                                </Suspense>
                             </Layout>
                         </ProtectedRoute>
                     }
