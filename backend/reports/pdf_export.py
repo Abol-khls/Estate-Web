@@ -91,10 +91,25 @@ def _subtitle_style():
     )
 
 
+def _contains_persian(text):
+
+    return any('\u0600' <= ch <= '\u06FF' for ch in text)
+
+
+def _format_cell(value):
+
+    text = str(value)
+
+    if _contains_persian(text):
+        return rtl(text)
+
+    return text
+
+
 def _make_table(headers, rows):
 
     data = [[rtl(h) for h in headers]] + [
-        [rtl(cell) for cell in row]
+        [_format_cell(cell) for cell in row]
         for row in rows
     ]
 
