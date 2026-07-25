@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Grid, MenuItem, Pagination, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -26,21 +26,44 @@ export default function PublicProperties() {
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-    const [searchInput, setSearchInput] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
     const search = useDebouncedValue(searchInput, 400);
 
-    const [propertyType, setPropertyType] = useState("all");
-    const [transactionType, setTransactionType] = useState("all");
-    const [ordering, setOrdering] = useState("-created_at");
-    const [page, setPage] = useState(1);
+    const [propertyType, setPropertyType] = useState(searchParams.get("property_type") ?? "all");
+    const [transactionType, setTransactionType] = useState(searchParams.get("transaction_type") ?? "all");
+    const [ordering, setOrdering] = useState(searchParams.get("ordering") ?? "-created_at");
+    const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
     const [inquiryOpen, setInquiryOpen] = useState(false);
 
+    const isFirstRun = useRef(true);
+
     useEffect(() => {
+
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
 
         setPage(1);
 
     }, [search, propertyType, transactionType, ordering]);
+
+    useEffect(() => {
+
+        const next = {};
+
+        if (search) next.search = search;
+        if (propertyType !== "all") next.property_type = propertyType;
+        if (transactionType !== "all") next.transaction_type = transactionType;
+        if (ordering !== "-created_at") next.ordering = ordering;
+        if (page !== 1) next.page = String(page);
+
+        setSearchParams(next, { replace: true });
+
+    }, [search, propertyType, transactionType, ordering, page]);
 
     const params = useMemo(() => {
 

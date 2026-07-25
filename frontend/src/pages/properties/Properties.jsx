@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Pagination } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
@@ -15,24 +16,25 @@ import useResourceList from "../../hooks/queries/useResourceList";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";
 import useToggleFavorite from "../../hooks/queries/useToggleFavorite";
 
-import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 
 const PAGE_SIZE = 20;
 
 export default function Properties() {
 
-    const [searchInput, setSearchInput] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
 
     const search = useDebouncedValue(searchInput, 400);
 
     const { showSnackbar } = useSnackbar();
 
-    const [propertyType, setPropertyType] = useState("all");
+    const [propertyType, setPropertyType] = useState(searchParams.get("property_type") ?? "all");
 
-    const [transactionType, setTransactionType] = useState("all");
+    const [transactionType, setTransactionType] = useState(searchParams.get("transaction_type") ?? "all");
 
-    const [favoriteOnly, setFavoriteOnly] = useState(false);
+    const [favoriteOnly, setFavoriteOnly] = useState(searchParams.get("favorite") === "true");
 
     const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -40,15 +42,37 @@ export default function Properties() {
 
     const navigate = useNavigate();
 
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
-    const [ordering, setOrdering] = useState("all");
+    const [ordering, setOrdering] = useState(searchParams.get("ordering") ?? "all");
+
+    const isFirstRun = useRef(true);
 
     useEffect(() => {
+
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
 
         setPage(1);
 
     }, [search, propertyType, transactionType, favoriteOnly, ordering]);
+
+    useEffect(() => {
+
+        const next = {};
+
+        if (search) next.search = search;
+        if (propertyType !== "all") next.property_type = propertyType;
+        if (transactionType !== "all") next.transaction_type = transactionType;
+        if (favoriteOnly) next.favorite = "true";
+        if (ordering !== "all") next.ordering = ordering;
+        if (page !== 1) next.page = String(page);
+
+        setSearchParams(next, { replace: true });
+
+    }, [search, propertyType, transactionType, favoriteOnly, ordering, page]);
 
     const params = useMemo(() => {
 
