@@ -1,9 +1,10 @@
-import { Box, Typography, Avatar, Stack } from "@mui/material";
+import { Box, Typography, Avatar, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
 
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -16,19 +17,32 @@ export default function Header() {
             component="header"
             sx={{
                 height: 72,
+                flexShrink: 0,
                 bgcolor: "background.paper",
                 borderBottom: "1px solid",
                 borderColor: "divider",
-                px: { xs: 2, md: 4 },
+                px: { xs: 1.5, md: 4 },
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                gap: 1,
             }}
         >
 
-            <Typography variant="h6" color="text.primary">
-                داشبورد
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
+                <IconButton
+                    onClick={onMenuClick}
+                    sx={{ display: { xs: "inline-flex", md: "none" } }}
+                >
+                    <MenuIcon />
+                </IconButton>
+
+                <Typography variant="h6" color="text.primary" noWrap>
+                    داشبورد
+                </Typography>
+
+            </Box>
 
             <Box
                 onClick={() => navigate("/admin/settings")}
@@ -49,7 +63,7 @@ export default function Header() {
             >
 
 
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{ display: { xs: "none", sm: "block" } }}>
                     {user?.username}
                 </Typography>
 
