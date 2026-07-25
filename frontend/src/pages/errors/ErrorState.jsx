@@ -14,6 +14,10 @@ export default function ErrorState({
 
     onAction,
 
+    secondaryActionLabel,
+
+    onSecondaryAction,
+
 }) {
 
     return (
@@ -83,6 +87,19 @@ export default function ErrorState({
                 >
                     {actionLabel}
                 </Button>
+
+                {secondaryActionLabel && (
+
+                    <Button
+                        variant="text"
+                        fullWidth
+                        onClick={onSecondaryAction}
+                        sx={{ borderRadius: 2.5, py: 1.2, mt: 1 }}
+                    >
+                        {secondaryActionLabel}
+                    </Button>
+
+                )}
 
             </Paper>
 

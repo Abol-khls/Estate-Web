@@ -16,6 +16,8 @@ export default function SessionExpired() {
             message="برای امنیت حساب‌تون، بعد از مدتی عدم فعالیت از سیستم خارج می‌شید. لطفاً دوباره وارد بشید تا کارتون رو ادامه بدید."
             actionLabel="ورود مجدد"
             onAction={() => navigate("/admin/login")}
+            secondaryActionLabel="بازگشت به پنل عمومی"
+            onSecondaryAction={() => navigate("/")}
         />
 
     );
