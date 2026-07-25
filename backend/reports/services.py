@@ -56,33 +56,39 @@ def get_sales_report(agency, start_date, end_date):
 
 def get_agent_performance(agency, start_date, end_date):
 
-    agents = User.objects.filter(
+    agents = list(User.objects.filter(
         agency=agency,
         role__in=['agent', 'manager']
+    ))
+
+    visits_by_agent = dict(
+        Visit.objects.filter(
+            agent__in=agents,
+            visit_date__date__gte=start_date,
+            visit_date__date__lte=end_date,
+        ).values('agent').annotate(
+            count=Count('id')
+        ).values_list('agent', 'count')
     )
+
+    contracts_by_agent = {
+        row['agent']: row
+        for row in Contract.objects.filter(
+            agent__in=agents,
+            status='signed',
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date,
+        ).values('agent').annotate(
+            count=Count('id'),
+            total=Sum('amount')
+        )
+    }
 
     data = []
 
     for agent in agents:
 
-        visits_count = Visit.objects.filter(
-            agent=agent,
-            visit_date__date__gte=start_date,
-            visit_date__date__lte=end_date,
-        ).count()
-
-        contracts_qs = Contract.objects.filter(
-            agent=agent,
-            status='signed',
-            created_at__date__gte=start_date,
-            created_at__date__lte=end_date,
-        )
-
-        contracts_count = contracts_qs.count()
-
-        contracts_amount = contracts_qs.aggregate(
-            total=Sum('amount')
-        )['total'] or 0
+        contracts_row = contracts_by_agent.get(agent.id, {})
 
         data.append({
             'agent_id': agent.id,
@@ -90,9 +96,9 @@ def get_agent_performance(agency, start_date, end_date):
                 f"{agent.first_name} {agent.last_name}".strip()
                 or agent.username
             ),
-            'visits_count': visits_count,
-            'contracts_count': contracts_count,
-            'contracts_amount': contracts_amount,
+            'visits_count': visits_by_agent.get(agent.id, 0),
+            'contracts_count': contracts_row.get('count', 0),
+            'contracts_amount': contracts_row.get('total') or 0,
         })
 
     data.sort(key=lambda item: item['contracts_amount'], reverse=True)
