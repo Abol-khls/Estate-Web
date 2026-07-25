@@ -38,6 +38,11 @@ def validate_image(file):
     if ext not in IMAGE_EXTENSIONS:
         raise ValidationError("فرمت تصویر مجاز نیست.")
 
+    if file.size > IMAGE_MAX_SIZE:
+        raise ValidationError(
+            f"حجم تصویر نباید بیشتر از {IMAGE_MAX_SIZE // (1024 * 1024)} مگابایت باشد."
+        )
+
     position = file.tell()
 
     try:
@@ -55,6 +60,11 @@ def validate_video(file):
 
     if ext not in VIDEO_EXTENSIONS:
         raise ValidationError("فرمت ویدیو مجاز نیست.")
+
+    if file.size > VIDEO_MAX_SIZE:
+        raise ValidationError(
+            f"حجم ویدیو نباید بیشتر از {VIDEO_MAX_SIZE // (1024 * 1024)} مگابایت باشد."
+        )
 
     position = file.tell()
 

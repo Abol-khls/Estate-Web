@@ -11,6 +11,7 @@ from .validators import (
     validate_image,
     validate_video,
 )
+from .image_processing import optimize_image
 
 
 class PropertyImageSerializer(serializers.ModelSerializer):
@@ -123,7 +124,7 @@ class PropertySerializer(serializers.ModelSerializer):
         for index, image in enumerate(images):
             PropertyImage.objects.create(
                 property=property,
-                image=image,
+                image=optimize_image(image),
                 is_cover=(index == 0)
             )
 
@@ -212,7 +213,7 @@ class PropertySerializer(serializers.ModelSerializer):
 
                 property=instance,
 
-                image=image,
+                image=optimize_image(image),
 
                 is_cover=not has_cover
 
