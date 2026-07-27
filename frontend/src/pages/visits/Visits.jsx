@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SearchIcon from "@mui/icons-material/Search";
 import InboxIcon from "@mui/icons-material/Inbox";
 import EditIcon from "@mui/icons-material/Edit";
@@ -158,12 +159,24 @@ export default function Visits() {
                 title="بازدیدها"
                 subtitle={`${count} بازدید ثبت‌شده`}
                 action={
-                    <AppButton
-                        startIcon={<AddIcon />}
-                        onClick={() => navigate("/admin/visits/create")}
-                    >
-                        افزودن بازدید
-                    </AppButton>
+                    <Box sx={{ display: "flex", gap: 1.5 }}>
+
+                        <AppButton
+                            variant="outlined"
+                            startIcon={<CalendarMonthIcon />}
+                            onClick={() => navigate("/admin/visits/calendar")}
+                        >
+                            نمای تقویمی
+                        </AppButton>
+
+                        <AppButton
+                            startIcon={<AddIcon />}
+                            onClick={() => navigate("/admin/visits/create")}
+                        >
+                            افزودن بازدید
+                        </AppButton>
+
+                    </Box>
                 }
             />
 

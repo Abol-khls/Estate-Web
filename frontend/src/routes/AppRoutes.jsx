@@ -22,6 +22,7 @@ import ContractDetail from "../pages/contracts/ContractDetail";
 
 import Visits from "../pages/visits/Visits";
 import VisitForm from "../pages/visits/VisitForm";
+import VisitsCalendar from "../pages/visits/VisitsCalendar";
 import VisitDetail from "../pages/visits/VisitDetail";
 
 import Activities from "../pages/activities/Activities";
@@ -244,6 +245,17 @@ export default function AppRoutes() {
                         <ProtectedRoute>
                             <Layout>
                                 <VisitForm />
+                            </Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin/visits/calendar"
+                    element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <VisitsCalendar />
                             </Layout>
                         </ProtectedRoute>
                     }
