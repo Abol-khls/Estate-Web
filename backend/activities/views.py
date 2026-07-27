@@ -22,7 +22,7 @@ class ActivityViewSet(AgencyScopedViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-    filterset_fields = ["status"]
+    filterset_fields = ["status", "customer"]
 
     search_fields = ["customer__full_name", "title", "description"]
 
