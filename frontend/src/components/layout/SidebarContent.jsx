@@ -9,6 +9,7 @@ import {
     ListChecks,
     BarChart3,
     Settings,
+    ExternalLink,
     LogOut
 } from "lucide-react";
 
@@ -136,19 +137,44 @@ export default function SidebarContent({ onNavigate }) {
 
             </Box>
 
-            <Button
-                onClick={handleLogout}
-                startIcon={<LogOut size={18} />}
-                sx={{
-                    color: "#fff",
-                    bgcolor: "error.main",
-                    justifyContent: "flex-start",
-                    flexShrink: 0,
-                    "&:hover": { bgcolor: "#B93838" },
-                }}
-            >
-                خروج
-            </Button>
+            <Box sx={{ flexShrink: 0 }}>
+
+                <Button
+                    component="a"
+                    href="/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    startIcon={<ExternalLink size={18} />}
+                    fullWidth
+                    sx={{
+                        color: "#fff",
+                        border: "1px solid rgba(255,255,255,0.25)",
+                        justifyContent: "flex-start",
+                        mb: 1.2,
+                        "&:hover": {
+                            bgcolor: "rgba(255,255,255,0.08)",
+                            borderColor: "rgba(255,255,255,0.4)",
+                        },
+                    }}
+                >
+                    مشاهده پنل عمومی
+                </Button>
+
+                <Button
+                    onClick={handleLogout}
+                    startIcon={<LogOut size={18} />}
+                    fullWidth
+                    sx={{
+                        color: "#fff",
+                        bgcolor: "error.main",
+                        justifyContent: "flex-start",
+                        "&:hover": { bgcolor: "#B93838" },
+                    }}
+                >
+                    خروج
+                </Button>
+
+            </Box>
 
         </Box>
 
