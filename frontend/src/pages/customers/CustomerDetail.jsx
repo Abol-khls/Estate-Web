@@ -25,6 +25,7 @@ import DeleteDialog from "../../components/common/DeleteDialog";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";
+import CustomerTimeline from "../../components/customers/CustomerTimeline";
 
 import {
     getCustomerStatusLabel,
@@ -238,6 +239,24 @@ export default function CustomerDetail() {
                     </Grid>
 
                 </Grid>
+
+            </Paper>
+
+            <Paper
+                sx={{
+                    p: { xs: 2.5, md: 4 },
+                    mt: 3,
+                    borderRadius: 4,
+                    border: "1px solid",
+                    borderColor: "divider",
+                }}
+            >
+
+                <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+                    تاریخچه‌ی تعامل با مشتری
+                </Typography>
+
+                <CustomerTimeline customerId={customer.id} />
 
             </Paper>
 
