@@ -19,7 +19,7 @@ class ContractViewSet(AgencyScopedViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
-    filterset_fields = ["status", "contract_type"]
+    filterset_fields = ["status", "contract_type", "customer"]
 
     search_fields = ["customer__full_name", "property__title", "description"]
 
