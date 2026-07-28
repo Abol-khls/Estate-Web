@@ -5,6 +5,10 @@ from rest_framework.exceptions import ValidationError
 
 from core.permissions import IsManager
 from core.viewsets import AgencyScopedViewSet
+from core.mixins import AuditActorMixin
+from core.throttling import LoginIPRateThrottle, LoginUsernameRateThrottle
+
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
     UserSerializer,
@@ -14,7 +18,7 @@ from .serializers import (
 from .models import User
 
 
-class MeView(APIView):
+class MeView(AuditActorMixin, APIView):
 
     permission_classes = [
         IsAuthenticated
@@ -45,7 +49,7 @@ class MeView(APIView):
         return Response(serializer.data)
 
 
-class ChangePasswordView(APIView):
+class ChangePasswordView(AuditActorMixin, APIView):
 
     permission_classes = [
         IsAuthenticated
@@ -108,3 +112,11 @@ class TeamViewSet(AgencyScopedViewSet):
             )
 
         instance.delete()
+
+
+class ThrottledTokenObtainPairView(TokenObtainPairView):
+
+    throttle_classes = [
+        LoginIPRateThrottle,
+        LoginUsernameRateThrottle,
+    ]
