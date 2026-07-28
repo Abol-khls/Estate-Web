@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from agencies.models import Agency
 from properties.models import Property
 from customers.models import Customer
@@ -7,7 +8,7 @@ from contracts.models import Contract
 from .models import User
 
 
-class AgencySerializer(
+class UserAgencySerializer(
     serializers.ModelSerializer
 ):
 
@@ -29,7 +30,7 @@ class UserSerializer(
 
     username = serializers.CharField(validators=[])
 
-    agency = AgencySerializer(
+    agency = UserAgencySerializer(
         read_only=True
     )
 
@@ -42,6 +43,7 @@ class UserSerializer(
     contracts_count = serializers.SerializerMethodField()
 
 
+    @extend_schema_field(serializers.IntegerField())
     def get_properties_count(
         self,
         obj
@@ -51,6 +53,7 @@ class UserSerializer(
         ).count()
 
 
+    @extend_schema_field(serializers.IntegerField())
     def get_customers_count(
         self,
         obj
@@ -60,6 +63,7 @@ class UserSerializer(
         ).count()
 
 
+    @extend_schema_field(serializers.IntegerField())
     def get_visits_count(
         self,
         obj
@@ -69,6 +73,7 @@ class UserSerializer(
         ).count()
 
 
+    @extend_schema_field(serializers.IntegerField())
     def get_contracts_count(
         self,
         obj
@@ -76,7 +81,6 @@ class UserSerializer(
         return Contract.objects.filter(
             agency=obj.agency
         ).count()
-
 
     def validate_username(self, value):
 
