@@ -1,7 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 
+from .mixins import AuditActorMixin
 
-class AgencyScopedViewSet(ModelViewSet):
+
+class AgencyScopedViewSet(AuditActorMixin, ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
