@@ -86,3 +86,21 @@ class CustomerAgencyIsolationTests(APITestCase):
             response.status_code,
             status.HTTP_400_BAD_REQUEST,
         )
+
+    def test_customer_role_cannot_list_customers(self):
+
+        customer_user = User.objects.create_user(
+            username="customer_1",
+            password="StrongPass123",
+            role="customer",
+            agency=self.agency_a,
+        )
+
+        self.client.force_authenticate(user=customer_user)
+
+        response = self.client.get("/api/customers/")
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
