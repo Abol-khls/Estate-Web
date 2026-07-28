@@ -44,10 +44,10 @@ class PublicPropertyTests(APITestCase):
             status.HTTP_200_OK,
         )
 
-        codes = [item["code"] for item in response.data["results"]]
+        titles = [item["title"] for item in response.data["results"]]
 
-        self.assertIn("A-1", codes)
-        self.assertNotIn("A-2", codes)
+        self.assertIn("ملک قابل نمایش", titles)
+        self.assertNotIn("ملک فروخته‌شده", titles)
 
 
 class PublicInquiryThrottleTests(APITestCase):
