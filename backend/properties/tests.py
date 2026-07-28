@@ -108,7 +108,29 @@ class PropertyAgencyIsolationTests(APITestCase):
 
         self.assertEqual(created.agency_id, self.agency_a.id)
 
-    def test_authenticated_customer_role_can_currently_list_properties(self):
+    def test_duplicate_code_in_same_agency_returns_validation_error(self):
+
+        self.client.force_authenticate(user=self.agent_a)
+
+        response = self.client.post(
+            "/api/properties/",
+            {
+                "code": "A-1",
+                "title": "ملک دوم با کد تکراری",
+                "property_type": "villa",
+                "transaction_type": "rent",
+                "price": 500000,
+                "area": 80,
+                "address": "کرج",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_customer_role_cannot_list_properties(self):
 
         customer_user = User.objects.create_user(
             username="customer_1",
@@ -123,7 +145,7 @@ class PropertyAgencyIsolationTests(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_200_OK,
+            status.HTTP_403_FORBIDDEN,
         )
 
     def test_customer_role_cannot_create_property(self):
