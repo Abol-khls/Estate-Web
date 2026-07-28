@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .validators import validate_image, validate_video
 from .models import (
@@ -248,6 +249,7 @@ class PropertySerializer(serializers.ModelSerializer):
             )
 
         return instance
+    @extend_schema_field(serializers.BooleanField())
     def get_is_favorite(self, obj):
 
         request = self.context.get("request")
@@ -260,6 +262,7 @@ class PropertySerializer(serializers.ModelSerializer):
             property=obj
         ).exists()
 
+    @extend_schema_field(serializers.CharField(allow_null=True))
     def get_cover_image(self, obj):
 
         cover = obj.images.filter(is_cover=True).first()

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from properties.models import Property, PropertyImage, PropertyVideo
 from customers.models import Customer
@@ -39,6 +40,7 @@ class PublicPropertyListSerializer(serializers.ModelSerializer):
             "cover_image",
         ]
 
+    @extend_schema_field(serializers.CharField(allow_null=True))
     def get_cover_image(self, obj):
 
         request = self.context.get("request")
