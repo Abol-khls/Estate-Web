@@ -61,7 +61,7 @@ api.interceptors.response.use(
 
                 saveTokens(
                     response.data.access,
-                    refresh
+                    response.data.refresh ?? refresh
                 );
 
                 originalRequest.headers.Authorization =
@@ -72,7 +72,6 @@ api.interceptors.response.use(
             } catch {
 
                 clearTokens();
-
                 window.location.href = "/session-expired";
 
             }

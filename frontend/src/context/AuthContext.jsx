@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-import { getAccessToken, clearTokens } from "../services/tokenService";
+import { getAccessToken, getRefreshToken, clearTokens } from "../services/tokenService";
 
-import { useCallback } from "react";
 import api from "../services/api";
 
 
@@ -57,13 +56,11 @@ export function AuthProvider({ children }) {
             if (token) {
 
                 await fetchUser();
-
             }
 
             setLoading(false);
 
         };
-
         initialize();
 
 
@@ -81,19 +78,28 @@ export function AuthProvider({ children }) {
 
 
 
-    const logout = () => {
+    const logout = async () => {
+
+        const refresh = getRefreshToken();
 
         clearTokens();
-
         setUser(null);
-
         setIsAuthenticated(false);
-
         setLoading(false);
 
-    };
+        if (refresh) {
 
-    
+            try {
+
+                await api.post("token/blacklist/", { refresh });
+
+            } catch {
+
+            }
+
+        }
+
+    };
 
 
 
