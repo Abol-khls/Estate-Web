@@ -5,6 +5,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -104,6 +105,7 @@ class PublicAgencyView(APIView):
 
     permission_classes = [AllowAny]
 
+    @extend_schema(responses=AgencySerializer)
     def get(self, request):
 
         agency = Agency.objects.first()

@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from django.http import HttpResponse
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
 
 from core.permissions import IsAgentOrManager
 
@@ -55,6 +57,7 @@ class ReportSummaryView(APIView):
         IsAgentOrManager
     ]
 
+    @extend_schema(responses=OpenApiTypes.OBJECT)
     def get(self, request):
 
         agency = request.user.agency
@@ -87,6 +90,7 @@ class ReportExportView(APIView):
         IsAgentOrManager
     ]
 
+    @extend_schema(responses={200: OpenApiTypes.BINARY})
     def get(self, request):
 
         agency = request.user.agency

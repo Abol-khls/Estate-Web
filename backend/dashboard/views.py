@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
 
 from django.utils import timezone
 from django.db.models import Count
@@ -20,6 +22,7 @@ class DashboardView(APIView):
         IsAuthenticated
     ]
 
+    @extend_schema(responses=OpenApiTypes.OBJECT)
     def get(self, request):
 
         agency = request.user.agency

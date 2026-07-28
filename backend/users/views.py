@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.types import OpenApiTypes
 
 from core.permissions import IsManager
 from core.viewsets import AgencyScopedViewSet
@@ -24,6 +26,7 @@ class MeView(AuditActorMixin, APIView):
         IsAuthenticated
     ]
 
+    @extend_schema(responses=UserSerializer)
     def get(self, request):
 
         serializer = UserSerializer(
@@ -34,6 +37,7 @@ class MeView(AuditActorMixin, APIView):
             serializer.data
         )
 
+    @extend_schema(request=UserSerializer, responses=UserSerializer)
     def patch(self, request):
 
         serializer = UserSerializer(
@@ -55,6 +59,15 @@ class ChangePasswordView(AuditActorMixin, APIView):
         IsAuthenticated
     ]
 
+    @extend_schema(
+        request=ChangePasswordSerializer,
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                description="رمز عبور با موفقیت تغییر کرد."
+            )
+        }
+    )
     def post(self, request):
 
         serializer = ChangePasswordSerializer(
