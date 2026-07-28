@@ -280,6 +280,26 @@ class PropertySerializer(serializers.ModelSerializer):
 
         return cover.image.url
 
+    def validate_code(self, value):
+
+        request = self.context.get("request")
+
+        agency = request.user.agency if request else None
+
+        queryset = Property.objects.filter(
+            agency=agency,
+            code=value
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "ملکی با این کد قبلاً در آژانس شما ثبت شده است."
+            )
+
+        return value
 
     class Meta:
         model = Property
