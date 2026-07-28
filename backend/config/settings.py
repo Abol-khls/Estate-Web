@@ -1,6 +1,7 @@
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,6 +11,11 @@ DEBUG = config(
     "DEBUG",
     cast=bool
 )
+
+if not DEBUG and len(SECRET_KEY) < 50:
+    raise ImproperlyConfigured(
+        "SECRET_KEY must be at least 50 random characters long when DEBUG is False."
+    )
 
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS"
@@ -194,3 +200,19 @@ LOGGING = {
         },
     },
 }
+
+if not DEBUG:
+
+    SECURE_SSL_REDIRECT = True
+
+    SESSION_COOKIE_SECURE = True
+
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_HSTS_SECONDS = 31536000
+
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SECURE_HSTS_PRELOAD = True
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
