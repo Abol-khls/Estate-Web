@@ -26,10 +26,25 @@ REQUEST_TYPE_LABELS = {
     'mortgage': 'رهن',
 }
 
+FORMULA_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
+
+
+def _sanitize_cell(value):
+
+    if isinstance(value, str) and value.startswith(FORMULA_PREFIXES):
+        return "'" + value
+
+    return value
+
+
+def _sanitize_row(row):
+
+    return [_sanitize_cell(value) for value in row]
+
 
 def _write_header(ws, headers):
 
-    ws.append(headers)
+    ws.append(_sanitize_row(headers))
 
     for cell in ws[1]:
 
@@ -64,13 +79,13 @@ def build_report_excel(report_data, start_date, end_date):
 
     for row in report_data['sales']:
 
-        ws_sales.append([
+        ws_sales.append(_sanitize_row([
             row['month'],
             row['sale_count'],
             row['sale_amount'],
             row['rent_count'],
             row['rent_amount'],
-        ])
+        ]))
 
     _autofit(ws_sales)
 
@@ -83,12 +98,12 @@ def build_report_excel(report_data, start_date, end_date):
 
     for row in report_data['agents']:
 
-        ws_agents.append([
+        ws_agents.append(_sanitize_row([
             row['agent_name'],
             row['visits_count'],
             row['contracts_count'],
             row['contracts_amount'],
-        ])
+        ]))
 
     _autofit(ws_agents)
 
@@ -99,17 +114,17 @@ def build_report_excel(report_data, start_date, end_date):
 
     _write_header(ws_customers, ["شاخص", "مقدار"])
 
-    ws_customers.append(["تعداد کل مشتریان", customers['total']])
-    ws_customers.append(["تبدیل‌شده به مشتری قطعی", customers['converted']])
-    ws_customers.append(["نرخ تبدیل (٪)", customers['conversion_rate']])
+    ws_customers.append(_sanitize_row(["تعداد کل مشتریان", customers['total']]))
+    ws_customers.append(_sanitize_row(["تبدیل‌شده به مشتری قطعی", customers['converted']]))
+    ws_customers.append(_sanitize_row(["نرخ تبدیل (٪)", customers['conversion_rate']]))
     ws_customers.append([])
-    ws_customers.append(["نوع درخواست", "تعداد"])
+    ws_customers.append(_sanitize_row(["نوع درخواست", "تعداد"]))
 
     for row in customers['by_request_type']:
 
         label = REQUEST_TYPE_LABELS.get(row['request_type'], row['request_type'])
 
-        ws_customers.append([label, row['count']])
+        ws_customers.append(_sanitize_row([label, row['count']]))
 
     _autofit(ws_customers)
 
@@ -124,12 +139,12 @@ def build_report_excel(report_data, start_date, end_date):
 
         label = PROPERTY_TYPE_LABELS.get(row['property_type'], row['property_type'])
 
-        ws_prices.append([
+        ws_prices.append(_sanitize_row([
             label,
             row['count'],
             row['avg_price'],
             row['avg_area'],
-        ])
+        ]))
 
     _autofit(ws_prices)
 
