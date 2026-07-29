@@ -252,6 +252,9 @@ class PropertySerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.BooleanField())
     def get_is_favorite(self, obj):
 
+        if hasattr(obj, "is_favorited"):
+            return obj.is_favorited
+
         request = self.context.get("request")
 
         if not request or not request.user.is_authenticated:
@@ -265,10 +268,15 @@ class PropertySerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_cover_image(self, obj):
 
-        cover = obj.images.filter(is_cover=True).first()
+        images = list(obj.images.all())
 
-        if not cover:
-            cover = obj.images.first()
+        cover = next(
+            (image for image in images if image.is_cover),
+            None
+        )
+
+        if not cover and images:
+            cover = images[0]
 
         if not cover:
             return None
