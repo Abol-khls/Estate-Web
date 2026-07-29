@@ -1,9 +1,84 @@
+from django.test.utils import CaptureQueriesContext
+from django.db import connection
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
 from agencies.models import Agency
 from users.models import User
-from properties.models import Property
+from properties.models import Property, PropertyImage
+
+
+class PropertyListPerformanceTests(APITestCase):
+
+    def setUp(self):
+
+        self.agency = Agency.objects.create(name="آژانس تست")
+
+        self.agent = User.objects.create_user(
+            username="agent_perf",
+            password="StrongPass123",
+            role="agent",
+            agency=self.agency,
+        )
+
+        for index in range(15):
+
+            property_obj = Property.objects.create(
+                code=f"P-{index}",
+                title=f"ملک شماره {index}",
+                property_type="apartment",
+                transaction_type="sale",
+                price=1000000,
+                area=100,
+                address="تهران",
+                agency=self.agency,
+            )
+
+            PropertyImage.objects.create(
+                property=property_obj,
+                image="properties/fake.jpg",
+                is_cover=True,
+            )
+
+    def test_property_list_query_count_does_not_scale_with_row_count(self):
+
+        self.client.force_authenticate(user=self.agent)
+
+        with CaptureQueriesContext(connection) as first_batch:
+            self.client.get("/api/properties/")
+
+        for index in range(15, 30):
+
+            property_obj = Property.objects.create(
+                code=f"P-{index}",
+                title=f"ملک شماره {index}",
+                property_type="apartment",
+                transaction_type="sale",
+                price=1000000,
+                area=100,
+                address="تهران",
+                agency=self.agency,
+            )
+
+            PropertyImage.objects.create(
+                property=property_obj,
+                image="properties/fake.jpg",
+                is_cover=True,
+            )
+
+        with CaptureQueriesContext(connection) as second_batch:
+            self.client.get("/api/properties/")
+
+        self.assertEqual(
+            len(first_batch.captured_queries),
+            len(second_batch.captured_queries),
+        )
+
+        self.assertLess(
+            len(second_batch.captured_queries),
+            15,
+        )
 
 
 class PropertyAgencyIsolationTests(APITestCase):
