@@ -1,3 +1,5 @@
+from django.db.models import Exists, OuterRef
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -55,10 +57,6 @@ class PropertyViewSet(AgencyScopedViewSet):
         'title',
         'address',
         'description',
-        'price',
-        'area',
-        'created_at',
-        'rooms',
     ]
 
     parser_classes = [
@@ -86,6 +84,24 @@ class PropertyViewSet(AgencyScopedViewSet):
             queryset = queryset.filter(
                 favorited_by__user=self.request.user
             )
+
+        if self.request.user.is_authenticated:
+
+            queryset = queryset.annotate(
+                is_favorited=Exists(
+                    PropertyFavorite.objects.filter(
+                        user=self.request.user,
+                        property=OuterRef("pk")
+                    )
+                )
+            )
+
+        queryset = queryset.select_related(
+            "agency"
+        ).prefetch_related(
+            "images",
+            "videos"
+        )
 
         return queryset
 
