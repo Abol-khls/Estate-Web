@@ -15,10 +15,22 @@ class Command(BaseCommand):
         parser.add_argument("--password", required=True)
         parser.add_argument("--phone", default="")
         parser.add_argument("--address", default="")
+        parser.add_argument(
+            "--force",
+            action="store_true",
+            help="Allow creating another Agency even if one already exists."
+        )
 
     def handle(self, *args, **options):
 
         User = get_user_model()
+
+        if Agency.objects.exists() and not options["force"]:
+            raise CommandError(
+                "یک آژانس از قبل روی این نصب وجود دارد. این دستور برای "
+                "دیپلوی تک‌بنگاهی طراحی شده است. اگر واقعاً می‌خواهید یک "
+                "آژانس دوم بسازید، دوباره با --force اجرا کنید."
+            )
 
         if User.objects.filter(username=options["username"]).exists():
             raise CommandError("این نام کاربری قبلاً استفاده شده است.")
