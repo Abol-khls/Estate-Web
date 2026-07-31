@@ -49,6 +49,45 @@ class CreateAgencyOwnerCommandTests(APITestCase):
                 "--password=StrongPass123",
             )
 
+    def test_command_rejects_second_agency_without_force(self):
+
+        call_command(
+            "create_agency_owner",
+            "--agency-name=املاک اول",
+            "--username=owner_3",
+            "--password=StrongPass123",
+        )
+
+        with self.assertRaises(CommandError):
+
+            call_command(
+                "create_agency_owner",
+                "--agency-name=املاک دوم",
+                "--username=owner_4",
+                "--password=StrongPass123",
+            )
+
+        self.assertEqual(Agency.objects.count(), 1)
+
+    def test_command_allows_second_agency_with_force(self):
+
+        call_command(
+            "create_agency_owner",
+            "--agency-name=املاک اول",
+            "--username=owner_5",
+            "--password=StrongPass123",
+        )
+
+        call_command(
+            "create_agency_owner",
+            "--agency-name=املاک دوم",
+            "--username=owner_6",
+            "--password=StrongPass123",
+            "--force",
+        )
+
+        self.assertEqual(Agency.objects.count(), 2)
+
 
 class AgencyMeTests(APITestCase):
 
