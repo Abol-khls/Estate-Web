@@ -389,4 +389,6 @@ and the backend server is running.
 
 ---
 
+## License
 
+MIT License
