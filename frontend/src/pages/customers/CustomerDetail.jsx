@@ -139,10 +139,12 @@ export default function CustomerDetail() {
 
                 <Stack
                     direction={{ xs: "column", sm: "row" }}
-                    justifyContent="space-between"
-                    alignItems={{ xs: "flex-start", sm: "center" }}
                     spacing={2}
-                    sx={{ mb: 2 }}
+                    sx={{
+                        mb: 2,
+                        justifyContent: "space-between",
+                        alignItems: { xs: "flex-start", sm: "center" },
+                    }}
                 >
 
                     <Box>
