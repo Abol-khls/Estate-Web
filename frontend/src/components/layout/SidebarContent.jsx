@@ -43,8 +43,8 @@ export default function SidebarContent({ onNavigate }) {
         <Box
             sx={{
                 height: "100%",
-                bgcolor: "primary.dark",
-                color: "#fff",
+                bgcolor: (theme) => theme.custom.sidebar.bg,
+                color: (theme) => theme.custom.sidebar.text,
                 px: 2.5,
                 py: 3.5,
                 display: "flex",
@@ -72,11 +72,11 @@ export default function SidebarContent({ onNavigate }) {
                             width: 10,
                             height: 10,
                             borderRadius: "50%",
-                            bgcolor: "secondary.main",
+                            bgcolor: (theme) => theme.custom.sidebar.logoDot,
                         }}
                     />
 
-                    <Typography variant="h6" sx={{ color: "#fff" }}>
+                    <Typography variant="h6" sx={{ color: "#F3F1EA" }}>
                         Estate CRM
                     </Typography>
 
@@ -105,18 +105,24 @@ export default function SidebarContent({ onNavigate }) {
                                         borderRadius: 2,
                                         fontSize: 14,
                                         transition: ".15s",
-                                        color: isActive
-                                            ? "#1A2233"
-                                            : "rgba(255,255,255,0.75)",
-                                        bgcolor: isActive
-                                            ? "secondary.main"
-                                            : "transparent",
+                                        color: (theme) =>
+                                            isActive
+                                                ? theme.custom.sidebar.textActive
+                                                : theme.custom.sidebar.text,
+                                        bgcolor: (theme) =>
+                                            isActive
+                                                ? theme.custom.sidebar.activeBg
+                                                : "transparent",
                                         fontWeight: isActive ? 700 : 500,
                                         "&:hover": {
-                                            bgcolor: isActive
-                                                ? "secondary.main"
-                                                : "rgba(255,255,255,0.08)",
-                                            color: isActive ? "#1A2233" : "#fff",
+                                            bgcolor: (theme) =>
+                                                isActive
+                                                    ? theme.custom.sidebar.activeBg
+                                                    : theme.custom.sidebar.hoverBg,
+                                            color: (theme) =>
+                                                isActive
+                                                    ? theme.custom.sidebar.textActive
+                                                    : "#fff",
                                         },
                                     }}
                                 >
@@ -147,13 +153,13 @@ export default function SidebarContent({ onNavigate }) {
                     startIcon={<ExternalLink size={18} />}
                     fullWidth
                     sx={{
-                        color: "#fff",
-                        border: "1px solid rgba(255,255,255,0.25)",
+                        color: "inherit",
+                        border: "1px solid rgba(255,255,255,0.2)",
                         justifyContent: "flex-start",
                         mb: 1.2,
                         "&:hover": {
-                            bgcolor: "rgba(255,255,255,0.08)",
-                            borderColor: "rgba(255,255,255,0.4)",
+                            bgcolor: (theme) => theme.custom.sidebar.hoverBg,
+                            borderColor: "rgba(255,255,255,0.35)",
                         },
                     }}
                 >
@@ -168,7 +174,7 @@ export default function SidebarContent({ onNavigate }) {
                         color: "#fff",
                         bgcolor: "error.main",
                         justifyContent: "flex-start",
-                        "&:hover": { bgcolor: "#B93838" },
+                        "&:hover": { bgcolor: "error.dark" },
                     }}
                 >
                     خروج
