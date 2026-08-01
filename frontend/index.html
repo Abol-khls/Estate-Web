@@ -10,6 +10,12 @@
       rel="stylesheet"
       type="text/css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>frontend</title>
     <style>
       #initial-loader {
@@ -20,21 +26,33 @@
         align-items: center;
         justify-content: center;
         gap: 16px;
-        background: #1F3B57;
+        background: #17161B;
         z-index: 9999;
       }
       #initial-loader .spinner {
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.25);
-        border-top-color: #C89B3C;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        border-top-color: #DCAC5B;
         animation: initial-loader-spin 0.8s linear infinite;
       }
       #initial-loader .label {
         font-family: Vazirmatn, sans-serif;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(255, 255, 255, 0.75);
         font-size: 14px;
+      }
+      @media (prefers-color-scheme: light) {
+        #initial-loader {
+          background: #FAF9F6;
+        }
+        #initial-loader .spinner {
+          border: 3px solid rgba(32, 30, 27, 0.12);
+          border-top-color: #A2712A;
+        }
+        #initial-loader .label {
+          color: rgba(32, 30, 27, 0.65);
+        }
       }
       @keyframes initial-loader-spin {
         to {
