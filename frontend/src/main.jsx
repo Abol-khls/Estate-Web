@@ -3,9 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./index.css"
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import { ThemeProvider, CssBaseline } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
-import theme from "./Theme.js";
+import { ThemeModeProvider } from "./context/ThemeModeContext.jsx";
 import rtlCache from "./rtlCache.js";
 import { SnackbarProvider } from "./context/SnackbarContext";
 import ErrorBoundary from "./components/common/ErrorBoundary";
@@ -24,8 +23,7 @@ createRoot(
 
             <CacheProvider value={rtlCache}>
 
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
+                <ThemeModeProvider>
 
                     <SnackbarProvider>
 
@@ -39,7 +37,7 @@ createRoot(
 
                     </SnackbarProvider>
 
-                </ThemeProvider>
+                </ThemeModeProvider>
 
             </CacheProvider>
 
