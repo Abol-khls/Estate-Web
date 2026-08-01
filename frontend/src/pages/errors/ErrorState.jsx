@@ -28,9 +28,9 @@ export default function ErrorState({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                bgcolor: "primary.dark",
-                backgroundImage:
-                    "radial-gradient(circle at 20% 20%, rgba(200,155,60,0.15), transparent 40%)," +
+                bgcolor: (theme) => theme.custom.darkAnchorBg,
+                backgroundImage: (theme) =>
+                    `radial-gradient(circle at 20% 20%, ${theme.custom.darkAnchorGlow}, transparent 40%),` +
                     "radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06), transparent 40%)",
                 p: 2,
             }}
