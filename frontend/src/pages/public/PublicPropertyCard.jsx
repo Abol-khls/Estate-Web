@@ -4,6 +4,8 @@ import PlaceIcon from "@mui/icons-material/PlaceOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
 import BedIcon from "@mui/icons-material/KingBedOutlined";
 
+import SpecStrip from "../../components/common/SpecStrip";
+
 import { PROPERTY_TYPES, TRANSACTION_TYPES } from "../../constants/propertyOptions";
 
 function getLabel(list, value) {
@@ -11,6 +13,11 @@ function getLabel(list, value) {
 }
 
 export default function PublicPropertyCard({ property, onView }) {
+
+    const specItems = [
+        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متراژ" },
+        { icon: BedIcon, value: property.rooms ?? "—", label: "خواب" },
+    ];
 
     return (
 
@@ -62,7 +69,7 @@ export default function PublicPropertyCard({ property, onView }) {
 
                     aspectRatio: "16 / 10",
 
-                    bgcolor: "grey.100",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
 
                 }}
 
@@ -108,7 +115,7 @@ export default function PublicPropertyCard({ property, onView }) {
                         insetInlineEnd: 0,
                         px: 1.5,
                         py: 1,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent)",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -116,9 +123,17 @@ export default function PublicPropertyCard({ property, onView }) {
                 >
 
                     <Typography
-                        sx={{ color: "#fff", fontWeight: 700, fontSize: 15 }}
+                        sx={{
+                            color: "#fff",
+                            fontWeight: 700,
+                            fontSize: 15,
+                            fontFamily: (theme) => theme.custom.fontMono,
+                        }}
                     >
-                        {Number(property.price).toLocaleString("fa-IR")} تومان
+                        {Number(property.price).toLocaleString("en-US")}
+                        <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
+                            {" "}تومان
+                        </Box>
                     </Typography>
 
                     <Typography
@@ -157,33 +172,14 @@ export default function PublicPropertyCard({ property, onView }) {
 
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap", mt: "auto", pt: 1 }}>
+                <Chip
+                    size="small"
+                    variant="outlined"
+                    label={getLabel(PROPERTY_TYPES, property.property_type)}
+                    sx={{ alignSelf: "flex-start" }}
+                />
 
-                    <Chip
-                        size="small"
-                        variant="outlined"
-                        label={getLabel(PROPERTY_TYPES, property.property_type)}
-                    />
-
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, color: "text.secondary" }}>
-                        <SquareFootIcon sx={{ fontSize: 16 }} />
-                        <Typography variant="caption">
-                            {Number(property.area).toLocaleString("fa-IR")} متر
-                        </Typography>
-                    </Box>
-
-                    {property.rooms != null && (
-
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, color: "text.secondary" }}>
-                            <BedIcon sx={{ fontSize: 16 }} />
-                            <Typography variant="caption">
-                                {property.rooms} خواب
-                            </Typography>
-                        </Box>
-
-                    )}
-
-                </Box>
+                <SpecStrip items={specItems} sx={{ mt: "auto" }} />
 
             </Box>
 
