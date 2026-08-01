@@ -3,6 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
+import ThemeToggleButton from "../common/ThemeToggleButton";
 
 export default function Header({ onMenuClick }) {
 
@@ -44,7 +45,11 @@ export default function Header({ onMenuClick }) {
 
             </Box>
 
-            <Box
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
+                <ThemeToggleButton />
+
+                <Box
                 onClick={() => navigate("/admin/settings")}
                 sx={{
                     display: "flex",
@@ -77,6 +82,8 @@ export default function Header({ onMenuClick }) {
                 >
                     {initial}
                 </Avatar>
+
+            </Box>
 
             </Box>
 

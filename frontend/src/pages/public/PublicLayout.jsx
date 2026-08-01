@@ -5,6 +5,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LoginIcon from "@mui/icons-material/Login";
 
 import api from "../../services/api";
+import ThemeToggleButton from "../../components/common/ThemeToggleButton";
 
 export default function PublicLayout({ children }) {
 
@@ -26,7 +27,7 @@ export default function PublicLayout({ children }) {
 
     return (
 
-        <Box sx={{ minHeight: "100vh", bgcolor: "#F7F8FA" }}>
+        <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
 
             <Box
                 component="header"
@@ -75,6 +76,8 @@ export default function PublicLayout({ children }) {
                         </Box>
 
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+
+                            <ThemeToggleButton sx={{ color: "inherit" }} />
 
                             {agency?.phone && (
 
