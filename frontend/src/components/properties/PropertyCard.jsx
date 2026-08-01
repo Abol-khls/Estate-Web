@@ -12,12 +12,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceIcon from "@mui/icons-material/PlaceOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
+import BedIcon from "@mui/icons-material/KingBedOutlined";
+import ApartmentIcon from "@mui/icons-material/ApartmentOutlined";
 
 import { BASE_URL } from "../../config";
 
+import SpecStrip from "../common/SpecStrip";
+import StatusPill from "../common/StatusPill";
+
 import {
     getPropertyStatusLabel,
-    getPropertyStatusColor,
     PROPERTY_TYPES,
     TRANSACTION_TYPES,
 } from "../../constants/propertyOptions";
@@ -43,6 +47,12 @@ export default function PropertyCard({
     const coverImage =
         property.images?.find(img => img.is_cover) ||
         property.images?.[0];
+
+    const specItems = [
+        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متراژ" },
+        { icon: BedIcon, value: property.rooms ?? "—", label: "خواب" },
+        { icon: ApartmentIcon, value: property.floor ?? "—", label: "طبقه" },
+    ];
 
     return (
 
@@ -92,7 +102,7 @@ export default function PropertyCard({
 
                     aspectRatio: "16 / 10",
 
-                    bgcolor: "grey.100",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
 
                     cursor: "pointer",
 
@@ -132,15 +142,13 @@ export default function PropertyCard({
 
                 )}
 
-                <Chip
-                    size="small"
-                    color={getPropertyStatusColor(property.status)}
+                <StatusPill
+                    status={property.status}
                     label={getPropertyStatusLabel(property.status)}
                     sx={{
                         position: "absolute",
-                        top: 16,
-                        insetInlineStart: 16,
-                        fontWeight: 700,
+                        top: 14,
+                        insetInlineStart: 14,
                         boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
                     }}
                 />
@@ -178,7 +186,7 @@ export default function PropertyCard({
 
                     ) : (
 
-                        <FavoriteBorderIcon sx={{ fontSize: 19, color: "text.secondary" }} />
+                        <FavoriteBorderIcon sx={{ fontSize: 19, color: "#3A3A3A" }} />
 
                     )}
 
@@ -192,7 +200,7 @@ export default function PropertyCard({
                         insetInlineEnd: 0,
                         px: 1.5,
                         py: 1,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent)",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -200,9 +208,17 @@ export default function PropertyCard({
                 >
 
                     <Typography
-                        sx={{ color: "#fff", fontWeight: 700, fontSize: 15 }}
+                        sx={{
+                            color: "#fff",
+                            fontWeight: 700,
+                            fontSize: 15,
+                            fontFamily: (theme) => theme.custom.fontMono,
+                        }}
                     >
-                        {Number(property.price).toLocaleString("fa-IR")} تومان
+                        {Number(property.price).toLocaleString("en-US")}
+                        <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
+                            {" "}تومان
+                        </Box>
                     </Typography>
 
                     <Typography
@@ -230,8 +246,11 @@ export default function PropertyCard({
                         {property.title}
                     </Typography>
 
-                    <Typography variant="caption" color="text.secondary">
-                        کد ملک: <bdi>{property.code}</bdi>
+                    <Typography
+                        variant="caption"
+                        sx={{ color: (theme) => theme.custom.textMuted, fontFamily: (theme) => theme.custom.fontMono }}
+                    >
+                        <bdi>{property.code}</bdi>
                     </Typography>
 
                 </Box>
@@ -255,29 +274,17 @@ export default function PropertyCard({
 
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap" }}>
+                <Chip
+                    size="small"
+                    variant="outlined"
+                    label={getLabel(PROPERTY_TYPES, property.property_type)}
+                    sx={{ alignSelf: "flex-start" }}
+                />
 
-                    <Chip
-                        size="small"
-                        variant="outlined"
-                        label={getLabel(PROPERTY_TYPES, property.property_type)}
-                    />
-
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, color: "text.secondary" }}>
-                        <SquareFootIcon sx={{ fontSize: 16 }} />
-                        <Typography variant="caption">
-                            {Number(property.area).toLocaleString("fa-IR")} متر
-                        </Typography>
-                    </Box>
-
-                </Box>
+                <SpecStrip items={specItems} sx={{ mt: "auto" }} />
 
                 <Box
                     sx={{
-                        mt: "auto",
-                        pt: 1.5,
-                        borderTop: "1px solid",
-                        borderColor: "divider",
                         display: "flex",
                         justifyContent: "flex-end",
                         gap: 1,
@@ -293,7 +300,7 @@ export default function PropertyCard({
                                 borderRadius: 2,
                                 border: "1px solid",
                                 borderColor: "primary.main",
-                                "&:hover": { bgcolor: "primary.main", color: "#fff" },
+                                "&:hover": { bgcolor: "primary.main", color: "primary.contrastText" },
                             }}
                         >
                             <EditIcon fontSize="small" />
