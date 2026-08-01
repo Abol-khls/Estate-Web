@@ -21,10 +21,10 @@ export default function getTheme(mode) {
             },
 
             secondary: {
-                main: tokens.textPrimary,
-                light: tokens.textSecondary,
-                dark: tokens.textPrimary,
-                contrastText: tokens.bg,
+                main: tokens.accentMain,
+                light: tokens.accentLight,
+                dark: tokens.accentDark,
+                contrastText: tokens.accentContrastText,
             },
 
             error: {
@@ -62,6 +62,17 @@ export default function getTheme(mode) {
                 reserved: { bg: tokens.warningBg, text: tokens.warning },
                 sold: { bg: tokens.neutralStatusBg, text: tokens.neutralStatus },
                 rented: { bg: tokens.neutralStatusBg, text: tokens.neutralStatus },
+            },
+            darkAnchorBg: darkTokens.bg,
+            darkAnchorGlow: "rgba(220, 172, 91, 0.15)",
+            sidebar: {
+                bg: darkTokens.bg,
+                text: "rgba(243, 241, 234, 0.72)",
+                textActive: darkTokens.accentContrastText,
+                hoverBg: "rgba(255, 255, 255, 0.06)",
+                activeBg: darkTokens.accentMain,
+                border: darkTokens.border,
+                logoDot: darkTokens.accentMain,
             },
         },
 
