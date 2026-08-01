@@ -8,6 +8,8 @@ import { BASE_URL } from "../../config";
 import PropertyGallery from "../../components/properties/PropertyGallery";
 import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
+import SpecStrip from "../../components/common/SpecStrip";
+import StatusPill from "../../components/common/StatusPill";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";
@@ -30,10 +32,7 @@ import {
     getTransactionTypeLabel
 } from "../../constants/propertyHelpers";
 
-import {
-    getPropertyStatusLabel,
-    getPropertyStatusColor
-} from "../../constants/propertyOptions";
+import { getPropertyStatusLabel } from "../../constants/propertyOptions";
 
 
 import IconButton from "@mui/material/IconButton";
@@ -46,6 +45,10 @@ import InventoryIcon from "@mui/icons-material/Inventory2";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PlaceIcon from "@mui/icons-material/PlaceOutlined";
+import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
+import BedIcon from "@mui/icons-material/KingBedOutlined";
+import ApartmentIcon from "@mui/icons-material/ApartmentOutlined";
 
 function InfoItem({ label, value }) {
 
@@ -206,7 +209,11 @@ export default function PropertyDetail() {
 
     }
 
-
+    const specItems = [
+        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متراژ" },
+        { icon: BedIcon, value: property.rooms ?? "—", label: "خواب" },
+        { icon: ApartmentIcon, value: property.floor ?? "—", label: "طبقه" },
+    ];
 
     return (
 
@@ -239,12 +246,11 @@ export default function PropertyDetail() {
             >
 
                 <Stack
-                    direction="row"
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
                     sx={{
                         justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        flexWrap: "wrap",
-                        gap: 2,
+                        alignItems: { xs: "flex-start", sm: "flex-start" },
                         mb: 3,
                     }}
                 >
@@ -257,15 +263,28 @@ export default function PropertyDetail() {
                                 {property.title}
                             </Typography>
 
-                            <Chip
-                                color={getPropertyStatusColor(property.status)}
+                            <StatusPill
+                                status={property.status}
                                 label={getPropertyStatusLabel(property.status)}
                             />
 
                         </Stack>
 
-                        <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-                            کد ملک: <bdi>{property.code}</bdi>
+                        <Stack direction="row" spacing={0.6} sx={{ alignItems: "center", mb: 0.3 }}>
+
+                            <PlaceIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+
+                            <Typography color="text.secondary">
+                                {property.address}
+                            </Typography>
+
+                        </Stack>
+
+                        <Typography
+                            variant="caption"
+                            sx={{ color: (theme) => theme.custom.textMuted, fontFamily: (theme) => theme.custom.fontMono }}
+                        >
+                            <bdi>{property.code}</bdi>
                         </Typography>
 
                     </Box>
@@ -276,6 +295,7 @@ export default function PropertyDetail() {
                             flexDirection: "row",
                             gap: 1,
                             alignItems: "center",
+                            flexShrink: 0,
                         }}
                     >
 
@@ -284,16 +304,19 @@ export default function PropertyDetail() {
                                 px: 2,
                                 py: 1,
                                 borderRadius: 2,
-                                bgcolor: "rgba(200, 155, 60, 0.12)",
+                                bgcolor: (theme) => theme.custom.accentTint,
                                 textAlign: "center",
                             }}
                         >
 
-                            <Typography fontWeight={800} sx={{ color: "#8A6A1F" }}>
-                                {Number(property.price).toLocaleString("fa-IR")}
+                            <Typography
+                                fontWeight={800}
+                                sx={{ color: "primary.main", fontFamily: (theme) => theme.custom.fontMono }}
+                            >
+                                {Number(property.price).toLocaleString("en-US")}
                             </Typography>
 
-                            <Typography variant="caption" sx={{ color: "#8A6A1F" }}>
+                            <Typography variant="caption" sx={{ color: "primary.main" }}>
                                 تومان
                             </Typography>
 
@@ -325,7 +348,7 @@ export default function PropertyDetail() {
 
                 </Stack>
 
-                <Divider sx={{ mb: 3 }} />
+                <SpecStrip items={specItems} sx={{ mb: 3, borderRadius: 2, border: "1px solid", borderColor: "divider", py: 1.5 }} />
 
                 <Grid container spacing={3}>
 
@@ -344,18 +367,6 @@ export default function PropertyDetail() {
                     </Grid>
 
                     <Grid size={{ xs: 6, md: 3 }}>
-                        <InfoItem label="متراژ" value={`${property.area} متر`} />
-                    </Grid>
-
-                    <Grid size={{ xs: 6, md: 3 }}>
-                        <InfoItem label="تعداد اتاق" value={property.rooms} />
-                    </Grid>
-
-                    <Grid size={{ xs: 6, md: 3 }}>
-                        <InfoItem label="طبقه" value={property.floor ?? "-"} />
-                    </Grid>
-
-                    <Grid size={{ xs: 6, md: 3 }}>
                         <InfoItem label="تعداد طبقات" value={property.total_floors ?? "-"} />
                     </Grid>
 
@@ -367,10 +378,6 @@ export default function PropertyDetail() {
 
                         <Divider sx={{ my: 1 }} />
 
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }}>
-                        <InfoItem label="آدرس" value={property.address} />
                     </Grid>
 
                     <Grid size={{ xs: 12 }}>
