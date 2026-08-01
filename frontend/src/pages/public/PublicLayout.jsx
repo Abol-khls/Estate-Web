@@ -32,7 +32,7 @@ export default function PublicLayout({ children }) {
             <Box
                 component="header"
                 sx={{
-                    bgcolor: "primary.dark",
+                    bgcolor: (theme) => theme.custom.darkAnchorBg,
                     color: "#fff",
                 }}
             >
