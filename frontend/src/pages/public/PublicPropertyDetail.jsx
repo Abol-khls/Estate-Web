@@ -15,12 +15,16 @@ import PlaceIcon from "@mui/icons-material/PlaceOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PhoneIcon from "@mui/icons-material/Phone";
+import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
+import BedIcon from "@mui/icons-material/KingBedOutlined";
+import ApartmentIcon from "@mui/icons-material/ApartmentOutlined";
 
 import api from "../../services/api";
 import PublicLayout from "./PublicLayout";
 import InquiryForm from "./InquiryForm";
 import Loading from "../../components/common/Loading";
 import AppButton from "../../components/common/AppButton";
+import SpecStrip from "../../components/common/SpecStrip";
 
 import {
     PROPERTY_TYPES,
@@ -45,7 +49,7 @@ function PublicGallery({ images, title }) {
                 sx={{
                     aspectRatio: "16 / 9",
                     borderRadius: 4,
-                    bgcolor: "grey.100",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -95,7 +99,7 @@ function PublicGallery({ images, title }) {
                                 cursor: "pointer",
                                 flexShrink: 0,
                                 border: "2px solid",
-                                borderColor: selected?.id === image.id ? "secondary.main" : "transparent",
+                                borderColor: selected?.id === image.id ? "primary.main" : "transparent",
                             }}
                         />
 
@@ -182,10 +186,13 @@ export default function PublicPropertyDetail() {
 
     }
 
-    const specs = [
-        { label: "متراژ", value: `${Number(property.area).toLocaleString("fa-IR")} متر` },
-        { label: "تعداد اتاق", value: property.rooms },
-        { label: "طبقه", value: property.floor ?? "—" },
+    const specItems = [
+        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متراژ" },
+        { icon: BedIcon, value: property.rooms ?? "—", label: "خواب" },
+        { icon: ApartmentIcon, value: property.floor ?? "—", label: "طبقه" },
+    ];
+
+    const secondarySpecs = [
         { label: "تعداد کل طبقات", value: property.total_floors ?? "—" },
         { label: "سال ساخت", value: property.year_built ?? "—" },
     ];
@@ -260,21 +267,41 @@ export default function PublicPropertyDetail() {
                             />
                         </Box>
 
-                        <Typography variant="h4" fontWeight={800} sx={{ mt: 2.5, color: "secondary.dark" }}>
-                            {Number(property.price).toLocaleString("fa-IR")} <Typography component="span" variant="body1" color="text.secondary">تومان</Typography>
-                        </Typography>
+                        <Box
+                            sx={{
+                                mt: 2.5,
+                                p: 2,
+                                borderRadius: 3,
+                                bgcolor: (theme) => theme.custom.accentTint,
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: (theme) => theme.custom.fontMono,
+                                    fontWeight: 800,
+                                    fontSize: 28,
+                                    color: "primary.main",
+                                    lineHeight: 1.3,
+                                }}
+                            >
+                                {Number(property.price).toLocaleString("en-US")}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: "primary.main" }}>
+                                تومان
+                            </Typography>
+                        </Box>
 
-                        <Divider sx={{ my: 2.5 }} />
+                        <SpecStrip items={specItems} sx={{ mt: 2.5 }} />
 
-                        <Grid container spacing={1.5}>
+                        <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
 
-                            {specs.map(spec => (
+                            {secondarySpecs.map(spec => (
 
                                 <Grid size={{ xs: 6 }} key={spec.label}>
                                     <Typography variant="caption" color="text.secondary" display="block">
                                         {spec.label}
                                     </Typography>
-                                    <Typography fontWeight={700}>
+                                    <Typography fontWeight={700} sx={{ fontFamily: (theme) => theme.custom.fontMono }}>
                                         {spec.value}
                                     </Typography>
                                 </Grid>
@@ -300,9 +327,10 @@ export default function PublicPropertyDetail() {
 
                         )}
 
+                        <Divider sx={{ my: 2.5 }} />
+
                         <AppButton
                             fullWidth
-                            sx={{ mt: 3 }}
                             onClick={() => setInquiryOpen(true)}
                         >
                             درخواست بازدید از این ملک
