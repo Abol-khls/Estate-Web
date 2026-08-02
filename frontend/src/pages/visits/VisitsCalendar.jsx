@@ -210,7 +210,9 @@ export default function VisitsCalendar() {
                         sx={{
                             display: "grid",
                             gridTemplateColumns: "repeat(7, 1fr)",
-                            bgcolor: "primary.main",
+                            bgcolor: (theme) => theme.custom.surfaceAlt,
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
                         }}
                     >
 
@@ -220,7 +222,9 @@ export default function VisitsCalendar() {
                                 key={day}
                                 align="center"
                                 variant="subtitle2"
-                                sx={{ color: "#fff", py: 1.2, fontSize: { xs: 11, sm: 14 } }}
+                                color="text.secondary"
+                                fontWeight={700}
+                                sx={{ py: 1.2, fontSize: { xs: 11, sm: 14 } }}
                             >
                                 {day}
                             </Typography>
@@ -256,7 +260,7 @@ export default function VisitsCalendar() {
                                         borderInlineEnd: "1px solid",
                                         borderTop: "1px solid",
                                         borderColor: "divider",
-                                        bgcolor: isCurrentMonth ? "background.paper" : "rgba(31,59,87,0.02)",
+                                        bgcolor: isCurrentMonth ? "background.paper" : (theme) => theme.custom.surfaceAlt,
                                         display: "flex",
                                         flexDirection: "column",
                                         gap: 0.5,
@@ -277,7 +281,7 @@ export default function VisitsCalendar() {
                                                 color: isToday
                                                     ? "secondary.dark"
                                                     : isCurrentMonth ? "text.primary" : "text.disabled",
-                                                bgcolor: isToday ? "rgba(200,155,60,0.15)" : "transparent",
+                                                bgcolor: isToday ? (theme) => theme.custom.accentTint : "transparent",
                                                 borderRadius: "50%",
                                                 width: 22,
                                                 height: 22,
