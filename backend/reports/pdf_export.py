@@ -28,8 +28,8 @@ pdfmetrics.registerFont(
     TTFont("Vazirmatn-Bold", os.path.join(FONTS_DIR, "Vazirmatn-Bold.ttf"))
 )
 
-PRIMARY_COLOR = colors.HexColor("#1F3B57")
-LIGHT_ROW_COLOR = colors.HexColor("#F5F7FA")
+PRIMARY_COLOR = colors.HexColor("#A2712A")
+LIGHT_ROW_COLOR = colors.HexColor("#F2F0E9")
 
 PROPERTY_TYPE_LABELS = {
     'apartment': 'آپارتمان',
