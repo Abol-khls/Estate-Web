@@ -77,11 +77,11 @@ export default function ImageUploader({
                     textAlign: "center",
                     cursor: "pointer",
                     mb: 3,
-                    bgcolor: "rgba(31, 59, 87, 0.02)",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
                     transition: ".2s",
                     "&:hover": {
                         borderColor: "primary.main",
-                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                        bgcolor: (theme) => theme.custom.accentTint,
                     },
                 }}
                 onClick={() => inputRef.current.click()}
