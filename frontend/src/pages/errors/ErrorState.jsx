@@ -52,7 +52,7 @@ export default function ErrorState({
                         width: 72,
                         height: 72,
                         borderRadius: "50%",
-                        bgcolor: "rgba(200, 155, 60, 0.12)",
+                        bgcolor: (theme) => theme.custom.accentTint,
                         color: "secondary.main",
                         display: "flex",
                         alignItems: "center",
