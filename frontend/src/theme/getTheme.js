@@ -123,6 +123,13 @@ export default function getTheme(mode) {
                     "*::-webkit-scrollbar-corner": {
                         backgroundColor: "transparent",
                     },
+                    "input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active": {
+                        WebkitBoxShadow: `0 0 0 100px ${tokens.surface} inset !important`,
+                        WebkitTextFillColor: `${tokens.textPrimary} !important`,
+                        caretColor: `${tokens.textPrimary} !important`,
+                        borderRadius: "inherit",
+                        transition: "background-color 5000s ease-in-out 0s !important",
+                    },
                 },
             },
 
