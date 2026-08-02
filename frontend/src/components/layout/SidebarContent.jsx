@@ -51,6 +51,18 @@ export default function SidebarContent({ onNavigate }) {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 overflowY: "auto",
+                scrollbarWidth: "thin",
+                scrollbarColor: (theme) => `${theme.custom.sidebar.border} transparent`,
+                "&::-webkit-scrollbar": { width: 10 },
+                "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: (theme) => theme.custom.sidebar.border,
+                    borderRadius: 10,
+                    border: (theme) => `2px solid ${theme.custom.sidebar.bg}`,
+                    backgroundClip: "padding-box",
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: (theme) => theme.custom.sidebar.activeBg,
+                },
             }}
         >
 
