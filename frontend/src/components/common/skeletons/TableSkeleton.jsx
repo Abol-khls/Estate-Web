@@ -31,7 +31,7 @@ export default function TableSkeleton({
                     alignItems: "center",
                     px: 3,
                     py: 2,
-                    bgcolor: "primary.main",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
                     opacity: 0.9,
                 }}
             >
@@ -44,7 +44,6 @@ export default function TableSkeleton({
                         width="60%"
                         sx={{
                             mx: "auto",
-                            bgcolor: "rgba(255,255,255,0.25)",
                         }}
                     />
 
