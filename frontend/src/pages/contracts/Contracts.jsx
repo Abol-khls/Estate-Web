@@ -11,6 +11,7 @@ import {
     Tooltip,
     Grid,
     MenuItem,
+    alpha,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -260,35 +261,37 @@ export default function Contracts() {
                             alignItems: "center",
                             px: 3,
                             py: 2,
-                            bgcolor: "primary.main",
+                            bgcolor: (theme) => theme.custom.surfaceAlt,
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
                         }}
                     >
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             مشتری
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             ملک
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             نوع
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             مبلغ
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             وضعیت
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             تاریخ امضا
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             عملیات
                         </Typography>
 
@@ -327,13 +330,13 @@ export default function Contracts() {
                                     px: 3,
                                     py: 2.5,
                                     cursor: "pointer",
-                                    bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
+                                    bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
                                     borderInlineStart: "3px solid transparent",
                                     transition: ".2s",
                                     "&:hover": {
-                                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
                                         borderInlineStartColor: "secondary.main",
                                     },
                                 }}
@@ -351,12 +354,12 @@ export default function Contracts() {
                                     <Chip
                                         size="small"
                                         label={getContractTypeLabel(contract.contract_type)}
-                                        sx={{ bgcolor: "rgba(31, 59, 87, 0.08)", fontWeight: 600 }}
+                                        sx={{ bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1), fontWeight: 600 }}
                                     />
                                 </Box>
 
-                                <Typography align="center" fontWeight={600}>
-                                    {Number(contract.amount).toLocaleString("fa-IR")} تومان
+                                <Typography align="center" fontWeight={600} sx={{ fontFamily: (theme) => theme.custom.fontMono }}>
+                                    {Number(contract.amount).toLocaleString("en-US")} تومان
                                 </Typography>
 
                                 <Box sx={{ display: "flex", justifyContent: "center" }}>
