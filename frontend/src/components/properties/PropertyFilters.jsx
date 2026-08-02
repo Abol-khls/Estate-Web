@@ -213,7 +213,7 @@ export default function PropertyFilters({
 
                         justifyContent: "center",
 
-                        bgcolor: favoriteOnly ? "rgba(200, 155, 60, 0.1)" : "transparent",
+                        bgcolor: favoriteOnly ? (theme) => theme.custom.accentTint : "transparent",
 
                         borderRadius: 2,
 
