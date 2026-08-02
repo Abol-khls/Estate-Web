@@ -11,6 +11,7 @@ import {
     Tooltip,
     Grid,
     MenuItem,
+    alpha,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -258,31 +259,33 @@ export default function Customers() {
                             alignItems: "center",
                             px: 3,
                             py: 2,
-                            bgcolor: "primary.main",
+                            bgcolor: (theme) => theme.custom.surfaceAlt,
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
                         }}
                     >
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             نام مشتری
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             شماره تماس
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             نوع درخواست
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             بودجه
                         </Typography>
 
-                        <Typography variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography variant="subtitle2" color="text.secondary" fontWeight={700}>
                             یادداشت
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             عملیات
                         </Typography>
 
@@ -321,13 +324,13 @@ export default function Customers() {
                                     px: 3,
                                     py: 2.5,
                                     cursor: "pointer",
-                                    bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
+                                    bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
                                     borderInlineStart: "3px solid transparent",
                                     transition: ".2s",
                                     "&:hover": {
-                                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
                                         borderInlineStartColor: "secondary.main",
                                     },
                                 }}
@@ -366,13 +369,13 @@ export default function Customers() {
                                     <Chip
                                         size="small"
                                         label={getRequestTypeLabel(customer.request_type)}
-                                        sx={{ bgcolor: "rgba(31, 59, 87, 0.08)", fontWeight: 600 }}
+                                        sx={{ bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1), fontWeight: 600 }}
                                     />
                                 </Box>
 
-                                <Typography align="center" fontWeight={600}>
+                                <Typography align="center" fontWeight={600} sx={{ fontFamily: (theme) => theme.custom.fontMono }}>
                                     {customer.budget
-                                        ? `${Number(customer.budget).toLocaleString("fa-IR")} تومان`
+                                        ? `${Number(customer.budget).toLocaleString("en-US")} تومان`
                                         : "—"}
                                 </Typography>
 
