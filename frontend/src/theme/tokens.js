@@ -58,6 +58,6 @@ export const darkTokens = {
 
 };
 
-export const fontSans = "'Vazirmatn', 'Roboto', sans-serif";
+export const fontSans = "'Shabnam', 'Roboto', sans-serif";
 
 export const fontMono = "'JetBrains Mono', 'Roboto Mono', monospace";
