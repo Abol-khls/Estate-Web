@@ -52,7 +52,9 @@ const PROPERTY_TYPE_LABELS = {
     shop: "مغازه",
 };
 
-const PIE_COLORS = ["#1F3B57", "#C89B3C", "#0E7C86", "#8B3A3A", "#5B6B79"];
+const CHART_COLORS = ["#A2712A", "#3E7C74", "#4A6FA5", "#B0563D", "#8A8477"];
+
+const PIE_COLORS = CHART_COLORS;
 
 function toDateInputValue(date) {
     return date.toISOString().slice(0, 10);
@@ -307,8 +309,8 @@ export default function Reports() {
                                         <YAxis />
                                         <RechartsTooltip formatter={(value) => Number(value).toLocaleString("fa-IR")} />
                                         <Legend />
-                                        <Bar dataKey="مبلغ فروش" fill="#1F3B57" radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey="مبلغ اجاره" fill="#C89B3C" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="مبلغ فروش" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="مبلغ اجاره" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
                                     </BarChart>
 
                                 </ResponsiveContainer>
@@ -412,8 +414,8 @@ export default function Reports() {
                                         <YAxis dataKey="name" type="category" width={90} />
                                         <RechartsTooltip />
                                         <Legend />
-                                        <Bar dataKey="بازدید" fill="#0E7C86" radius={[0, 4, 4, 0]} />
-                                        <Bar dataKey="قرارداد" fill="#8B3A3A" radius={[0, 4, 4, 0]} />
+                                        <Bar dataKey="بازدید" fill={CHART_COLORS[1]} radius={[0, 4, 4, 0]} />
+                                        <Bar dataKey="قرارداد" fill={CHART_COLORS[3]} radius={[0, 4, 4, 0]} />
                                     </BarChart>
 
                                 </ResponsiveContainer>
@@ -447,7 +449,7 @@ export default function Reports() {
                                         <XAxis dataKey="name" />
                                         <YAxis />
                                         <RechartsTooltip formatter={(value) => Number(value).toLocaleString("fa-IR")} />
-                                        <Bar dataKey="میانگین قیمت" fill="#1F3B57" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="میانگین قیمت" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
                                     </BarChart>
 
                                 </ResponsiveContainer>
