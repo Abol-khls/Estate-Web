@@ -11,6 +11,7 @@ import {
     Tooltip,
     Grid,
     MenuItem,
+    alpha,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -260,31 +261,33 @@ export default function Visits() {
                             alignItems: "center",
                             px: 3,
                             py: 2,
-                            bgcolor: "primary.main",
+                            bgcolor: (theme) => theme.custom.surfaceAlt,
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
                         }}
                     >
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             مشتری
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             ملک
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             تاریخ بازدید
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             وضعیت
                         </Typography>
 
-                        <Typography variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography variant="subtitle2" color="text.secondary" fontWeight={700}>
                             یادداشت
                         </Typography>
 
-                        <Typography align="center" variant="subtitle2" sx={{ color: "rgba(255,255,255,0.85)" }}>
+                        <Typography align="center" variant="subtitle2" color="text.secondary" fontWeight={700}>
                             عملیات
                         </Typography>
 
@@ -323,13 +326,13 @@ export default function Visits() {
                                     px: 3,
                                     py: 2.5,
                                     cursor: "pointer",
-                                    bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
+                                    bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
                                     borderInlineStart: "3px solid transparent",
                                     transition: ".2s",
                                     "&:hover": {
-                                        bgcolor: "rgba(31, 59, 87, 0.05)",
+                                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
                                         borderInlineStartColor: "secondary.main",
                                     },
                                 }}
