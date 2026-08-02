@@ -8,6 +8,7 @@ import {
     Paper,
     Chip,
     Stack,
+    alpha,
 } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -33,6 +34,8 @@ import {
     getActivityStatusLabel,
     getActivityStatusColor,
 } from "../../constants/activityOptions";
+
+const CHART_SECONDARY_COLOR = "#4A6FA5";
 
 function formatDateTime(value) {
 
@@ -79,7 +82,7 @@ function StatCard({ title, value, icon: Icon, color, onClick }) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    bgcolor: `${color}1A`,
+                    bgcolor: alpha(color, 0.14),
                     color: color,
                     flexShrink: 0,
                 }}
@@ -93,8 +96,12 @@ function StatCard({ title, value, icon: Icon, color, onClick }) {
                     {title}
                 </Typography>
 
-                <Typography variant="h4" fontWeight={800}>
-                    {value ?? 0}
+                <Typography
+                    variant="h4"
+                    fontWeight={800}
+                    sx={{ fontFamily: (theme) => theme.custom.fontMono }}
+                >
+                    {(value ?? 0).toLocaleString("en-US")}
                 </Typography>
 
             </Box>
@@ -190,7 +197,7 @@ function MonthlyOverviewChart({ data }) {
                 </Stack>
 
                 <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                    <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "secondary.main" }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: CHART_SECONDARY_COLOR }} />
                     <Typography variant="caption" color="text.secondary">قرارداد</Typography>
                 </Stack>
 
@@ -248,7 +255,7 @@ function MonthlyOverviewChart({ data }) {
                                     height: `${(item.contracts / maxValue) * 100}%`,
                                     minHeight: item.contracts > 0 ? 4 : 0,
                                     borderRadius: "6px 6px 0 0",
-                                    bgcolor: "secondary.main",
+                                    bgcolor: CHART_SECONDARY_COLOR,
                                     transition: ".3s",
                                 }}
                             />
@@ -373,7 +380,7 @@ export default function Dashboard() {
                     title="تعداد املاک"
                     value={data.properties_count}
                     icon={Building2}
-                    color="#1F3B57"
+                    color="#A2712A"
                     onClick={() => navigate("/admin/properties")}
                 />
 
@@ -381,7 +388,7 @@ export default function Dashboard() {
                     title="تعداد مشتری"
                     value={data.customers_count}
                     icon={Users}
-                    color="#0E7C86"
+                    color="#3E7C74"
                     onClick={() => navigate("/admin/clients")}
                 />
 
@@ -389,7 +396,7 @@ export default function Dashboard() {
                     title="بازدید امروز"
                     value={data.visits_today_count}
                     icon={Calendar}
-                    color="#B8860B"
+                    color={CHART_SECONDARY_COLOR}
                     onClick={() => navigate("/admin/visits")}
                 />
 
@@ -397,7 +404,7 @@ export default function Dashboard() {
                     title="قراردادهای فعال"
                     value={data.active_contracts_count}
                     icon={FileText}
-                    color="#8B3A3A"
+                    color="#B0563D"
                     onClick={() => navigate("/admin/contracts")}
                 />
 
