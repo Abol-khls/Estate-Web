@@ -4,8 +4,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 HEADER_FILL = PatternFill(
-    start_color="1F3B57",
-    end_color="1F3B57",
+    start_color="A2712A",
+    end_color="A2712A",
     fill_type="solid"
 )
 
