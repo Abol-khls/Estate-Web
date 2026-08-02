@@ -14,44 +14,72 @@ import {
     Button,
     Alert,
     Stack,
+    InputAdornment,
+    IconButton,
+    CircularProgress,
 } from "@mui/material";
+
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+function getLoginErrorMessage(err) {
+
+    if (!err.response) {
+        return "ارتباط با سرور برقرار نشد. اتصال اینترنت خود را بررسی کنید.";
+    }
+
+    if (err.response.status === 429) {
+        return "تعداد تلاش‌های ورود بیش از حد مجاز است. لطفاً چند دقیقه دیگر دوباره امتحان کنید.";
+    }
+
+    if (err.response.status === 401) {
+        return "نام کاربری یا رمز عبور اشتباه است.";
+    }
+
+    return "ورود انجام نشد. لطفاً دوباره تلاش کنید.";
+
+}
 
 export default function Login() {
     const { login } = useAuth();
 
-
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const [error, setError] = useState("");
 
     const [loading, setLoading] = useState(false);
 
-
-
     async function handleSubmit(e) {
 
         e.preventDefault();
 
+        if (!username.trim() || !password) {
+
+            setError("نام کاربری و رمز عبور را وارد کنید.");
+
+            return;
+
+        }
+
         setLoading(true);
         setError("");
 
-
         try {
-
 
             const response = await axios.post(
                 `${API_BASE_URL}/token/`,
                 {
-                    username,
-                    password
+                    username: username.trim(),
+                    password,
                 }
             );
-
 
             saveTokens(
                 response.data.access,
@@ -59,6 +87,7 @@ export default function Login() {
             );
 
             await login();
+
             showSnackbar(
                 "با موفقیت وارد شدید",
                 "success"
@@ -66,25 +95,20 @@ export default function Login() {
 
             navigate("/admin/dashboard");
 
-
         }
         catch (err) {
 
-            setError("نام کاربری یا رمز عبور اشتباه است");
+            const message = getLoginErrorMessage(err);
 
-            showSnackbar(
-                "نام کاربری یا رمز عبور اشتباه است",
-                "error"
-            );
+            setError(message);
+
+            showSnackbar(message, "error");
 
         }
-
 
         setLoading(false);
 
     }
-
-
 
     return (
 
@@ -106,8 +130,8 @@ export default function Login() {
                 component="form"
                 onSubmit={handleSubmit}
                 sx={{
-                    width: 360,
-                    p: 4,
+                    width: 380,
+                    p: 4.5,
                     borderRadius: 4,
                     boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
                 }}
@@ -120,7 +144,7 @@ export default function Login() {
                         gap: 1.2,
                         alignItems: "center",
                         justifyContent: "center",
-                        mb: 3,
+                        mb: 1,
                     }}
                 >
 
@@ -134,9 +158,9 @@ export default function Login() {
                     />
 
                     <Typography
-
                         variant="h6"
                         color="primary.main"
+                        fontWeight={700}
                     >
                         Estate CRM
                     </Typography>
@@ -145,12 +169,21 @@ export default function Login() {
 
                 <Typography
                     variant="h5"
+                    fontWeight={800}
                     sx={{
                         textAlign: "center",
-                        mb: 3,
+                        mb: 0.5,
                     }}
                 >
-                    ورود به پنل
+                    ورود به پنل مدیریت
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ textAlign: "center", mb: 3 }}
+                >
+                    برای دسترسی به داشبورد آژانس خود وارد شوید
                 </Typography>
 
                 {error && (
@@ -167,55 +200,75 @@ export default function Login() {
                 <Stack spacing={2}>
 
                     <TextField
-
                         fullWidth
-
                         size="small"
-
                         label="نام کاربری"
-
                         value={username}
-
+                        autoFocus
+                        autoComplete="username"
+                        disabled={loading}
                         onChange={e => setUsername(e.target.value)}
-
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <PersonOutlineIcon fontSize="small" sx={{ color: "text.secondary" }} />
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
                     />
 
                     <TextField
-
                         fullWidth
-
                         size="small"
-
-                        type="password"
-
+                        type={showPassword ? "text" : "password"}
                         label="رمز عبور"
-
                         value={password}
-
+                        autoComplete="current-password"
+                        disabled={loading}
                         onChange={e => setPassword(e.target.value)}
-
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <LockOutlinedIcon fontSize="small" sx={{ color: "text.secondary" }} />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => setShowPassword(prev => !prev)}
+                                            edge="end"
+                                            tabIndex={-1}
+                                        >
+                                            {showPassword ? (
+                                                <VisibilityOff fontSize="small" />
+                                            ) : (
+                                                <Visibility fontSize="small" />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
                     />
 
                     <Button
-
                         type="submit"
-
                         variant="contained"
-
                         size="large"
-
                         fullWidth
-
                         disabled={loading}
-
-                    >
-
-                        {
-                            loading
-                                ? "در حال ورود..."
-                                : "ورود"
+                        sx={{ mt: 1 }}
+                        startIcon={
+                            loading ? (
+                                <CircularProgress size={18} sx={{ color: "primary.contrastText" }} />
+                            ) : null
                         }
-
+                    >
+                        {loading ? "در حال ورود..." : "ورود"}
                     </Button>
 
                 </Stack>
@@ -225,6 +278,5 @@ export default function Login() {
         </Box>
 
     );
-
 
 }
