@@ -181,7 +181,7 @@ export default function TeamTab() {
                                 alignItems: "center",
                                 px: 2.5,
                                 py: 2,
-                                bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
+                                bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",
                                 borderBottom: index === members.length - 1 ? "none" : "1px solid",
                                 borderColor: "divider",
                             }}
