@@ -97,6 +97,31 @@ export default function getTheme(mode) {
                     body: {
                         backgroundColor: tokens.bg,
                         transition: "background-color .2s ease",
+                        scrollbarWidth: "thin",
+                        scrollbarColor: `${tokens.border} transparent`,
+                    },
+                    "*": {
+                        scrollbarWidth: "thin",
+                        scrollbarColor: `${tokens.border} transparent`,
+                    },
+                    "*::-webkit-scrollbar": {
+                        width: 10,
+                        height: 10,
+                    },
+                    "*::-webkit-scrollbar-track": {
+                        backgroundColor: "transparent",
+                    },
+                    "*::-webkit-scrollbar-thumb": {
+                        backgroundColor: tokens.border,
+                        borderRadius: 10,
+                        border: `2px solid ${tokens.bg}`,
+                        backgroundClip: "padding-box",
+                    },
+                    "*::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: tokens.accentMain,
+                    },
+                    "*::-webkit-scrollbar-corner": {
+                        backgroundColor: "transparent",
                     },
                 },
             },
