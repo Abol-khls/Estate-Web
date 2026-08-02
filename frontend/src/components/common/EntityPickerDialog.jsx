@@ -8,6 +8,7 @@ import {
     Box,
     Pagination,
     Typography,
+    alpha,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -196,12 +197,12 @@ export default function EntityPickerDialog({
                                     px: 3,
                                     py: 2,
                                     cursor: "pointer",
-                                    bgcolor: index % 2 === 1 ? "rgba(31, 59, 87, 0.02)" : "transparent",
+                                    bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",
                                     borderBottom: "1px solid",
                                     borderColor: "divider",
                                     transition: ".15s",
                                     "&:hover": {
-                                        bgcolor: "rgba(31, 59, 87, 0.06)",
+                                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
                                     },
                                 }}
                             >
