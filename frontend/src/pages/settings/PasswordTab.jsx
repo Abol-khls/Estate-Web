@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, InputAdornment, IconButton } from "@mui/material";
 
 import LockResetIcon from "@mui/icons-material/LockReset";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import AppTextField from "../../components/common/AppTextField";
 import AppButton from "../../components/common/AppButton";
@@ -9,6 +11,20 @@ import AppButton from "../../components/common/AppButton";
 import api from "../../services/api";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
+
+function VisibilityToggle({ visible, onToggle }) {
+
+    return (
+
+        <InputAdornment position="end">
+            <IconButton size="small" onClick={onToggle} edge="end" tabIndex={-1}>
+                {visible ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+            </IconButton>
+        </InputAdornment>
+
+    );
+
+}
 
 export default function PasswordTab() {
 
@@ -18,6 +34,12 @@ export default function PasswordTab() {
         old_password: "",
         new_password: "",
         new_password_confirm: "",
+    });
+
+    const [visibility, setVisibility] = useState({
+        old_password: false,
+        new_password: false,
+        new_password_confirm: false,
     });
 
     const [errors, setErrors] = useState({});
@@ -30,6 +52,12 @@ export default function PasswordTab() {
         setForm(prev => ({ ...prev, [name]: value }));
 
         setErrors(prev => ({ ...prev, [name]: "" }));
+
+    }
+
+    function toggleVisibility(field) {
+
+        setVisibility(prev => ({ ...prev, [field]: !prev[field] }));
 
     }
 
@@ -120,11 +148,22 @@ export default function PasswordTab() {
                     <AppTextField
                         label="رمز عبور فعلی"
                         name="old_password"
-                        type="password"
+                        type={visibility.old_password ? "text" : "password"}
+                        autoComplete="current-password"
                         value={form.old_password}
                         onChange={handleChange}
                         error={!!errors.old_password}
                         helperText={errors.old_password}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <VisibilityToggle
+                                        visible={visibility.old_password}
+                                        onToggle={() => toggleVisibility("old_password")}
+                                    />
+                                ),
+                            },
+                        }}
                     />
                 </Grid>
 
@@ -132,11 +171,22 @@ export default function PasswordTab() {
                     <AppTextField
                         label="رمز عبور جدید"
                         name="new_password"
-                        type="password"
+                        type={visibility.new_password ? "text" : "password"}
+                        autoComplete="new-password"
                         value={form.new_password}
                         onChange={handleChange}
                         error={!!errors.new_password}
                         helperText={errors.new_password}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <VisibilityToggle
+                                        visible={visibility.new_password}
+                                        onToggle={() => toggleVisibility("new_password")}
+                                    />
+                                ),
+                            },
+                        }}
                     />
                 </Grid>
 
@@ -144,11 +194,22 @@ export default function PasswordTab() {
                     <AppTextField
                         label="تکرار رمز عبور جدید"
                         name="new_password_confirm"
-                        type="password"
+                        type={visibility.new_password_confirm ? "text" : "password"}
+                        autoComplete="new-password"
                         value={form.new_password_confirm}
                         onChange={handleChange}
                         error={!!errors.new_password_confirm}
                         helperText={errors.new_password_confirm}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <VisibilityToggle
+                                        visible={visibility.new_password_confirm}
+                                        onToggle={() => toggleVisibility("new_password_confirm")}
+                                    />
+                                ),
+                            },
+                        }}
                     />
                 </Grid>
 
