@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Grid, Box } from "@mui/material";
 
 import SaveIcon from "@mui/icons-material/Save";
@@ -15,6 +15,7 @@ import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary
 export default function AgencyTab() {
 
     const { showSnackbar } = useSnackbar();
+    const queryClient = useQueryClient();
 
     const { data: agency, isLoading, isError } = useQuery({
 
@@ -73,6 +74,8 @@ export default function AgencyTab() {
         try {
 
             await api.patch("agency/me/", form);
+
+            queryClient.invalidateQueries({ queryKey: ["agency"] });
 
             showSnackbar("اطلاعات آژانس با موفقیت ذخیره شد.", "success");
 
