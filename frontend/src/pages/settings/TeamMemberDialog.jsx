@@ -10,13 +10,19 @@ import {
     MenuItem,
     FormControlLabel,
     Switch,
+    InputAdornment,
+    IconButton,
 } from "@mui/material";
+
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import AppTextField from "../../components/common/AppTextField";
 import AppSelect from "../../components/common/AppSelect";
 import AppButton from "../../components/common/AppButton";
 
 import api from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { USER_ROLES } from "../../constants/userOptions";
@@ -36,12 +42,16 @@ export default function TeamMemberDialog({ open, onClose, member }) {
 
     const isEdit = Boolean(member);
 
+    const { user: currentUser } = useAuth();
     const { showSnackbar } = useSnackbar();
     const queryClient = useQueryClient();
 
     const [form, setForm] = useState(EMPTY_FORM);
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const isEditingSelf = isEdit && member?.id === currentUser?.id;
 
     useEffect(() => {
 
@@ -67,6 +77,7 @@ export default function TeamMemberDialog({ open, onClose, member }) {
         }
 
         setErrors({});
+        setShowPassword(false);
 
     }, [open, member]);
 
@@ -259,11 +270,32 @@ export default function TeamMemberDialog({ open, onClose, member }) {
                             <AppTextField
                                 label={isEdit ? "رمز عبور جدید (اختیاری)" : "رمز عبور"}
                                 name="password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="new-password"
                                 value={form.password}
                                 onChange={handleChange}
                                 error={!!errors.password}
                                 helperText={errors.password}
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => setShowPassword(prev => !prev)}
+                                                    edge="end"
+                                                    tabIndex={-1}
+                                                >
+                                                    {showPassword ? (
+                                                        <VisibilityOff fontSize="small" />
+                                                    ) : (
+                                                        <Visibility fontSize="small" />
+                                                    )}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
                             />
                         </Grid>
 
@@ -274,12 +306,17 @@ export default function TeamMemberDialog({ open, onClose, member }) {
                                     control={
                                         <Switch
                                             checked={form.is_active}
+                                            disabled={isEditingSelf}
                                             onChange={(e) =>
                                                 setForm(prev => ({ ...prev, is_active: e.target.checked }))
                                             }
                                         />
                                     }
-                                    label={form.is_active ? "فعال" : "غیرفعال"}
+                                    label={
+                                        isEditingSelf
+                                            ? "غیرفعال کردن حساب خودتان امکان‌پذیر نیست"
+                                            : form.is_active ? "فعال" : "غیرفعال"
+                                    }
                                 />
                             </Grid>
 
