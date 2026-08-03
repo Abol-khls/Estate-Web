@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -49,11 +49,13 @@ export default function TeamTab() {
 
     const deleteMutation = useDeleteResource("team");
 
-    if (isError) {
+    useEffect(() => {
+
+        if (!isError) return;
 
         showSnackbar("خطا در دریافت لیست اعضای تیم", "error");
 
-    }
+    }, [isError]);
 
     function openCreateDialog() {
         setSelectedMember(null);
@@ -166,9 +168,11 @@ export default function TeamTab() {
                         border: "1px solid",
                         borderColor: "divider",
                         borderRadius: 3,
-                        overflow: "hidden",
+                        overflowX: "auto",
                     }}
                 >
+
+                    <Box sx={{ minWidth: 720 }}>
 
                     {members.map((member, index) => (
 
@@ -270,6 +274,8 @@ export default function TeamTab() {
                         </Box>
 
                     ))}
+
+                    </Box>
 
                 </Box>
 
