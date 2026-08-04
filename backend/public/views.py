@@ -7,6 +7,9 @@ from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from properties.models import Property
@@ -31,6 +34,8 @@ class PublicPropertyPagination(PageNumberPagination):
     page_size = 20
 
 
+@method_decorator(cache_page(60), name="list")
+@method_decorator(cache_page(60), name="retrieve")
 class PublicPropertyViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [AllowAny]
@@ -62,6 +67,10 @@ class PublicPropertyViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Property.objects.filter(
             status="available"
+        ).select_related(
+            "agency"
+        ).prefetch_related(
+            "images"
         )
 
     def get_serializer_class(self):
@@ -105,6 +114,7 @@ class PublicAgencyView(APIView):
 
     permission_classes = [AllowAny]
 
+    @method_decorator(cache_page(300))
     @extend_schema(responses=AgencySerializer)
     def get(self, request):
 
