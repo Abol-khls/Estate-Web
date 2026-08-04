@@ -45,7 +45,9 @@ class PublicPropertyListSerializer(serializers.ModelSerializer):
 
         request = self.context.get("request")
 
-        image = obj.images.filter(is_cover=True).first() or obj.images.first()
+        images = list(obj.images.all())
+
+        image = next((img for img in images if img.is_cover), None) or (images[0] if images else None)
 
         if not image:
             return None
