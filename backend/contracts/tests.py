@@ -1,3 +1,6 @@
+from django.test.utils import CaptureQueriesContext
+from django.db import connection
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -124,3 +127,23 @@ class ContractAgencyIsolationTests(APITestCase):
         updated = Contract.objects.get(id=contract_id)
 
         self.assertEqual(updated.agent_id, self.agent_a.id)
+
+    def test_contract_list_query_count_does_not_scale_with_row_count(self):
+
+        self.client.force_authenticate(user=self.agent_a)
+
+        for index in range(10):
+
+            Contract.objects.create(
+                customer=self.customer_a,
+                property=self.property_a,
+                contract_type="sale",
+                amount=1000000,
+                agency=self.agency_a,
+                agent=self.agent_a,
+            )
+
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get("/api/contracts/")
+
+        self.assertLess(len(queries.captured_queries), 10)

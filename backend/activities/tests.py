@@ -1,3 +1,6 @@
+from django.test.utils import CaptureQueriesContext
+from django.db import connection
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -74,3 +77,22 @@ class ActivityAgencyIsolationTests(APITestCase):
         created = Activity.objects.get(id=response.data["id"])
 
         self.assertEqual(created.user_id, self.agent_a.id)
+
+    def test_activity_list_query_count_does_not_scale_with_row_count(self):
+
+        self.client.force_authenticate(user=self.agent_a)
+
+        for index in range(10):
+
+            Activity.objects.create(
+                customer=self.customer_a,
+                title=f"فعالیت {index}",
+                follow_date="2026-08-01T10:00:00Z",
+                agency=self.agency_a,
+                user=self.agent_a,
+            )
+
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get("/api/activities/")
+
+        self.assertLess(len(queries.captured_queries), 10)

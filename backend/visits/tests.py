@@ -1,3 +1,6 @@
+from django.test.utils import CaptureQueriesContext
+from django.db import connection
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -113,3 +116,22 @@ class VisitAgencyIsolationTests(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED,
         )
+
+    def test_visit_list_query_count_does_not_scale_with_row_count(self):
+
+        self.client.force_authenticate(user=self.agent_a)
+
+        for index in range(10):
+
+            Visit.objects.create(
+                customer=self.customer_a,
+                property=self.property_a,
+                visit_date="2026-08-01T10:00:00Z",
+                agency=self.agency_a,
+                agent=self.agent_a,
+            )
+
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get("/api/visits/")
+
+        self.assertLess(len(queries.captured_queries), 10)
