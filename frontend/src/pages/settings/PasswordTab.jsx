@@ -69,8 +69,20 @@ export default function PasswordTab() {
             newErrors.old_password = "رمز عبور فعلی را وارد کنید";
         }
 
-        if (!form.new_password || form.new_password.length < 8) {
-            newErrors.new_password = "رمز عبور جدید باید حداقل ۸ کاراکتر باشد";
+        if (!form.new_password) {
+            newErrors.new_password = "رمز عبور جدید را وارد کنید";
+        }
+        else if (form.new_password.length < 10 || form.new_password.length > 64) {
+            newErrors.new_password = "رمز عبور باید بین ۱۰ تا ۶۴ کاراکتر باشد";
+        }
+        else if (!/[A-Z]/.test(form.new_password)) {
+            newErrors.new_password = "رمز عبور باید حداقل یک حرف بزرگ انگلیسی داشته باشد";
+        }
+        else if (!/[a-z]/.test(form.new_password)) {
+            newErrors.new_password = "رمز عبور باید حداقل یک حرف کوچک انگلیسی داشته باشد";
+        }
+        else if (!/[0-9]/.test(form.new_password)) {
+            newErrors.new_password = "رمز عبور باید حداقل یک عدد داشته باشد";
         }
 
         if (form.new_password !== form.new_password_confirm) {
@@ -176,7 +188,10 @@ export default function PasswordTab() {
                         value={form.new_password}
                         onChange={handleChange}
                         error={!!errors.new_password}
-                        helperText={errors.new_password}
+                        helperText={
+                            errors.new_password ||
+                            "حداقل ۱۰ کاراکتر، شامل حرف بزرگ، حرف کوچک و عدد انگلیسی"
+                        }
                         slotProps={{
                             input: {
                                 endAdornment: (

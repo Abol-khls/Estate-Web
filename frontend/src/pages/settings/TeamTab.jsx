@@ -10,12 +10,10 @@ import {
     Switch,
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InboxIcon from "@mui/icons-material/Inbox";
 
-import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
 import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 
@@ -56,11 +54,6 @@ export default function TeamTab() {
         showSnackbar("خطا در دریافت لیست اعضای تیم", "error");
 
     }, [isError]);
-
-    function openCreateDialog() {
-        setSelectedMember(null);
-        setDialogOpen(true);
-    }
 
     function openEditDialog(member) {
         setSelectedMember(member);
@@ -132,13 +125,6 @@ export default function TeamTab() {
     return (
 
         <Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2.5 }}>
-                <AppButton startIcon={<AddIcon />} onClick={openCreateDialog}>
-                    افزودن عضو
-                </AppButton>
-            </Box>
-
             {isLoading ? (
 
                 <TableSkeleton gridColumns={GRID_COLUMNS} columnsCount={6} rows={4} />

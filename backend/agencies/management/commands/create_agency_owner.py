@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from agencies.models import Agency
 
@@ -27,16 +29,19 @@ class Command(BaseCommand):
 
         if Agency.objects.exists() and not options["force"]:
             raise CommandError(
-                "یک آژانس از قبل روی این نصب وجود دارد. این دستور برای "
-                "دیپلوی تک‌بنگاهی طراحی شده است. اگر واقعاً می‌خواهید یک "
-                "آژانس دوم بسازید، دوباره با --force اجرا کنید."
+                "An agency already exists on this installation. This "
+                "command is designed for single-agency deployments. If "
+                "you really want to create a second agency, run it again "
+                "with --force."
             )
 
         if User.objects.filter(username=options["username"]).exists():
-            raise CommandError("این نام کاربری قبلاً استفاده شده است.")
+            raise CommandError("This username is already taken.")
 
-        if len(options["password"]) < 8:
-            raise CommandError("رمز عبور باید حداقل ۸ کاراکتر باشد.")
+        try:
+            validate_password(options["password"])
+        except DjangoValidationError as error:
+            raise CommandError(" ".join(error.messages))
 
         agency = Agency.objects.create(
             name=options["agency_name"],
@@ -53,7 +58,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                "آژانس \"%s\" و حساب مدیر \"%s\" با موفقیت ساخته شد."
+                "Agency \"%s\" and manager account \"%s\" were created successfully."
                 % (agency.name, options["username"])
             )
         )
