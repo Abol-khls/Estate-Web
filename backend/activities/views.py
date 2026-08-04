@@ -30,6 +30,14 @@ class ActivityViewSet(AgencyScopedViewSet):
 
     ordering = ["-follow_date"]
 
+    def get_queryset(self):
+
+        return super().get_queryset().select_related(
+            "customer",
+            "user",
+            "agency",
+        )
+
     def perform_create(self, serializer):
         serializer.save(
             agency=self.request.user.agency,
