@@ -84,6 +84,125 @@ class TeamManagementPermissionTests(APITestCase):
         )
 
 
+class LastManagerGuardTests(APITestCase):
+
+    def setUp(self):
+
+        self.agency = Agency.objects.create(name="آژانس تست")
+
+        self.manager = User.objects.create_user(
+            username="only_manager",
+            password="StrongPass123",
+            role="manager",
+            agency=self.agency,
+        )
+
+        self.other_manager = User.objects.create_user(
+            username="second_manager",
+            password="StrongPass123",
+            role="manager",
+            agency=self.agency,
+        )
+
+    def test_cannot_demote_the_last_manager(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        self.client.patch(
+            f"/api/team/{self.other_manager.id}/",
+            {"role": "agent"},
+        )
+
+        response = self.client.patch(
+            f"/api/team/{self.manager.id}/",
+            {"role": "agent"},
+        )
+
+        self.manager.refresh_from_db()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertEqual(self.manager.role, "manager")
+
+    def test_cannot_deactivate_the_last_active_manager(self):
+
+        self.client.force_authenticate(user=self.other_manager)
+
+        self.client.patch(
+            f"/api/team/{self.manager.id}/",
+            {"is_active": False},
+        )
+
+        response = self.client.patch(
+            f"/api/team/{self.other_manager.id}/",
+            {"is_active": False},
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_cannot_change_role_of_the_last_manager(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        self.client.patch(
+            f"/api/team/{self.manager.id}/",
+            {"is_active": False},
+        )
+
+        response = self.client.patch(
+            f"/api/team/{self.other_manager.id}/",
+            {"role": "agent"},
+        )
+
+        self.other_manager.refresh_from_db()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertEqual(self.other_manager.role, "manager")
+
+    def test_cannot_delete_the_last_manager(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        self.client.delete(f"/api/team/{self.manager.id}/")
+
+        response = self.client.delete(
+            f"/api/team/{self.other_manager.id}/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertTrue(
+            User.objects.filter(id=self.other_manager.id).exists()
+        )
+
+    def test_can_demote_a_manager_when_another_active_manager_remains(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.patch(
+            f"/api/team/{self.other_manager.id}/",
+            {"role": "agent"},
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+
 class LoginThrottleTests(APITestCase):
 
     def setUp(self):
