@@ -133,12 +133,21 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':
         'drf_spectacular.openapi.AutoSchema',
 
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+
     'DEFAULT_THROTTLE_RATES': {
+        'anon': '60/min',
+        'user': '300/min',
         'public_inquiry': '5/hour',
         'login_ip': '10/min',
         'login_username': '5/min',
     },
 }
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Estate API',
@@ -151,6 +160,12 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
 }
 
 LOGS_DIR = BASE_DIR / 'logs'
