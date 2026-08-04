@@ -95,6 +95,14 @@ class TeamViewSet(AgencyScopedViewSet):
         IsManager
     ]
 
+    http_method_names = [
+        'get',
+        'patch',
+        'delete',
+        'head',
+        'options',
+    ]
+
     def get_queryset(self):
 
         return super().get_queryset().exclude(
