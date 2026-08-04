@@ -228,7 +228,7 @@ class SingleManagerCeilingTests(APITestCase):
             agency=self.agency,
         )
 
-    def test_cannot_create_a_second_manager(self):
+    def test_creating_new_team_members_is_disabled(self):
 
         self.client.force_authenticate(user=self.manager)
 
@@ -243,7 +243,7 @@ class SingleManagerCeilingTests(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
         self.assertFalse(
@@ -282,7 +282,7 @@ class SingleManagerCeilingTests(APITestCase):
             status.HTTP_200_OK,
         )
 
-    def test_can_create_new_manager_after_previous_one_is_deactivated(self):
+    def test_creating_a_replacement_manager_is_also_disabled(self):
 
         self.manager.is_active = False
         self.manager.save()
@@ -300,7 +300,7 @@ class SingleManagerCeilingTests(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_201_CREATED,
+            status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
 
@@ -425,4 +425,92 @@ class SchemaAccessTests(APITestCase):
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK,
+        )
+
+
+class PasswordPolicyTests(APITestCase):
+
+    def setUp(self):
+
+        self.agency = Agency.objects.create(name="آژانس تست")
+
+        self.manager = User.objects.create_user(
+            username="policy_manager",
+            password="StrongPass123",
+            role="manager",
+            agency=self.agency,
+        )
+
+    def test_change_password_rejects_password_without_uppercase(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/me/change-password/",
+            {
+                "old_password": "StrongPass123",
+                "new_password": "lowercase123",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_change_password_rejects_password_without_digit(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/me/change-password/",
+            {
+                "old_password": "StrongPass123",
+                "new_password": "NoDigitsHere",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_change_password_rejects_short_password(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/me/change-password/",
+            {
+                "old_password": "StrongPass123",
+                "new_password": "Ab1",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_change_password_accepts_a_compliant_password(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/me/change-password/",
+            {
+                "old_password": "StrongPass123",
+                "new_password": "AnotherGood456",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.manager.refresh_from_db()
+
+        self.assertTrue(
+            self.manager.check_password("AnotherGood456")
         )
