@@ -183,6 +183,28 @@ class TeamMemberSerializer(serializers.ModelSerializer):
                 "نقش باید مشاور یا مدیر باشد."
             )
 
+        if value == "manager":
+
+            request = self.context.get("request")
+
+            agency = request.user.agency if request else None
+
+            existing_managers = User.objects.filter(
+                agency=agency,
+                role="manager",
+                is_active=True,
+            )
+
+            if self.instance:
+                existing_managers = existing_managers.exclude(
+                    pk=self.instance.pk
+                )
+
+            if existing_managers.exists():
+                raise serializers.ValidationError(
+                    "این آژانس در حال حاضر یک مدیر فعال دارد. هر آژانس فقط می‌تواند یک مدیر داشته باشد."
+                )
+
         return value
 
     def create(self, validated_data):

@@ -2,12 +2,47 @@ from io import StringIO
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.test import TestCase, RequestFactory
 
 from rest_framework.test import APITestCase
 from rest_framework import status
 
 from agencies.models import Agency
+from agencies.admin import AgencyAdmin
+from django.contrib.admin.sites import AdminSite
 from users.models import User
+
+
+class AgencyAdminSingleTenantTests(TestCase):
+
+    def setUp(self):
+
+        self.factory = RequestFactory()
+
+        self.admin_instance = AgencyAdmin(Agency, AdminSite())
+
+    def test_add_permission_allowed_when_no_agency_exists(self):
+
+        request = self.factory.get("/admin/agencies/agency/add/")
+
+        request.user = User.objects.create_superuser(
+            username="admin_user",
+            password="StrongPass123",
+        )
+
+        self.assertTrue(
+            self.admin_instance.has_add_permission(request)
+        )
+
+    def test_add_permission_denied_when_agency_already_exists(self):
+
+        Agency.objects.create(name="آژانس موجود")
+
+        request = self.factory.get("/admin/agencies/agency/add/")
+
+        self.assertFalse(
+            self.admin_instance.has_add_permission(request)
+        )
 
 
 class CreateAgencyOwnerCommandTests(APITestCase):

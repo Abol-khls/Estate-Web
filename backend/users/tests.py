@@ -208,6 +208,102 @@ class LastManagerGuardTests(APITestCase):
         )
 
 
+class SingleManagerCeilingTests(APITestCase):
+
+    def setUp(self):
+
+        self.agency = Agency.objects.create(name="آژانس تست")
+
+        self.manager = User.objects.create_user(
+            username="only_manager",
+            password="StrongPass123",
+            role="manager",
+            agency=self.agency,
+        )
+
+        self.agent = User.objects.create_user(
+            username="an_agent",
+            password="StrongPass123",
+            role="agent",
+            agency=self.agency,
+        )
+
+    def test_cannot_create_a_second_manager(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/team/",
+            {
+                "username": "new_manager",
+                "password": "StrongPass123",
+                "role": "manager",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertFalse(
+            User.objects.filter(username="new_manager").exists()
+        )
+
+    def test_cannot_promote_an_agent_to_manager(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.patch(
+            f"/api/team/{self.agent.id}/",
+            {"role": "manager"},
+        )
+
+        self.agent.refresh_from_db()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+        self.assertEqual(self.agent.role, "agent")
+
+    def test_editing_the_current_manager_without_changing_role_still_works(self):
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.patch(
+            f"/api/team/{self.manager.id}/",
+            {"role": "manager", "phone": "09120000000"},
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+    def test_can_create_new_manager_after_previous_one_is_deactivated(self):
+
+        self.manager.is_active = False
+        self.manager.save()
+
+        self.client.force_authenticate(user=self.manager)
+
+        response = self.client.post(
+            "/api/team/",
+            {
+                "username": "replacement_manager",
+                "password": "StrongPass123",
+                "role": "manager",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+        )
+
+
 class LoginThrottleTests(APITestCase):
 
     def setUp(self):
