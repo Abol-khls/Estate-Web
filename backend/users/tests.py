@@ -151,32 +151,37 @@ class LastManagerGuardTests(APITestCase):
         self.client.force_authenticate(user=self.manager)
 
         self.client.patch(
-            f"/api/team/{self.manager.id}/",
+            f"/api/team/{self.other_manager.id}/",
             {"is_active": False},
         )
 
         response = self.client.patch(
-            f"/api/team/{self.other_manager.id}/",
+            f"/api/team/{self.manager.id}/",
             {"role": "agent"},
         )
 
-        self.other_manager.refresh_from_db()
+        self.manager.refresh_from_db()
 
         self.assertEqual(
             response.status_code,
             status.HTTP_400_BAD_REQUEST,
         )
 
-        self.assertEqual(self.other_manager.role, "manager")
+        self.assertEqual(self.manager.role, "manager")
 
     def test_cannot_delete_the_last_manager(self):
 
         self.client.force_authenticate(user=self.manager)
 
-        self.client.delete(f"/api/team/{self.manager.id}/")
+        self.client.patch(
+            f"/api/team/{self.other_manager.id}/",
+            {"is_active": False},
+        )
+
+        self.client.force_authenticate(user=self.other_manager)
 
         response = self.client.delete(
-            f"/api/team/{self.other_manager.id}/"
+            f"/api/team/{self.manager.id}/"
         )
 
         self.assertEqual(
@@ -185,7 +190,7 @@ class LastManagerGuardTests(APITestCase):
         )
 
         self.assertTrue(
-            User.objects.filter(id=self.other_manager.id).exists()
+            User.objects.filter(id=self.manager.id).exists()
         )
 
     def test_can_demote_a_manager_when_another_active_manager_remains(self):
