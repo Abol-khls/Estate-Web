@@ -101,18 +101,56 @@ class TeamViewSet(AgencyScopedViewSet):
             role='customer'
         ).order_by('-date_joined')
 
+    def _is_false(self, value):
+
+        if isinstance(value, bool):
+            return value is False
+
+        return str(value).strip().lower() in ('false', '0')
+
+    def _would_remove_last_manager(self, instance, new_role, new_is_active):
+
+        losing_manager_status = (
+            instance.role == 'manager'
+            and (new_role != 'manager' or new_is_active is False)
+        )
+
+        if not losing_manager_status:
+            return False
+
+        remaining_active_managers = User.objects.filter(
+            agency=self.request.user.agency,
+            role='manager',
+            is_active=True,
+        ).exclude(pk=instance.pk).count()
+
+        return remaining_active_managers == 0
+
     def perform_update(self, serializer):
 
         instance = serializer.instance
 
         deactivating_self = (
             instance == self.request.user
-            and str(self.request.data.get('is_active')).lower() == 'false'
+            and 'is_active' in self.request.data
+            and self._is_false(self.request.data.get('is_active'))
         )
 
         if deactivating_self:
             raise ValidationError(
                 "امکان غیرفعال کردن حساب خودتان وجود ندارد."
+            )
+
+        new_role = self.request.data.get('role', instance.role)
+
+        if 'is_active' in self.request.data:
+            new_is_active = not self._is_false(self.request.data.get('is_active'))
+        else:
+            new_is_active = instance.is_active
+
+        if self._would_remove_last_manager(instance, new_role, new_is_active):
+            raise ValidationError(
+                "حداقل یک مدیر فعال باید در آژانس باقی بماند."
             )
 
         serializer.save(agency=self.request.user.agency)
@@ -122,6 +160,11 @@ class TeamViewSet(AgencyScopedViewSet):
         if instance == self.request.user:
             raise ValidationError(
                 "امکان حذف حساب خودتان وجود ندارد."
+            )
+
+        if self._would_remove_last_manager(instance, instance.role, False):
+            raise ValidationError(
+                "حداقل یک مدیر فعال باید در آژانس باقی بماند."
             )
 
         instance.delete()
