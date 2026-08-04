@@ -27,6 +27,15 @@ class ContractViewSet(AgencyScopedViewSet):
 
     ordering = ["-created_at"]
 
+    def get_queryset(self):
+
+        return super().get_queryset().select_related(
+            "customer",
+            "property",
+            "agent",
+            "agency",
+        )
+
     def perform_create(self, serializer):
         serializer.save(
             agency=self.request.user.agency,
