@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-import { getAccessToken, getRefreshToken, clearTokens } from "../services/tokenService";
+import { clearAccessToken } from "../services/tokenService";
 
-import api from "../services/api";
+import api, { refreshAccessToken } from "../services/api";
 
 
 const AuthContext = createContext();
@@ -51,11 +51,17 @@ export function AuthProvider({ children }) {
 
         const initialize = async () => {
 
-            const token = getAccessToken();
+            try {
 
-            if (token) {
+                await refreshAccessToken();
 
                 await fetchUser();
+
+            } catch {
+
+                setUser(null);
+                setIsAuthenticated(false);
+
             }
 
             setLoading(false);
@@ -80,22 +86,16 @@ export function AuthProvider({ children }) {
 
     const logout = async () => {
 
-        const refresh = getRefreshToken();
-
-        clearTokens();
+        clearAccessToken();
         setUser(null);
         setIsAuthenticated(false);
         setLoading(false);
 
-        if (refresh) {
+        try {
 
-            try {
+            await api.post("token/logout/");
 
-                await api.post("token/blacklist/", { refresh });
-
-            } catch {
-
-            }
+        } catch {
 
         }
 
