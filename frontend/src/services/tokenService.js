@@ -1,49 +1,19 @@
+let accessToken = null;
+
 export const getAccessToken = () => {
 
-    return localStorage.getItem("access");
+    return accessToken;
 
 };
 
+export const saveAccessToken = (token) => {
 
-export const getRefreshToken = () => {
-
-    return localStorage.getItem("refresh");
-
-};
-
-
-export const saveTokens = (
-    access,
-    refresh
-) => {
-
-    localStorage.setItem(
-        "access",
-        access
-    );
-
-
-    if(refresh){
-
-        localStorage.setItem(
-            "refresh",
-            refresh
-        );
-
-    }
+    accessToken = token;
 
 };
 
+export const clearAccessToken = () => {
 
-export const clearTokens = () => {
-
-    localStorage.removeItem(
-        "access"
-    );
-
-
-    localStorage.removeItem(
-        "refresh"
-    );
+    accessToken = null;
 
 };
