@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { saveTokens } from "../../services/tokenService";
+import { saveAccessToken } from "../../services/tokenService";
 import { useAuth } from "../../context/AuthContext";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { API_BASE_URL } from "../../config";
@@ -78,13 +78,11 @@ export default function Login() {
                 {
                     username: username.trim(),
                     password,
-                }
+                },
+                { withCredentials: true }
             );
 
-            saveTokens(
-                response.data.access,
-                response.data.refresh
-            );
+            saveAccessToken(response.data.access);
 
             await login();
 
