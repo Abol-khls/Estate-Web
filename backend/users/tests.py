@@ -1,6 +1,5 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from agencies.models import Agency
 from users.models import User
@@ -350,27 +349,78 @@ class LogoutBlacklistTests(APITestCase):
             agency=self.agency,
         )
 
-    def test_blacklisted_refresh_token_cannot_be_reused(self):
+    def test_login_sets_httponly_refresh_cookie(self):
 
-        refresh = RefreshToken.for_user(self.user)
-
-        blacklist_response = self.client.post(
-            "/api/token/blacklist/",
-            {"refresh": str(refresh)},
+        response = self.client.post(
+            "/api/token/",
+            {
+                "username": "logout_user",
+                "password": "StrongPass123",
+            },
         )
 
         self.assertEqual(
-            blacklist_response.status_code,
+            response.status_code,
             status.HTTP_200_OK,
         )
 
-        refresh_response = self.client.post(
-            "/api/token/refresh/",
-            {"refresh": str(refresh)},
+        self.assertNotIn("refresh", response.data)
+
+        cookie = response.cookies.get("refresh_token")
+
+        self.assertIsNotNone(cookie)
+
+        self.assertTrue(cookie["httponly"])
+
+    def test_refresh_reads_token_from_cookie(self):
+
+        self.client.post(
+            "/api/token/",
+            {
+                "username": "logout_user",
+                "password": "StrongPass123",
+            },
         )
+
+        response = self.client.post("/api/token/refresh/")
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertIn("access", response.data)
+
+    def test_logout_blacklists_the_cookie_refresh_token(self):
+
+        self.client.post(
+            "/api/token/",
+            {
+                "username": "logout_user",
+                "password": "StrongPass123",
+            },
+        )
+
+        logout_response = self.client.post("/api/token/logout/")
+
+        self.assertEqual(
+            logout_response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        refresh_response = self.client.post("/api/token/refresh/")
 
         self.assertEqual(
             refresh_response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+        )
+
+    def test_refresh_without_cookie_is_rejected(self):
+
+        response = self.client.post("/api/token/refresh/")
+
+        self.assertEqual(
+            response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
 
