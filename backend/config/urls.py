@@ -8,12 +8,12 @@ from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-    TokenBlacklistView,
-)
 
-from users.views import ThrottledTokenObtainPairView
+from users.views import (
+    CookieTokenObtainPairView,
+    CookieTokenRefreshView,
+    CookieTokenLogoutView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,20 +25,20 @@ urlpatterns = [
     ),
     path(
     'api/token/',
-    ThrottledTokenObtainPairView.as_view(),
+    CookieTokenObtainPairView.as_view(),
     name='token_obtain_pair'
     ),
 
     path(
         'api/token/refresh/',
-        TokenRefreshView.as_view(),
+        CookieTokenRefreshView.as_view(),
         name='token_refresh'
     ),
 
     path(
-        'api/token/blacklist/',
-        TokenBlacklistView.as_view(),
-        name='token_blacklist'
+        'api/token/logout/',
+        CookieTokenLogoutView.as_view(),
+        name='token_logout'
     ),
     path(
     'api/',
