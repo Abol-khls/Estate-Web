@@ -3,15 +3,15 @@ import axios from "axios";
 
 import {
     getAccessToken,
-    getRefreshToken,
-    saveTokens,
-    clearTokens,
+    saveAccessToken,
+    clearAccessToken,
 } from "./tokenService";
 import { API_BASE_URL } from "../config";
 
 
 const api = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -32,6 +32,32 @@ api.interceptors.request.use(
 
 );
 
+let refreshPromise = null;
+
+async function refreshAccessToken() {
+
+    if (!refreshPromise) {
+
+        refreshPromise = axios
+            .post(
+                `${API_BASE_URL}/token/refresh/`,
+                {},
+                { withCredentials: true }
+            )
+            .then((response) => {
+                saveAccessToken(response.data.access);
+                return response.data.access;
+            })
+            .finally(() => {
+                refreshPromise = null;
+            });
+
+    }
+
+    return refreshPromise;
+
+}
+
 api.interceptors.response.use(
 
     (response) => response,
@@ -50,28 +76,15 @@ api.interceptors.response.use(
 
             try {
 
-                const refresh = getRefreshToken();
+                const access = await refreshAccessToken();
 
-                const response = await axios.post(
-                    `${API_BASE_URL}/token/refresh/`,
-                    {
-                        refresh,
-                    }
-                );
-
-                saveTokens(
-                    response.data.access,
-                    response.data.refresh ?? refresh
-                );
-
-                originalRequest.headers.Authorization =
-                    `Bearer ${response.data.access}`;
+                originalRequest.headers.Authorization = `Bearer ${access}`;
 
                 return api(originalRequest);
 
             } catch {
 
-                clearTokens();
+                clearAccessToken();
                 window.location.href = "/session-expired";
 
             }
@@ -85,3 +98,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+export { refreshAccessToken };
