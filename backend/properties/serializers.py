@@ -288,6 +288,43 @@ class PropertySerializer(serializers.ModelSerializer):
 
         return cover.image.url
 
+    def validate(self, attrs):
+
+        transaction_type = attrs.get(
+            "transaction_type",
+            getattr(self.instance, "transaction_type", None)
+        )
+
+        def get_value(field):
+            if field in attrs:
+                return attrs[field]
+            return getattr(self.instance, field, None)
+
+        errors = {}
+
+        if transaction_type == "rent":
+
+            if not get_value("deposit_amount"):
+                errors["deposit_amount"] = "برای ملک اجاره‌ای، پیش‌پرداخت الزامی است."
+
+            if not get_value("monthly_rent"):
+                errors["monthly_rent"] = "برای ملک اجاره‌ای، اجاره ماهانه الزامی است."
+
+            attrs["price"] = None
+
+        else:
+
+            if not get_value("price"):
+                errors["price"] = "قیمت الزامی است."
+
+            attrs["deposit_amount"] = None
+            attrs["monthly_rent"] = None
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return attrs
+
     def validate_code(self, value):
 
         request = self.context.get("request")
@@ -319,6 +356,8 @@ class PropertySerializer(serializers.ModelSerializer):
             "property_type",
             "transaction_type",
             "price",
+            "deposit_amount",
+            "monthly_rent",
             "area",
             "rooms",
             "floor",
