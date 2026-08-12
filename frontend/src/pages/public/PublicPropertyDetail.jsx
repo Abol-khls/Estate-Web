@@ -267,29 +267,81 @@ export default function PublicPropertyDetail() {
                             />
                         </Box>
 
-                        <Box
-                            sx={{
-                                mt: 2.5,
-                                p: 2,
-                                borderRadius: 3,
-                                bgcolor: (theme) => theme.custom.accentTint,
-                            }}
-                        >
-                            <Typography
+                        {property.transaction_type === "rent" ? (
+
+                            <Box
                                 sx={{
-                                    fontFamily: (theme) => theme.custom.fontMono,
-                                    fontWeight: 800,
-                                    fontSize: 28,
-                                    color: "primary.main",
-                                    lineHeight: 1.3,
+                                    mt: 2.5,
+                                    p: 2,
+                                    borderRadius: 3,
+                                    bgcolor: (theme) => theme.custom.accentTint,
+                                    display: "flex",
+                                    gap: 3,
+                                    flexWrap: "wrap",
                                 }}
                             >
-                                {Number(property.price).toLocaleString("en-US")}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: "primary.main" }}>
-                                تومان
-                            </Typography>
-                        </Box>
+                                <Box>
+                                    <Typography
+                                        sx={{
+                                            fontFamily: (theme) => theme.custom.fontMono,
+                                            fontWeight: 800,
+                                            fontSize: 22,
+                                            color: "primary.main",
+                                            lineHeight: 1.3,
+                                        }}
+                                    >
+                                        {Number(property.deposit_amount ?? 0).toLocaleString("en-US")}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ color: "primary.main" }}>
+                                        تومان پیش‌پرداخت
+                                    </Typography>
+                                </Box>
+
+                                <Box>
+                                    <Typography
+                                        sx={{
+                                            fontFamily: (theme) => theme.custom.fontMono,
+                                            fontWeight: 800,
+                                            fontSize: 22,
+                                            color: "primary.main",
+                                            lineHeight: 1.3,
+                                        }}
+                                    >
+                                        {Number(property.monthly_rent ?? 0).toLocaleString("en-US")}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ color: "primary.main" }}>
+                                        تومان اجاره ماهانه
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                        ) : (
+
+                            <Box
+                                sx={{
+                                    mt: 2.5,
+                                    p: 2,
+                                    borderRadius: 3,
+                                    bgcolor: (theme) => theme.custom.accentTint,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        fontFamily: (theme) => theme.custom.fontMono,
+                                        fontWeight: 800,
+                                        fontSize: 28,
+                                        color: "primary.main",
+                                        lineHeight: 1.3,
+                                    }}
+                                >
+                                    {Number(property.price).toLocaleString("en-US")}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: "primary.main" }}>
+                                    تومان
+                                </Typography>
+                            </Box>
+
+                        )}
 
                         <SpecStrip items={specItems} sx={{ mt: 2.5 }} />
 
