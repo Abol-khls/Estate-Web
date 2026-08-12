@@ -184,7 +184,7 @@ export default function TeamMemberDialog({ open, onClose, member }) {
             onClose={onClose}
             fullWidth
             maxWidth="sm"
-            PaperProps={{ sx: { borderRadius: 4 } }}
+            slotProps={{ paper: { sx: { borderRadius: 4 } } }}
         >
 
             <DialogTitle>
