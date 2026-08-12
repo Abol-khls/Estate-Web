@@ -299,28 +299,60 @@ export default function PropertyDetail() {
                         }}
                     >
 
-                        <Box
-                            sx={{
-                                px: 2,
-                                py: 1,
-                                borderRadius: 2,
-                                bgcolor: (theme) => theme.custom.accentTint,
-                                textAlign: "center",
-                            }}
-                        >
+                        {property.transaction_type === "rent" ? (
 
-                            <Typography
-                                fontWeight={800}
-                                sx={{ color: "primary.main", fontFamily: (theme) => theme.custom.fontMono }}
+                            <Box
+                                sx={{
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: 2,
+                                    bgcolor: (theme) => theme.custom.accentTint,
+                                    textAlign: "center",
+                                }}
                             >
-                                {Number(property.price).toLocaleString("en-US")}
-                            </Typography>
 
-                            <Typography variant="caption" sx={{ color: "primary.main" }}>
-                                تومان
-                            </Typography>
+                                <Typography
+                                    fontWeight={800}
+                                    sx={{ color: "primary.main", fontFamily: (theme) => theme.custom.fontMono, fontSize: 15 }}
+                                >
+                                    {Number(property.deposit_amount ?? 0).toLocaleString("en-US")} ودیعه
+                                </Typography>
 
-                        </Box>
+                                <Typography
+                                    fontWeight={800}
+                                    sx={{ color: "primary.main", fontFamily: (theme) => theme.custom.fontMono, fontSize: 15 }}
+                                >
+                                    {Number(property.monthly_rent ?? 0).toLocaleString("en-US")} اجاره ماهانه
+                                </Typography>
+
+                            </Box>
+
+                        ) : (
+
+                            <Box
+                                sx={{
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: 2,
+                                    bgcolor: (theme) => theme.custom.accentTint,
+                                    textAlign: "center",
+                                }}
+                            >
+
+                                <Typography
+                                    fontWeight={800}
+                                    sx={{ color: "primary.main", fontFamily: (theme) => theme.custom.fontMono }}
+                                >
+                                    {Number(property.price).toLocaleString("en-US")}
+                                </Typography>
+
+                                <Typography variant="caption" sx={{ color: "primary.main" }}>
+                                    تومان
+                                </Typography>
+
+                            </Box>
+
+                        )}
 
                         <IconButton
                             color="error"
