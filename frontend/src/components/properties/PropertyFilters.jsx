@@ -9,6 +9,7 @@ import AppCheckbox from "../common/AppCheckbox";
 import {
     PROPERTY_TYPES,
     TRANSACTION_TYPES,
+    PROPERTY_STATUSES,
     ORDERING_OPTIONS
 } from "../../constants/propertyOptions";
 
@@ -22,6 +23,9 @@ export default function PropertyFilters({
 
     transactionType,
     setTransactionType,
+
+    propertyStatus,
+    setPropertyStatus,
 
     favoriteOnly,
     setFavoriteOnly,
@@ -161,6 +165,39 @@ export default function PropertyFilters({
                         </MenuItem>
 
                         {TRANSACTION_TYPES.map(item => (
+
+                            <MenuItem
+                                key={item.value}
+                                value={item.value}
+                            >
+                                {item.label}
+                            </MenuItem>
+
+                        ))}
+
+                    </AppSelect>
+
+                </Box>
+
+                <Box sx={{ flex: 1 }}>
+
+                    <AppSelect
+
+                        label="وضعیت ملک"
+
+                        value={propertyStatus}
+
+                        onChange={(e) =>
+                            setPropertyStatus(e.target.value)
+                        }
+
+                    >
+
+                        <MenuItem value="all">
+                            همه
+                        </MenuItem>
+
+                        {PROPERTY_STATUSES.map(item => (
 
                             <MenuItem
                                 key={item.value}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Pagination } from "@mui/material";
 
@@ -34,6 +34,8 @@ export default function Properties() {
 
     const [transactionType, setTransactionType] = useState(searchParams.get("transaction_type") ?? "all");
 
+    const [propertyStatus, setPropertyStatus] = useState(searchParams.get("status") ?? "all");
+
     const [favoriteOnly, setFavoriteOnly] = useState(searchParams.get("favorite") === "true");
 
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -46,18 +48,21 @@ export default function Properties() {
 
     const [ordering, setOrdering] = useState(searchParams.get("ordering") ?? "all");
 
-    const isFirstRun = useRef(true);
+    const filtersKey = JSON.stringify([
+        search,
+        propertyType,
+        transactionType,
+        propertyStatus,
+        favoriteOnly,
+        ordering,
+    ]);
 
-    useEffect(() => {
+    const [appliedFiltersKey, setAppliedFiltersKey] = useState(filtersKey);
 
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
-        }
-
+    if (filtersKey !== appliedFiltersKey) {
+        setAppliedFiltersKey(filtersKey);
         setPage(1);
-
-    }, [search, propertyType, transactionType, favoriteOnly, ordering]);
+    }
 
     useEffect(() => {
 
@@ -66,13 +71,14 @@ export default function Properties() {
         if (search) next.search = search;
         if (propertyType !== "all") next.property_type = propertyType;
         if (transactionType !== "all") next.transaction_type = transactionType;
+        if (propertyStatus !== "all") next.status = propertyStatus;
         if (favoriteOnly) next.favorite = "true";
         if (ordering !== "all") next.ordering = ordering;
         if (page !== 1) next.page = String(page);
 
         setSearchParams(next, { replace: true });
 
-    }, [search, propertyType, transactionType, favoriteOnly, ordering, page]);
+    }, [search, propertyType, transactionType, propertyStatus, favoriteOnly, ordering, page]);
 
     const params = useMemo(() => {
 
@@ -86,6 +92,10 @@ export default function Properties() {
             value.transaction_type = transactionType;
         }
 
+        if (propertyStatus !== "all") {
+            value.status = propertyStatus;
+        }
+
         if (ordering !== "all") {
             value.ordering = ordering;
         }
@@ -96,7 +106,7 @@ export default function Properties() {
 
         return value;
 
-    }, [page, search, propertyType, transactionType, ordering, favoriteOnly]);
+    }, [page, search, propertyType, transactionType, propertyStatus, ordering, favoriteOnly]);
 
     const {
         data,
@@ -108,14 +118,19 @@ export default function Properties() {
     const properties = data?.results ?? [];
     const count = data?.count ?? 0;
 
+    const shouldResetPageOn404 = (
+        isError
+        && error?.response?.status === 404
+        && page !== 1
+    );
+
+    if (shouldResetPageOn404) {
+        setPage(1);
+    }
+
     useEffect(() => {
 
-        if (!isError) return;
-
-        if (error?.response?.status === 404 && page !== 1) {
-            setPage(1);
-            return;
-        }
+        if (!isError || shouldResetPageOn404) return;
 
         const message = getErrorMessage(
             error,
@@ -124,7 +139,8 @@ export default function Properties() {
 
         showSnackbar(message, "error");
 
-    }, [isError, error]);
+    }, [isError, error, shouldResetPageOn404]);
+
 
     const deleteMutation = useDeleteResource("properties");
 
@@ -231,6 +247,9 @@ export default function Properties() {
 
                 transactionType={transactionType}
                 setTransactionType={setTransactionType}
+
+                propertyStatus={propertyStatus}
+                setPropertyStatus={setPropertyStatus}
 
                 favoriteOnly={favoriteOnly}
                 setFavoriteOnly={setFavoriteOnly}

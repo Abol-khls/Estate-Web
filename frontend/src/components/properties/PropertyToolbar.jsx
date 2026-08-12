@@ -11,6 +11,9 @@ export default function PropertyToolbar({
     transactionType,
     setTransactionType,
 
+    propertyStatus,
+    setPropertyStatus,
+
     favoriteOnly,
     setFavoriteOnly,
 
@@ -31,6 +34,9 @@ export default function PropertyToolbar({
 
             transactionType={transactionType}
             setTransactionType={setTransactionType}
+
+            propertyStatus={propertyStatus}
+            setPropertyStatus={setPropertyStatus}
 
             favoriteOnly={favoriteOnly}
             setFavoriteOnly={setFavoriteOnly}
