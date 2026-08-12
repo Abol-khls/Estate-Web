@@ -12,7 +12,6 @@ class Property(models.Model):
     TRANSACTION_CHOICES = (
         ('sale', 'Sale'),
         ('rent', 'Rent'),
-        ('pre_sale', 'Pre Sale'),
         ('mortgage', 'Mortgage'),
     )
 
@@ -20,7 +19,6 @@ class Property(models.Model):
         ('available', 'Available'),
         ('reserved', 'Reserved'),
         ('sold', 'Sold'),
-        ('rented', 'Rented'),
     )
 
     PROPERTY_TYPE_CHOICES = (
@@ -29,6 +27,7 @@ class Property(models.Model):
         ('land', 'Land'),
         ('office', 'Office'),
         ('shop', 'Shop'),
+        ('suite', 'Suite'),
     )
 
     code = models.CharField(
@@ -75,7 +74,23 @@ class Property(models.Model):
         default=False
     )
 
-    price = models.BigIntegerField()
+    price = models.BigIntegerField(
+        null=True,
+        blank=True,
+        help_text="برای معاملات فروش و رهن الزامی است."
+    )
+
+    deposit_amount = models.BigIntegerField(
+        null=True,
+        blank=True,
+        help_text="پیش‌پرداخت (ودیعه) — فقط برای ملک‌های اجاره‌ای."
+    )
+
+    monthly_rent = models.BigIntegerField(
+        null=True,
+        blank=True,
+        help_text="اجاره ماهانه — فقط برای ملک‌های اجاره‌ای."
+    )
 
     area = models.PositiveIntegerField()
 
@@ -111,6 +126,27 @@ class Property(models.Model):
 
     class Meta:
         unique_together = ('agency', 'code')
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        errors = {}
+
+        if self.transaction_type == 'rent':
+
+            if not self.deposit_amount:
+                errors['deposit_amount'] = 'برای ملک اجاره‌ای، پیش‌پرداخت الزامی است.'
+
+            if not self.monthly_rent:
+                errors['monthly_rent'] = 'برای ملک اجاره‌ای، اجاره ماهانه الزامی است.'
+
+        else:
+
+            if not self.price:
+                errors['price'] = 'برای این نوع معامله، قیمت الزامی است.'
+
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         return f"{self.code} - {self.title}"
