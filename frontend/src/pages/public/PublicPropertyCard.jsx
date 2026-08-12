@@ -6,7 +6,11 @@ import BedIcon from "@mui/icons-material/KingBedOutlined";
 
 import SpecStrip from "../../components/common/SpecStrip";
 
-import { PROPERTY_TYPES, TRANSACTION_TYPES } from "../../constants/propertyOptions";
+import {
+    PROPERTY_TYPES,
+    TRANSACTION_TYPES,
+    getTransactionTypeColor,
+} from "../../constants/propertyOptions";
 
 function getLabel(list, value) {
     return list.find(item => item.value === value)?.label ?? value;
@@ -107,6 +111,19 @@ export default function PublicPropertyCard({ property, onView }) {
 
                 )}
 
+                <Chip
+                    size="small"
+                    color={getTransactionTypeColor(property.transaction_type)}
+                    label={getLabel(TRANSACTION_TYPES, property.transaction_type)}
+                    sx={{
+                        position: "absolute",
+                        top: 14,
+                        insetInlineStart: 14,
+                        fontWeight: 700,
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
+                    }}
+                />
+
                 <Box
                     sx={{
                         position: "absolute",
@@ -122,26 +139,38 @@ export default function PublicPropertyCard({ property, onView }) {
                     }}
                 >
 
-                    <Typography
-                        sx={{
-                            color: "#fff",
-                            fontWeight: 700,
-                            fontSize: 15,
-                            fontFamily: (theme) => theme.custom.fontMono,
-                        }}
-                    >
-                        {Number(property.price).toLocaleString("en-US")}
-                        <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
-                            {" "}تومان
-                        </Box>
-                    </Typography>
+                    {property.transaction_type === "rent" ? (
 
-                    <Typography
-                        variant="caption"
-                        sx={{ color: "rgba(255,255,255,0.85)" }}
-                    >
-                        {getLabel(TRANSACTION_TYPES, property.transaction_type)}
-                    </Typography>
+                        <Typography
+                            sx={{
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: 13,
+                                fontFamily: (theme) => theme.custom.fontMono,
+                            }}
+                        >
+                            {Number(property.deposit_amount ?? 0).toLocaleString("en-US")} ودیعه
+                            {" / "}
+                            {Number(property.monthly_rent ?? 0).toLocaleString("en-US")} اجاره
+                        </Typography>
+
+                    ) : (
+
+                        <Typography
+                            sx={{
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: 15,
+                                fontFamily: (theme) => theme.custom.fontMono,
+                            }}
+                        >
+                            {Number(property.price).toLocaleString("en-US")}
+                            <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
+                                {" "}تومان
+                            </Box>
+                        </Typography>
+
+                    )}
 
                 </Box>
 
