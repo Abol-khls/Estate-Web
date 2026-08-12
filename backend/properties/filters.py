@@ -27,6 +27,16 @@ class PropertyFilter(
         lookup_expr="lte"
     )
 
+    min_monthly_rent = django_filters.NumberFilter(
+        field_name="monthly_rent",
+        lookup_expr="gte"
+    )
+
+    max_monthly_rent = django_filters.NumberFilter(
+        field_name="monthly_rent",
+        lookup_expr="lte"
+    )
+
     class Meta:
 
         model = Property
