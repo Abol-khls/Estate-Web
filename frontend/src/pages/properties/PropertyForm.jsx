@@ -87,6 +87,8 @@ export default function PropertyForm() {
         status: "available",
 
         price: "",
+        deposit_amount: "",
+        monthly_rent: "",
         area: "",
         rooms: "",
 
@@ -141,7 +143,9 @@ export default function PropertyForm() {
                     property_type: response.data.property_type,
                     transaction_type: response.data.transaction_type,
                     status: response.data.status,
-                    price: response.data.price,
+                    price: response.data.price ?? "",
+                    deposit_amount: response.data.deposit_amount ?? "",
+                    monthly_rent: response.data.monthly_rent ?? "",
                     area: response.data.area,
                     rooms: response.data.rooms,
                     floor: response.data.floor ?? "",
@@ -284,7 +288,17 @@ export default function PropertyForm() {
             newErrors.transaction_type = "نوع معامله را انتخاب کنید";
         }
 
-        if (!form.price) {
+        if (form.transaction_type === "rent") {
+
+            if (!form.deposit_amount) {
+                newErrors.deposit_amount = "پیش‌پرداخت الزامی است";
+            }
+
+            if (!form.monthly_rent) {
+                newErrors.monthly_rent = "اجاره ماهانه الزامی است";
+            }
+
+        } else if (!form.price) {
             newErrors.price = "قیمت الزامی است";
         }
 
@@ -367,6 +381,8 @@ export default function PropertyForm() {
 
             const formData = new FormData();
 
+            const isRent = form.transaction_type === "rent";
+
             Object.keys(form).forEach(key => {
 
                 const value = form[key];
@@ -375,6 +391,14 @@ export default function PropertyForm() {
                     ["floor", "total_floors", "year_built", "description"].includes(key)
                     && value === ""
                 ) {
+                    return;
+                }
+
+                if (isRent && key === "price") {
+                    return;
+                }
+
+                if (!isRent && ["deposit_amount", "monthly_rent"].includes(key)) {
                     return;
                 }
 
@@ -588,21 +612,67 @@ export default function PropertyForm() {
 
                 <FormSection title="قیمت و مشخصات">
 
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    {form.transaction_type === "rent" ? (
 
-                        <AppTextField
-                            label="قیمت (تومان)"
-                            name="price"
-                            value={form.price}
-                            onChange={handleNumberChange}
-                            error={!!errors.price}
-                            helperText={errors.price}
-                            slotProps={{
-                                htmlInput: { inputMode: "numeric" }
-                            }}
-                        />
+                        <>
 
-                    </Grid>
+                            <Grid size={{ xs: 12, md: 4 }}>
+
+                                <AppTextField
+                                    label="پیش‌پرداخت (تومان)"
+                                    name="deposit_amount"
+                                    value={form.deposit_amount}
+                                    onChange={handleNumberChange}
+                                    error={!!errors.deposit_amount}
+                                    helperText={errors.deposit_amount}
+                                    slotProps={{
+                                        htmlInput: { inputMode: "numeric" }
+                                    }}
+                                />
+
+                            </Grid>
+
+                            <Grid size={{ xs: 12, md: 4 }}>
+
+                                <AppTextField
+                                    label="اجاره ماهانه (تومان)"
+                                    name="monthly_rent"
+                                    value={form.monthly_rent}
+                                    onChange={handleNumberChange}
+                                    error={!!errors.monthly_rent}
+                                    helperText={errors.monthly_rent}
+                                    slotProps={{
+                                        htmlInput: { inputMode: "numeric" }
+                                    }}
+                                />
+
+                            </Grid>
+
+                        </>
+
+                    ) : (
+
+                        <Grid size={{ xs: 12, md: 4 }}>
+
+                            <AppTextField
+                                label={
+                                    form.transaction_type === "mortgage"
+                                        ? "مبلغ رهن (تومان)"
+                                        : "قیمت (تومان)"
+                                }
+                                name="price"
+                                value={form.price}
+                                onChange={handleNumberChange}
+                                error={!!errors.price}
+                                helperText={errors.price}
+                                slotProps={{
+                                    htmlInput: { inputMode: "numeric" }
+                                }}
+                            />
+
+                        </Grid>
+
+                    )}
 
                     <Grid size={{ xs: 12, md: 4 }}>
 
