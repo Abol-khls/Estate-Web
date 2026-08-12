@@ -147,7 +147,7 @@ export default function InquiryForm({ open, onClose, property }) {
             onClose={handleClose}
             fullWidth
             maxWidth="sm"
-            PaperProps={{ sx: { borderRadius: 4 } }}
+            slotProps={{ paper: { sx: { borderRadius: 4 } } }}
         >
 
             {submitted ? (
