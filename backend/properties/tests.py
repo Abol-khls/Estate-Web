@@ -9,6 +9,107 @@ from users.models import User
 from properties.models import Property, PropertyImage
 
 
+class PropertyTransactionFieldsTests(APITestCase):
+
+    def setUp(self):
+
+        self.agency = Agency.objects.create(name="آژانس تست")
+
+        self.agent = User.objects.create_user(
+            username="agent_tx",
+            password="StrongPass123",
+            role="agent",
+            agency=self.agency,
+        )
+
+        self.client.force_authenticate(user=self.agent)
+
+    def test_rent_property_requires_deposit_and_monthly_rent(self):
+
+        response = self.client.post(
+            "/api/properties/",
+            {
+                "code": "R-1",
+                "title": "ملک اجاره‌ای بدون فیلدهای الزامی",
+                "property_type": "apartment",
+                "transaction_type": "rent",
+                "area": 80,
+                "address": "تهران",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("deposit_amount", response.data)
+        self.assertIn("monthly_rent", response.data)
+
+    def test_rent_property_created_with_deposit_and_monthly_rent(self):
+
+        response = self.client.post(
+            "/api/properties/",
+            {
+                "code": "R-2",
+                "title": "ملک اجاره‌ای",
+                "property_type": "suite",
+                "transaction_type": "rent",
+                "deposit_amount": 300000,
+                "monthly_rent": 25000,
+                "area": 60,
+                "address": "تهران",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        created = Property.objects.get(code="R-2")
+
+        self.assertEqual(created.deposit_amount, 300000)
+        self.assertEqual(created.monthly_rent, 25000)
+        self.assertIsNone(created.price)
+        self.assertEqual(created.property_type, "suite")
+
+    def test_sale_property_requires_price(self):
+
+        response = self.client.post(
+            "/api/properties/",
+            {
+                "code": "S-1",
+                "title": "ملک فروشی بدون قیمت",
+                "property_type": "villa",
+                "transaction_type": "sale",
+                "area": 120,
+                "address": "تهران",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("price", response.data)
+
+    def test_mortgage_property_ignores_rent_only_fields(self):
+
+        response = self.client.post(
+            "/api/properties/",
+            {
+                "code": "M-1",
+                "title": "ملک رهنی",
+                "property_type": "office",
+                "transaction_type": "mortgage",
+                "price": 800000,
+                "deposit_amount": 999999,
+                "monthly_rent": 999999,
+                "area": 90,
+                "address": "تهران",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        created = Property.objects.get(code="M-1")
+
+        self.assertEqual(created.price, 800000)
+        self.assertIsNone(created.deposit_amount)
+        self.assertIsNone(created.monthly_rent)
+
+
 class PropertyListPerformanceTests(APITestCase):
 
     def setUp(self):
@@ -168,7 +269,8 @@ class PropertyAgencyIsolationTests(APITestCase):
                 "title": "ملک جدید",
                 "property_type": "villa",
                 "transaction_type": "rent",
-                "price": 500000,
+                "deposit_amount": 200000,
+                "monthly_rent": 30000,
                 "area": 80,
                 "address": "کرج",
             },
