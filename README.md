@@ -388,3 +388,8 @@ python manage.py createsuperuser
 and the backend server is running.
 
 ---
+
+## License
+
+MIT License
+
