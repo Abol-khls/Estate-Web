@@ -1,29 +1,28 @@
 # Estate CRM
 
-A modern Real Estate CRM built with **Django REST Framework** and **React**.
-The project is designed for real estate agencies to manage properties, customers, visits, contracts, and daily activities from a single dashboard.
+A Real Estate CRM built with **Django REST Framework** and **React**.
+The project has two panels: a public panel where visitors browse listed properties and send inquiries, and an admin panel where agency staff manage properties, customers, visits, contracts, and daily activities.
 
 ---
 
 ## Features
 
-* Authentication with JWT
-* Agency-based data isolation (Multi-Tenant)
-* Property management
-* Multiple property images
-* Property videos
-* Favorite properties
-* Customer management
-* Visit management
-* Contract management
-* Activity management
-* Dashboard
-* Advanced filtering
-* Search
-* Ordering
-* Responsive UI
-* File upload validation
-* Role-based architecture
+* JWT authentication with httpOnly refresh-token cookie
+* Agency-based data isolation (Multi-Tenant, single-agency-per-installation model)
+* Role-based access (manager / agent / customer)
+* Property management with images, videos, and favorites
+* Property type, transaction type (sale / rent / mortgage), and status (available / reserved / sold) tracked independently
+* Rent-specific pricing (deposit + monthly rent) shown wherever relevant
+* Customer, visit, contract, and activity management
+* Visit calendar and activity timeline
+* Public panel: property listing, property details, contact/inquiry form
+* Real dashboard with agency statistics
+* Reports with charts and Excel/PDF export (RTL, Persian)
+* Team management (single manager per agency, agents added via management command)
+* Advanced filtering, debounced search, ordering, URL-synced filters
+* Image validation and compression on upload
+* Rate limiting on login and public inquiries
+* Audit log for create/update/delete actions
 
 ---
 
@@ -31,13 +30,15 @@ The project is designed for real estate agencies to manage properties, customers
 
 ### Backend
 
-* Python
-* Django
+* Python 3.12+
+* Django 6.0.8
 * Django REST Framework
-* SimpleJWT
+* SimpleJWT (httpOnly cookie based)
 * Django Filter
-* SQLite (Development)
-* PostgreSQL Ready
+* drf-spectacular (OpenAPI schema, admin-only)
+* SQLite (development) / PostgreSQL ready
+* Pillow (image processing)
+* openpyxl / reportlab (Excel / PDF export)
 
 ### Frontend
 
@@ -46,13 +47,14 @@ The project is designed for real estate agencies to manage properties, customers
 * Material UI
 * Axios
 * React Router
+* TanStack React Query
 
 ---
 
 # Project Structure
 
 ```
-EstateCRM
+Estate-Web
 │
 ├── backend
 │   ├── config
@@ -65,6 +67,9 @@ EstateCRM
 │   ├── activities
 │   ├── dashboard
 │   ├── reports
+│   ├── public
+│   ├── audit
+│   ├── core
 │   └── manage.py
 │
 └── frontend
@@ -156,15 +161,11 @@ CORS_ALLOWED_ORIGINS=http://localhost:5173
 DB_NAME=db.sqlite3
 ```
 
+`SECRET_KEY` must be a long random string. When `DEBUG=False`, the app refuses to start if it is under 50 characters.
+
 ---
 
 # Database
-
-Create migrations
-
-```bash
-python manage.py makemigrations
-```
 
 Apply migrations
 
@@ -172,15 +173,36 @@ Apply migrations
 python manage.py migrate
 ```
 
----
-
-# Create Superuser
+If you changed any model, generate the migration first
 
 ```bash
-python manage.py createsuperuser
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-Follow the instructions and create your admin account.
+---
+
+# Create the First Account
+
+This project is **not** a normal multi-tenant Django admin app — every regular user must belong to an `Agency`, and each installation is meant to serve a single agency. Because of that, the standard `python manage.py createsuperuser` command is **not** the right way to create your first account: it creates a user with no agency attached, and that user will not be able to see or manage anything in the app.
+
+Use the dedicated command instead:
+
+```bash
+python manage.py create_agency_owner --agency-name "My Agency" --username owner --password "A-Strong-Password-1"
+```
+
+Optional flags:
+
+```bash
+--phone "021xxxxxxx"
+--address "Agency address"
+--force   # only needed if you intentionally want a second agency on this installation
+```
+
+This creates the `Agency` record and its first manager account in one step. That account is also a Django superuser, so it works for both the app and `/admin/`.
+
+Agents are added later from inside the app (Settings → Team), not from the command line.
 
 ---
 
@@ -195,6 +217,9 @@ Backend will be available at
 ```
 http://127.0.0.1:8000
 ```
+
+API schema (manager/staff only): `http://127.0.0.1:8000/api/schema/`
+Swagger UI (manager/staff only): `http://127.0.0.1:8000/api/docs/`
 
 ---
 
@@ -250,11 +275,21 @@ http://localhost:5173
 
 ---
 
-# Login
+# Using the App
 
-Create a superuser first.
+Public panel (property listing, property details, contact form):
 
-Use the same credentials on the login page.
+```
+http://localhost:5173/
+```
+
+Admin panel login:
+
+```
+http://localhost:5173/admin/login
+```
+
+Log in with the account created by `create_agency_owner`.
 
 ---
 
@@ -266,7 +301,7 @@ Uploaded files are stored inside
 backend/media
 ```
 
-During development Django serves media automatically.
+During development Django serves media automatically. In production, media must be served by the web server (nginx or similar), not by Django.
 
 ---
 
@@ -284,10 +319,10 @@ Apply migrations
 python manage.py migrate
 ```
 
-Create admin
+Create the first agency + manager account
 
 ```bash
-python manage.py createsuperuser
+python manage.py create_agency_owner --agency-name "My Agency" --username owner --password "A-Strong-Password-1"
 ```
 
 Run backend
@@ -296,16 +331,28 @@ Run backend
 python manage.py runserver
 ```
 
+Run backend tests
+
+```bash
+python manage.py test
+```
+
 Run frontend
 
 ```bash
 npm run dev
 ```
 
-Freeze packages
+Build frontend for production
 
 ```bash
-pip freeze > requirements.txt
+npm run build
+```
+
+Lint frontend
+
+```bash
+npm run lint
 ```
 
 ---
@@ -377,19 +424,12 @@ inside the backend `.env`.
 
 ---
 
-### Login fails
+### Login fails / dashboard shows nothing after login
 
-Make sure you created a superuser
-
-```bash
-python manage.py createsuperuser
-```
-
-and the backend server is running.
+This almost always means the account has no `agency` assigned. Only accounts created through `create_agency_owner` (as manager) or added afterward through Settings → Team (as agent) are properly scoped. A user created with the plain `createsuperuser` command will not work correctly in the app.
 
 ---
 
 ## License
 
 MIT License
-
