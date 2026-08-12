@@ -59,7 +59,7 @@ class ContractSerializer(serializers.ModelSerializer):
 
         if contract.status == 'signed':
 
-            property_obj.status = 'rented' if contract.contract_type == 'rent' else 'sold'
+            property_obj.status = 'sold'
 
             customer_obj.status = 'converted'
 
