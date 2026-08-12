@@ -61,7 +61,6 @@ export default function getTheme(mode) {
                 available: { bg: tokens.successBg, text: tokens.success },
                 reserved: { bg: tokens.warningBg, text: tokens.warning },
                 sold: { bg: tokens.neutralStatusBg, text: tokens.neutralStatus },
-                rented: { bg: tokens.neutralStatusBg, text: tokens.neutralStatus },
             },
             darkAnchorBg: darkTokens.bg,
             darkAnchorGlow: "rgba(220, 172, 91, 0.15)",
