@@ -17,6 +17,7 @@ PROPERTY_TYPE_LABELS = {
     'land': 'زمین',
     'office': 'اداری',
     'shop': 'مغازه',
+    'suite': 'سوئیت',
 }
 
 REQUEST_TYPE_LABELS = {
