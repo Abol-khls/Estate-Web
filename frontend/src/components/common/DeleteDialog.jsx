@@ -29,11 +29,13 @@ export default function DeleteDialog({
         <Dialog
             open={open}
             onClose={onClose}
-            PaperProps={{
-                sx: {
-                    borderRadius: 4,
-                    p: 1,
-                    minWidth: 340,
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: 4,
+                        p: 1,
+                        minWidth: 340,
+                    },
                 },
             }}
         >
