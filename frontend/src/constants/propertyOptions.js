@@ -4,20 +4,19 @@ export const PROPERTY_TYPES = [
     { value: "land", label: "زمین" },
     { value: "office", label: "دفتر" },
     { value: "shop", label: "مغازه" },
+    { value: "suite", label: "سوئیت" },
 ];
 
 export const TRANSACTION_TYPES = [
     { value: "sale", label: "فروش" },
     { value: "rent", label: "اجاره" },
     { value: "mortgage", label: "رهن" },
-    { value: "pre_sale", label: "پیش فروش" },
 ];
 
 export const PROPERTY_STATUSES = [
     { value: "available", label: "در حال فروش" },
     { value: "reserved", label: "رزرو شده" },
     { value: "sold", label: "فروخته شده" },
-    { value: "rented", label: "اجاره داده شده" },
 ];
 
 export function getPropertyStatusLabel(value) {
@@ -28,8 +27,18 @@ export function getPropertyStatusColor(value) {
     if (value === "available") return "info";
     if (value === "reserved") return "warning";
     if (value === "sold") return "success";
-    if (value === "rented") return "success";
     return "default";
+}
+
+export function getTransactionTypeColor(value) {
+    if (value === "sale") return "primary";
+    if (value === "rent") return "secondary";
+    if (value === "mortgage") return "warning";
+    return "default";
+}
+
+export function isRentTransaction(value) {
+    return value === "rent";
 }
 
 export const ORDERING_OPTIONS = [
