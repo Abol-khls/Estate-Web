@@ -207,26 +207,49 @@ export default function PropertyCard({
                     }}
                 >
 
-                    <Typography
-                        sx={{
-                            color: "#fff",
-                            fontWeight: 700,
-                            fontSize: 15,
-                            fontFamily: (theme) => theme.custom.fontMono,
-                        }}
-                    >
-                        {Number(property.price).toLocaleString("en-US")}
-                        <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
-                            {" "}تومان
-                        </Box>
-                    </Typography>
+                    {property.transaction_type === "rent" ? (
 
-                    <Typography
-                        variant="caption"
-                        sx={{ color: "rgba(255,255,255,0.85)" }}
-                    >
-                        {getLabel(TRANSACTION_TYPES, property.transaction_type)}
-                    </Typography>
+                        <Typography
+                            sx={{
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: 13,
+                                fontFamily: (theme) => theme.custom.fontMono,
+                            }}
+                        >
+                            {Number(property.deposit_amount ?? 0).toLocaleString("en-US")} ودیعه
+                            {" / "}
+                            {Number(property.monthly_rent ?? 0).toLocaleString("en-US")} اجاره
+                        </Typography>
+
+                    ) : (
+
+                        <Typography
+                            sx={{
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: 15,
+                                fontFamily: (theme) => theme.custom.fontMono,
+                            }}
+                        >
+                            {Number(property.price).toLocaleString("en-US")}
+                            <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
+                                {" "}تومان
+                            </Box>
+                        </Typography>
+
+                    )}
+
+                    <Chip
+                        size="small"
+                        label={getLabel(TRANSACTION_TYPES, property.transaction_type)}
+                        sx={{
+                            bgcolor: "rgba(255,255,255,0.9)",
+                            color: "text.primary",
+                            fontWeight: 700,
+                            height: 22,
+                        }}
+                    />
 
                 </Box>
 
