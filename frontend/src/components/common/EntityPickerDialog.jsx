@@ -117,12 +117,14 @@ export default function EntityPickerDialog({
             onClose={onClose}
             fullWidth
             maxWidth="sm"
-            PaperProps={{
-                sx: {
-                    borderRadius: 4,
-                    height: "80vh",
-                    display: "flex",
-                    flexDirection: "column",
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: 4,
+                        height: "80vh",
+                        display: "flex",
+                        flexDirection: "column",
+                    },
                 },
             }}
         >
