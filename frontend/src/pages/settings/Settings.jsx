@@ -4,7 +4,7 @@ import { Box, Tabs, Tab, Paper } from "@mui/material";
 
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 import ProfileTab from "./ProfileTab";
 import PasswordTab from "./PasswordTab";

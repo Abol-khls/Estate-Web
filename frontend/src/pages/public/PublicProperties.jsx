@@ -14,7 +14,7 @@ import PropertyGridSkeleton from "../../components/common/skeletons/PropertyGrid
 
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import useResourceList from "../../hooks/queries/useResourceList";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 
 import { PROPERTY_TYPES, TRANSACTION_TYPES, ORDERING_OPTIONS } from "../../constants/propertyOptions";

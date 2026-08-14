@@ -9,7 +9,7 @@ import PropertyToolbar from "../../components/properties/PropertyToolbar";
 import AppButton from "../../components/common/AppButton";
 import DeleteDialog from "../../components/common/DeleteDialog";
 import PropertyGridSkeleton from "../../components/common/skeletons/PropertyGridSkeleton";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import useResourceList from "../../hooks/queries/useResourceList";

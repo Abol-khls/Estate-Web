@@ -2,7 +2,7 @@ import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import ThemeToggleButton from "../common/ThemeToggleButton";
 
 export default function Header({ onMenuClick }) {

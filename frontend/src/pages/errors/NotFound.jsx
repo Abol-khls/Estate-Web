@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 
 import ErrorState from "./ErrorState";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 export default function NotFound() {
 

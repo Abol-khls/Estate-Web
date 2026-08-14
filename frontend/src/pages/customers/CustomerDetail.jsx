@@ -22,7 +22,7 @@ import Loading from "../../components/common/Loading";
 import InfoItem from "../../components/common/InfoItem";
 import DeleteDialog from "../../components/common/DeleteDialog";
 
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";
 import CustomerTimeline from "../../components/customers/CustomerTimeline";

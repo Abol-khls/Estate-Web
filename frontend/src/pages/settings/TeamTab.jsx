@@ -18,8 +18,8 @@ import DeleteDialog from "../../components/common/DeleteDialog";
 import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 
 import api from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useAuth } from "../../context/useAuth";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useResourceList from "../../hooks/queries/useResourceList";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";

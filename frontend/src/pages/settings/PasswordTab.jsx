@@ -9,7 +9,7 @@ import AppTextField from "../../components/common/AppTextField";
 import AppButton from "../../components/common/AppButton";
 
 import api from "../../services/api";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 
 function VisibilityToggle({ visible, onToggle }) {

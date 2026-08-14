@@ -34,7 +34,7 @@ import AppButton from "../../components/common/AppButton";
 import Loading from "../../components/common/Loading";
 
 import api from "../../services/api";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 
 const REQUEST_TYPE_LABELS = {

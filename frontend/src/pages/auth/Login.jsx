@@ -2,8 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { saveAccessToken } from "../../services/tokenService";
-import { useAuth } from "../../context/AuthContext";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useAuth } from "../../context/useAuth";
+import { useSnackbar } from "../../context/useSnackbar";
 import { API_BASE_URL } from "../../config";
 
 import {

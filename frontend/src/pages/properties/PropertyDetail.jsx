@@ -10,7 +10,7 @@ import PageContainer from "../../components/common/PageContainer";
 import Loading from "../../components/common/Loading";
 import SpecStrip from "../../components/common/SpecStrip";
 import StatusPill from "../../components/common/StatusPill";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDeleteResource from "../../hooks/queries/useDeleteResource";
 import useToggleFavorite from "../../hooks/queries/useToggleFavorite";

@@ -19,7 +19,7 @@ import AppSelect from "../../components/common/AppSelect";
 
 import api from "../../services/api";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { REQUEST_TYPES, CUSTOMER_STATUSES } from "../../constants/customerOptions";
 

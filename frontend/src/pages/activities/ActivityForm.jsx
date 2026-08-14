@@ -22,7 +22,7 @@ import EntityPickerDialog from "../../components/common/EntityPickerDialog";
 
 import api from "../../services/api";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { ACTIVITY_STATUSES } from "../../constants/activityOptions";
 import { getCustomerStatusLabel, getCustomerStatusColor } from "../../constants/customerOptions";
