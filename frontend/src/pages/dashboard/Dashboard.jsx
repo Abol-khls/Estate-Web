@@ -23,7 +23,7 @@ import api from "../../services/api";
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import DashboardSkeleton from "../../components/common/skeletons/DashboardSkeleton";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 
 import {
     getVisitStatusLabel,
@@ -48,7 +48,9 @@ function formatDateTime(value) {
 
 }
 
-function StatCard({ title, value, icon: Icon, color, onClick }) {
+function StatCard({ title, value, icon, color, onClick }) {
+
+    const Icon = icon;
 
     return (
 

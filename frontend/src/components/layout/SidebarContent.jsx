@@ -15,7 +15,7 @@ import {
 
 import { Box, Stack, Typography, Button } from "@mui/material";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 const NAV_ITEMS = [
     { label: "داشبورد", icon: Home, to: "/admin/dashboard" },
@@ -96,11 +96,11 @@ export default function SidebarContent({ onNavigate }) {
 
                 <Stack spacing={0.5}>
 
-                    {NAV_ITEMS.map(({ label, icon: Icon, to }) => (
+                    {NAV_ITEMS.map((item) => (
 
                         <NavLink
-                            key={to}
-                            to={to}
+                            key={item.to}
+                            to={item.to}
                             onClick={onNavigate}
                             style={{ textDecoration: "none" }}
                         >
@@ -139,9 +139,9 @@ export default function SidebarContent({ onNavigate }) {
                                     }}
                                 >
 
-                                    <Icon size={18} />
+                                    <item.icon size={18} />
 
-                                    {label}
+                                    {item.label}
 
                                 </Box>
 

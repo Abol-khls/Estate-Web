@@ -2,7 +2,7 @@ import { Box, Paper, Typography, Button } from "@mui/material";
 
 export default function ErrorState({
 
-    icon: Icon,
+    icon,
 
     code,
 
@@ -19,6 +19,8 @@ export default function ErrorState({
     onSecondaryAction,
 
 }) {
+
+    const Icon = icon;
 
     return (
 
