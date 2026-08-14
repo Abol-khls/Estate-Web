@@ -465,4 +465,4 @@ This almost always means the account has no `agency` assigned. Only accounts cre
 
 ## License
 
-MIT License
+PolyForm Noncommercial License 1.0.0 — free for personal, educational, and research use; commercial use (including resale or paid deployment for a client) is not permitted. See the `LICENSE` file for the full text.
