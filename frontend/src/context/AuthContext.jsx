@@ -1,11 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { clearAccessToken } from "../services/tokenService";
 
 import api, { refreshAccessToken } from "../services/api";
 
-
-const AuthContext = createContext();
+import { AuthContext } from "./authContextValue";
 
 
 export function AuthProvider({ children }) {
@@ -91,13 +90,7 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(false);
         setLoading(false);
 
-        try {
-
-            await api.post("token/logout/");
-
-        } catch {
-
-        }
+        await api.post("token/logout/").catch(() => null);
 
     };
 
@@ -121,13 +114,5 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
 
     );
-
-}
-
-
-
-export function useAuth() {
-
-    return useContext(AuthContext);
 
 }
