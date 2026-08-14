@@ -36,7 +36,7 @@ The project has two panels: a public panel where visitors browse listed properti
 * SimpleJWT (httpOnly cookie based)
 * Django Filter
 * drf-spectacular (OpenAPI schema, admin-only)
-* SQLite (development) / PostgreSQL ready
+* SQLite (default) or PostgreSQL, switchable via `DB_ENGINE`
 * Pillow (image processing)
 * openpyxl / reportlab (Excel / PDF export)
 
@@ -147,7 +147,7 @@ Copy the values from
 .env.example
 ```
 
-Example
+Example (SQLite, default)
 
 ```env
 SECRET_KEY=your_secret_key
@@ -158,8 +158,30 @@ ALLOWED_HOSTS=127.0.0.1,localhost
 
 CORS_ALLOWED_ORIGINS=http://localhost:5173
 
+DB_ENGINE=sqlite3
 DB_NAME=db.sqlite3
 ```
+
+Example (PostgreSQL)
+
+```env
+SECRET_KEY=your_secret_key
+
+DEBUG=True
+
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+
+DB_ENGINE=postgresql
+DB_NAME=estate_db
+DB_USER=estate_user
+DB_PASSWORD=your_db_password
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+`DB_ENGINE` accepts `sqlite3` (default) or `postgresql`. When it is `postgresql`, `DB_USER` and `DB_PASSWORD` are required.
 
 `SECRET_KEY` must be a long random string. When `DEBUG=False`, the app refuses to start if it is under 50 characters.
 
@@ -399,6 +421,17 @@ npm install
 python manage.py makemigrations
 python manage.py migrate
 ```
+
+---
+
+### `could not connect to server` / `password authentication failed` (PostgreSQL)
+
+This means the backend `.env` does not match a database and user that actually exist. Check:
+
+* `DB_ENGINE=postgresql` is set.
+* PostgreSQL service is running.
+* `DB_NAME`, `DB_USER`, `DB_PASSWORD` match a database and user you created (via `psql` or pgAdmin), not just values you made up in `.env`.
+* `DB_HOST=localhost` and `DB_PORT=5432` match your local PostgreSQL install.
 
 ---
 
