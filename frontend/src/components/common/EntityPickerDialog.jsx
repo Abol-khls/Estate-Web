@@ -72,17 +72,27 @@ export default function EntityPickerDialog({
 
     }
 
+    const [wasOpen, setWasOpen] = useState(false);
+
+    if (open !== wasOpen) {
+
+        setWasOpen(open);
+
+        if (open) {
+            setSearch("");
+            setPage(1);
+        }
+
+    }
+
     useEffect(() => {
 
         if (!open) return;
 
-        setSearch("");
-        setPage(1);
         loadItems(1, "");
 
         return () => clearTimeout(searchTimeoutRef.current);
 
-      
     }, [open]);
 
     function handleSearchChange(e) {

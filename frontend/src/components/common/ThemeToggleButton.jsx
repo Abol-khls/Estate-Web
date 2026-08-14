@@ -2,7 +2,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeIcon from "@mui/icons-material/DarkModeOutlined";
 
-import { useThemeMode } from "../../context/ThemeModeContext";
+import { useThemeMode } from "../../context/useThemeMode";
 
 export default function ThemeToggleButton({ sx }) {
 

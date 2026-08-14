@@ -28,7 +28,7 @@ import AppSelect from "../../components/common/AppSelect";
 import DeleteDialog from "../../components/common/DeleteDialog";
 import TableSkeleton from "../../components/common/skeletons/TableSkeleton";
 
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
 import useDebouncedValue from "../../hooks/useDebouncedValue";
 import useResourceList from "../../hooks/queries/useResourceList";
@@ -64,11 +64,14 @@ export default function Contracts() {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [selectedContract, setSelectedContract] = useState(null);
 
-    useEffect(() => {
+    const filtersKey = JSON.stringify([search, status, contractType, ordering]);
 
+    const [appliedFiltersKey, setAppliedFiltersKey] = useState(filtersKey);
+
+    if (filtersKey !== appliedFiltersKey) {
+        setAppliedFiltersKey(filtersKey);
         setPage(1);
-
-    }, [search, status, contractType, ordering]);
+    }
 
     const params = useMemo(() => {
 
@@ -96,14 +99,19 @@ export default function Contracts() {
     const contracts = data?.results ?? [];
     const count = data?.count ?? 0;
 
+    const shouldResetPageOn404 = (
+        isError
+        && error?.response?.status === 404
+        && page !== 1
+    );
+
+    if (shouldResetPageOn404) {
+        setPage(1);
+    }
+
     useEffect(() => {
 
-        if (!isError) return;
-
-        if (error?.response?.status === 404 && page !== 1) {
-            setPage(1);
-            return;
-        }
+        if (!isError || shouldResetPageOn404) return;
 
         const message = getErrorMessage(
             error,
@@ -112,7 +120,7 @@ export default function Contracts() {
 
         showSnackbar(message, "error");
 
-    }, [isError, error]);
+    }, [isError, error, shouldResetPageOn404]);
 
     const deleteMutation = useDeleteResource("contracts");
 

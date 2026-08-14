@@ -1,7 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { Snackbar, Alert } from "@mui/material";
 
-const SnackbarContext = createContext();
+import { SnackbarContext } from "./snackbarContextValue";
 
 export function SnackbarProvider({ children }) {
     const [state, setState] = useState({
@@ -49,8 +49,4 @@ export function SnackbarProvider({ children }) {
             </Snackbar>
         </SnackbarContext.Provider>
     );
-}
-
-export function useSnackbar() {
-    return useContext(SnackbarContext);
 }

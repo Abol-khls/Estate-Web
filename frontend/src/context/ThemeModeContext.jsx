@@ -1,11 +1,10 @@
-import { createContext, useContext, useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 
 import getTheme from "../theme/getTheme";
+import { ThemeModeContext } from "./themeModeContextValue";
 
 const STORAGE_KEY = "theme-mode";
-
-const ThemeModeContext = createContext();
 
 function getInitialMode() {
 
@@ -56,11 +55,5 @@ export function ThemeModeProvider({ children }) {
         </ThemeModeContext.Provider>
 
     );
-
-}
-
-export function useThemeMode() {
-
-    return useContext(ThemeModeContext);
 
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Grid, Box, Chip, Typography } from "@mui/material";
 
 import SaveIcon from "@mui/icons-material/Save";
@@ -7,8 +7,8 @@ import AppTextField from "../../components/common/AppTextField";
 import AppButton from "../../components/common/AppButton";
 
 import api from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useAuth } from "../../context/useAuth";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { getRoleLabel, getRoleColor } from "../../constants/userOptions";
 
@@ -28,9 +28,11 @@ export default function ProfileTab() {
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
+    const [hydratedUser, setHydratedUser] = useState(null);
 
-        if (!user) return;
+    if (user && user !== hydratedUser) {
+
+        setHydratedUser(user);
 
         setForm({
             username: user.username ?? "",
@@ -40,7 +42,7 @@ export default function ProfileTab() {
             phone: user.phone ?? "",
         });
 
-    }, [user]);
+    }
 
     function handleChange(e) {
 

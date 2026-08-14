@@ -9,7 +9,7 @@ import AppButton from "../../components/common/AppButton";
 import Loading from "../../components/common/Loading";
 
 import api from "../../services/api";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 
 export default function AgencyTab() {
@@ -35,9 +35,11 @@ export default function AgencyTab() {
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
+    const [hydratedAgency, setHydratedAgency] = useState(null);
 
-        if (!agency) return;
+    if (agency && agency !== hydratedAgency) {
+
+        setHydratedAgency(agency);
 
         setForm({
             name: agency.name ?? "",
@@ -45,7 +47,7 @@ export default function AgencyTab() {
             address: agency.address ?? "",
         });
 
-    }, [agency]);
+    }
 
     useEffect(() => {
 

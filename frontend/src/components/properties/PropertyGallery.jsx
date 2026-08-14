@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import {
     Box,
@@ -17,8 +17,11 @@ export default function PropertyGallery({ images, title }) {
         images?.find(img => img.is_cover) ?? images?.[0] ?? null;
 
     const [selectedImage, setSelectedImage] = useState(cover);
+    const [hydratedImages, setHydratedImages] = useState(images);
 
-    useEffect(() => {
+    if (images !== hydratedImages) {
+
+        setHydratedImages(images);
 
         setSelectedImage(
             images?.find(img => img.is_cover) ??
@@ -26,7 +29,7 @@ export default function PropertyGallery({ images, title }) {
             null
         );
 
-    }, [images]);
+    }
 
     if (!images?.length) {
 

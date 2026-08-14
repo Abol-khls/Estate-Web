@@ -15,7 +15,6 @@ import { BASE_URL } from "../../config";
 export default function VideoUploader({
 
     existingVideos,
-    setExistingVideos,
 
     newVideos,
     setNewVideos,

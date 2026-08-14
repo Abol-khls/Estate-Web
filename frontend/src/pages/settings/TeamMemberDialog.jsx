@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -22,8 +22,8 @@ import AppSelect from "../../components/common/AppSelect";
 import AppButton from "../../components/common/AppButton";
 
 import api from "../../services/api";
-import { useAuth } from "../../context/AuthContext";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useAuth } from "../../context/useAuth";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import { USER_ROLES } from "../../constants/userOptions";
 
@@ -53,33 +53,39 @@ export default function TeamMemberDialog({ open, onClose, member }) {
 
     const isEditingSelf = isEdit && member?.id === currentUser?.id;
 
-    useEffect(() => {
+    const [wasOpen, setWasOpen] = useState(false);
 
-        if (!open) return;
+    if (open !== wasOpen) {
 
-        if (member) {
+        setWasOpen(open);
 
-            setForm({
-                username: member.username ?? "",
-                first_name: member.first_name ?? "",
-                last_name: member.last_name ?? "",
-                email: member.email ?? "",
-                phone: member.phone ?? "",
-                role: member.role ?? "agent",
-                password: "",
-                is_active: member.is_active,
-            });
+        if (open) {
 
-        } else {
+            if (member) {
 
-            setForm(EMPTY_FORM);
+                setForm({
+                    username: member.username ?? "",
+                    first_name: member.first_name ?? "",
+                    last_name: member.last_name ?? "",
+                    email: member.email ?? "",
+                    phone: member.phone ?? "",
+                    role: member.role ?? "agent",
+                    password: "",
+                    is_active: member.is_active,
+                });
+
+            } else {
+
+                setForm(EMPTY_FORM);
+
+            }
+
+            setErrors({});
+            setShowPassword(false);
 
         }
 
-        setErrors({});
-        setShowPassword(false);
-
-    }, [open, member]);
+    }
 
     function handleChange(e) {
 
