@@ -19,7 +19,7 @@ import AppCheckbox from "../../components/common/AppCheckbox";
 import AppSelect from "../../components/common/AppSelect";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage, getFieldErrors, getNonFieldError, getFieldErrorSummary } from "../../utils/errorMessage";
 import {
     PROPERTY_TYPES,
@@ -934,7 +934,6 @@ export default function PropertyForm() {
                         <VideoUploader
 
                             existingVideos={existingVideos}
-                            setExistingVideos={setExistingVideos}
 
                             newVideos={newVideos}
                             setNewVideos={setNewVideos}
