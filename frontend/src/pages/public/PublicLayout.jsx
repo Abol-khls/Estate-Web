@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Container } from "@mui/material";
+import { Box, Typography, Container, Popover } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
+import PlaceIcon from "@mui/icons-material/Place";
 import LoginIcon from "@mui/icons-material/Login";
 
 import api from "../../services/api";
@@ -10,6 +12,8 @@ import ThemeToggleButton from "../../components/common/ThemeToggleButton";
 export default function PublicLayout({ children }) {
 
     const navigate = useNavigate();
+
+    const [contactAnchor, setContactAnchor] = useState(null);
 
     const { data: agency } = useQuery({
 
@@ -79,17 +83,102 @@ export default function PublicLayout({ children }) {
 
                             <ThemeToggleButton sx={{ color: "inherit" }} />
 
-                            {agency?.phone && (
+                            {(agency?.phone || agency?.address) && (
 
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <>
 
-                                    <PhoneIcon sx={{ fontSize: 18, color: "secondary.main" }} />
+                                    <Box
+                                        onClick={(e) => setContactAnchor(e.currentTarget)}
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 0.8,
+                                            cursor: "pointer",
+                                            color: "rgba(255,255,255,0.9)",
+                                            fontSize: 13,
+                                            px: 1.2,
+                                            py: 0.5,
+                                            borderRadius: 2,
+                                            border: "1px solid rgba(255,255,255,0.25)",
+                                            transition: ".15s",
+                                            "&:hover": {
+                                                color: "#fff",
+                                                borderColor: "rgba(255,255,255,0.5)",
+                                            },
+                                        }}
+                                    >
 
-                                    <Typography variant="body2">
-                                        <bdi>{agency.phone}</bdi>
-                                    </Typography>
+                                        <PhoneIcon sx={{ fontSize: 16, color: "secondary.main" }} />
 
-                                </Box>
+                                        <Typography variant="body2" sx={{ color: "inherit" }}>
+                                            راه‌های تماس
+                                        </Typography>
+
+                                    </Box>
+
+                                    <Popover
+                                        open={Boolean(contactAnchor)}
+                                        anchorEl={contactAnchor}
+                                        onClose={() => setContactAnchor(null)}
+                                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                                        transformOrigin={{ vertical: "top", horizontal: "center" }}
+                                        slotProps={{
+                                            paper: {
+                                                sx: { borderRadius: 3, p: 2, minWidth: 240 },
+                                            },
+                                        }}
+                                    >
+
+                                        {agency?.phone && (
+
+                                            <Box
+                                                component="a"
+                                                href={`tel:${agency.phone}`}
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 1,
+                                                    color: "text.primary",
+                                                    textDecoration: "none",
+                                                    py: 0.8,
+                                                    "&:hover": { color: "primary.main" },
+                                                }}
+                                            >
+
+                                                <PhoneIcon sx={{ fontSize: 18, color: "primary.main" }} />
+
+                                                <Typography variant="body2">
+                                                    <bdi>{agency.phone}</bdi>
+                                                </Typography>
+
+                                            </Box>
+
+                                        )}
+
+                                        {agency?.address && (
+
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "flex-start",
+                                                    gap: 1,
+                                                    py: 0.8,
+                                                }}
+                                            >
+
+                                                <PlaceIcon sx={{ fontSize: 18, color: "primary.main", mt: 0.2 }} />
+
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {agency.address}
+                                                </Typography>
+
+                                            </Box>
+
+                                        )}
+
+                                    </Popover>
+
+                                </>
 
                             )}
 

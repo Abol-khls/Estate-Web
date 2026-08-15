@@ -30,7 +30,7 @@ const NAV_ITEMS = [
 
 export default function SidebarContent({ onNavigate }) {
 
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const navigate = useNavigate();
 
     function handleLogout() {
@@ -88,8 +88,8 @@ export default function SidebarContent({ onNavigate }) {
                         }}
                     />
 
-                    <Typography variant="h6" sx={{ color: "#F3F1EA" }}>
-                        Estate CRM
+                    <Typography variant="h6" sx={{ color: "#F3F1EA" }} noWrap>
+                        {user?.agency?.name || "Estate CRM"}
                     </Typography>
 
                 </Box>

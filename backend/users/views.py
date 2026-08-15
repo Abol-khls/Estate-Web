@@ -250,6 +250,8 @@ class CookieTokenRefreshView(APIView):
             serializer.is_valid(raise_exception=True)
         except TokenError as error:
             raise InvalidToken(str(error))
+        except Exception:
+            raise InvalidToken('Refresh token is invalid or malformed.')
 
         data = dict(serializer.validated_data)
 

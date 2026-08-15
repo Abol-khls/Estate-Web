@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { saveAccessToken } from "../../services/tokenService";
 import { useAuth } from "../../context/useAuth";
 import { useSnackbar } from "../../context/useSnackbar";
 import { API_BASE_URL } from "../../config";
+import api from "../../services/api";
 
 import {
     Box,
@@ -47,6 +49,20 @@ export default function Login() {
 
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
+
+    const { data: agency } = useQuery({
+
+        queryKey: ["public", "agency"],
+
+        queryFn: async () => {
+
+            const response = await api.get("public/agency/");
+
+            return response.data;
+
+        },
+
+    });
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -160,7 +176,7 @@ export default function Login() {
                         color="primary.main"
                         fontWeight={700}
                     >
-                        Estate CRM
+                        {agency?.name || "Estate CRM"}
                     </Typography>
 
                 </Box>

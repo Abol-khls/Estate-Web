@@ -18,10 +18,10 @@ import ApartmentIcon from "@mui/icons-material/ApartmentOutlined";
 import { BASE_URL } from "../../config";
 
 import SpecStrip from "../common/SpecStrip";
-import StatusPill from "../common/StatusPill";
 
 import {
     getPropertyStatusLabel,
+    getPropertyStatusColor,
     PROPERTY_TYPES,
     TRANSACTION_TYPES,
 } from "../../constants/propertyOptions";
@@ -142,13 +142,15 @@ export default function PropertyCard({
 
                 )}
 
-                <StatusPill
-                    status={property.status}
+                <Chip
+                    size="small"
+                    color={getPropertyStatusColor(property.status)}
                     label={getPropertyStatusLabel(property.status)}
                     sx={{
                         position: "absolute",
                         top: 14,
                         insetInlineStart: 14,
+                        fontWeight: 700,
                         boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
                     }}
                 />
