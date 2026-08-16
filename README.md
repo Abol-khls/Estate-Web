@@ -5,6 +5,14 @@ The project has two panels: a public panel where visitors browse listed properti
 
 ---
 
+##  Research Paper
+
+This project is presented and discussed in the following research paper:
+
+[**Read the Research Paper**](https://medium.com/@amirhoseinparsa1234/building-estate-crm-a-full-stack-real-estate-management-platform-with-django-and-react-861dc37e3ba9?sharedUserId=abolfazldehghanpoorr)
+
+---
+
 ## Features
 
 * JWT authentication with httpOnly refresh-token cookie
