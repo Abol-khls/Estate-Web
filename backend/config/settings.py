@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -142,6 +143,15 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 AUTH_USER_MODEL = 'users.User'
 
 MEDIA_URL = '/media/'
@@ -169,8 +179,10 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
 
+    'NUM_PROXIES': config("NUM_PROXIES", default=0, cast=int),
+
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '60/min',
+        'anon': '1000/min',
         'user': '300/min',
         'public_inquiry': '5/hour',
         'login_ip': '10/min',
@@ -193,11 +205,27 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+CACHE_BACKEND = config("CACHE_BACKEND", default="locmem")
+
+if CACHE_BACKEND == "redis":
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": config("REDIS_URL", default="redis://localhost:6379/1"),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
     }
-}
+
+else:
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
 
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
@@ -249,16 +277,18 @@ LOGGING = {
 
 if not DEBUG:
 
-    SECURE_SSL_REDIRECT = True
+    ENABLE_SSL = config("ENABLE_SSL", default=True, cast=bool)
 
-    SESSION_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = ENABLE_SSL
 
-    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = ENABLE_SSL
 
-    SECURE_HSTS_SECONDS = 31536000
+    CSRF_COOKIE_SECURE = ENABLE_SSL
 
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_SECONDS = 31536000 if ENABLE_SSL else 0
 
-    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = ENABLE_SSL
+
+    SECURE_HSTS_PRELOAD = ENABLE_SSL
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

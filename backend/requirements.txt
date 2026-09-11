@@ -2,11 +2,13 @@ asgiref==3.11.1
 attrs==26.1.0
 arabic-reshaper==3.0.0
 Django==6.0.8
+django-redis==5.4.0
 django-cors-headers==4.9.0
 django-filter==25.2
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.29.0
+gunicorn==23.0.0
 inflection==0.5.1
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
@@ -23,3 +25,4 @@ rpds-py==2026.5.1
 sqlparse==0.5.5
 tzdata==2026.2
 uritemplate==4.2.0
+whitenoise==6.7.0
