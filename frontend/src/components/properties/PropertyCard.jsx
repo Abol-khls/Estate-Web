@@ -4,12 +4,13 @@ import {
     IconButton,
     Chip,
     Tooltip,
+    Button,
 } from "@mui/material";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PlaceIcon from "@mui/icons-material/PlaceOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFootOutlined";
 import BedIcon from "@mui/icons-material/KingBedOutlined";
@@ -18,10 +19,13 @@ import ApartmentIcon from "@mui/icons-material/ApartmentOutlined";
 import { BASE_URL } from "../../config";
 
 import SpecStrip from "../common/SpecStrip";
+import PriceTag from "../common/PriceTag";
+import TonePill from "../common/TonePill";
 
 import {
     getPropertyStatusLabel,
     getPropertyStatusColor,
+    getTransactionTone,
     PROPERTY_TYPES,
     TRANSACTION_TYPES,
 } from "../../constants/propertyOptions";
@@ -33,6 +37,8 @@ function getLabel(list, value) {
 export default function PropertyCard({
 
     property,
+
+    index = 0,
 
     onView,
 
@@ -48,10 +54,12 @@ export default function PropertyCard({
         property.images?.find(img => img.is_cover) ||
         property.images?.[0];
 
+    const tone = getTransactionTone(property.transaction_type);
+
     const specItems = [
-        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متراژ" },
-        { icon: BedIcon, value: property.rooms ?? "—", label: "خواب" },
-        { icon: ApartmentIcon, value: property.floor ?? "—", label: "طبقه" },
+        { icon: SquareFootIcon, value: Number(property.area).toLocaleString("en-US"), label: "متر" },
+        { icon: BedIcon, value: property.rooms ?? null, label: "خواب" },
+        { icon: ApartmentIcon, value: property.floor ?? null, label: "طبقه" },
     ];
 
     return (
@@ -64,11 +72,11 @@ export default function PropertyCard({
 
                 border: "1px solid",
 
-                borderColor: "divider",
+                borderColor: (theme) => theme.custom.glassBorderSoft,
 
                 bgcolor: "background.paper",
 
-                boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
+                boxShadow: (theme) => theme.custom.cardShadow,
 
                 overflow: "hidden",
 
@@ -76,14 +84,24 @@ export default function PropertyCard({
 
                 flexDirection: "column",
 
-                transition: ".2s",
+                transition: "all .3s ease",
+
+                animation: "cardIn .5s ease both",
+
+                animationDelay: `${Math.min(index, 11) * 50}ms`,
 
                 "&:hover": {
 
-                    boxShadow: "0 8px 24px rgba(16, 24, 40, 0.12)",
+                    borderColor: (theme) => theme.custom.tones.emerald.border,
+
+                    boxShadow: (theme) => theme.custom.hoverShadow,
 
                     transform: "translateY(-2px)",
 
+                },
+
+                "&:hover .cover-img": {
+                    transform: "scale(1.04)",
                 },
 
             }}
@@ -100,7 +118,9 @@ export default function PropertyCard({
 
                     width: "100%",
 
-                    aspectRatio: "16 / 10",
+                    height: 192,
+
+                    overflow: "hidden",
 
                     bgcolor: (theme) => theme.custom.surfaceAlt,
 
@@ -113,6 +133,7 @@ export default function PropertyCard({
                 {coverImage ? (
 
                     <Box
+                        className="cover-img"
                         component="img"
                         src={`${BASE_URL}${coverImage.image}`}
                         alt={property.title}
@@ -121,6 +142,7 @@ export default function PropertyCard({
                             height: "100%",
                             objectFit: "cover",
                             display: "block",
+                            transition: "transform .5s ease",
                         }}
                     />
 
@@ -148,10 +170,10 @@ export default function PropertyCard({
                     label={getPropertyStatusLabel(property.status)}
                     sx={{
                         position: "absolute",
-                        top: 14,
-                        insetInlineStart: 14,
-                        fontWeight: 700,
-                        boxShadow: "0 1px 4px rgba(0,0,0,0.25)",
+                        top: 12,
+                        insetInlineStart: 12,
+                        fontWeight: 600,
+                        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
                     }}
                 />
 
@@ -162,21 +184,25 @@ export default function PropertyCard({
                         onToggleFavorite(property);
                     }}
 
+                    aria-label="علاقه‌مندی"
+
                     sx={{
 
                         position: "absolute",
 
-                        top: 14,
+                        top: 10,
 
-                        insetInlineEnd: 14,
+                        insetInlineEnd: 10,
 
-                        bgcolor: "rgba(255,255,255,0.9)",
+                        bgcolor: "rgba(9, 13, 22, 0.6)",
+
+                        backdropFilter: "blur(8px)",
 
                         width: 34,
 
                         height: 34,
 
-                        "&:hover": { bgcolor: "#fff" },
+                        "&:hover": { bgcolor: "rgba(9, 13, 22, 0.85)" },
 
                     }}
 
@@ -184,80 +210,21 @@ export default function PropertyCard({
 
                     {property.is_favorite ? (
 
-                        <FavoriteIcon sx={{ fontSize: 19, color: "error.main" }} />
+                        <FavoriteIcon sx={{ fontSize: 19, color: "#f87171" }} />
 
                     ) : (
 
-                        <FavoriteBorderIcon sx={{ fontSize: 19, color: "#3A3A3A" }} />
+                        <FavoriteBorderIcon sx={{ fontSize: 19, color: "#e2e8f0" }} />
 
                     )}
 
                 </IconButton>
 
-                <Box
-                    sx={{
-                        position: "absolute",
-                        bottom: 0,
-                        insetInlineStart: 0,
-                        insetInlineEnd: 0,
-                        px: 1.5,
-                        py: 1,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                    }}
-                >
-
-                    {property.transaction_type === "rent" ? (
-
-                        <Typography
-                            sx={{
-                                color: "#fff",
-                                fontWeight: 700,
-                                fontSize: 13,
-                                fontFamily: (theme) => theme.custom.fontMono,
-                            }}
-                        >
-                            {Number(property.deposit_amount ?? 0).toLocaleString("en-US")} ودیعه
-                            {" / "}
-                            {Number(property.monthly_rent ?? 0).toLocaleString("en-US")} اجاره
-                        </Typography>
-
-                    ) : (
-
-                        <Typography
-                            sx={{
-                                color: "#fff",
-                                fontWeight: 700,
-                                fontSize: 15,
-                                fontFamily: (theme) => theme.custom.fontMono,
-                            }}
-                        >
-                            {Number(property.price).toLocaleString("en-US")}
-                            <Box component="span" sx={{ fontFamily: "inherit", fontWeight: 400, fontSize: 11, opacity: 0.85 }}>
-                                {" "}تومان
-                            </Box>
-                        </Typography>
-
-                    )}
-
-                    <Chip
-                        size="small"
-                        label={getLabel(TRANSACTION_TYPES, property.transaction_type)}
-                        sx={{
-                            bgcolor: "rgba(255,255,255,0.9)",
-                            color: "text.primary",
-                            fontWeight: 700,
-                            height: 22,
-                        }}
-                    />
-
-                </Box>
+                <PriceTag property={property} />
 
             </Box>
 
-            <Box sx={{ p: 2, flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+            <Box sx={{ p: 2.5, flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
 
                 <Box>
 
@@ -271,82 +238,121 @@ export default function PropertyCard({
                         {property.title}
                     </Typography>
 
-                    <Typography
-                        variant="caption"
-                        sx={{ color: (theme) => theme.custom.textMuted, fontFamily: (theme) => theme.custom.fontMono }}
-                    >
-                        <bdi>{property.code}</bdi>
-                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5, mt: 0.5 }}>
+
+                        <PlaceIcon
+                            sx={{
+                                fontSize: 16,
+                                mt: 0.2,
+                                color: (theme) => theme.custom.tones[tone].text,
+                            }}
+                        />
+
+                        <Typography
+                            sx={{
+                                fontSize: 12,
+                                color: "text.secondary",
+                                overflow: "hidden",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {property.address}
+                        </Typography>
+
+                    </Box>
 
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
 
-                    <PlaceIcon sx={{ fontSize: 16, color: "text.secondary", mt: 0.3 }} />
+                    <TonePill
+                        tone={tone}
+                        label={getLabel(TRANSACTION_TYPES, property.transaction_type)}
+                    />
 
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            overflow: "hidden",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {property.address}
-                    </Typography>
+                    <Chip
+                        size="small"
+                        variant="outlined"
+                        label={getLabel(PROPERTY_TYPES, property.property_type)}
+                        sx={{ height: 20, fontSize: 11, fontWeight: 500 }}
+                    />
 
                 </Box>
 
-                <Chip
-                    size="small"
-                    variant="outlined"
-                    label={getLabel(PROPERTY_TYPES, property.property_type)}
-                    sx={{ alignSelf: "flex-start" }}
-                />
-
-                <SpecStrip items={specItems} sx={{ mt: "auto" }} />
+                <SpecStrip inline items={specItems} sx={{ mt: "auto" }} />
 
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        justifyContent: "space-between",
                         gap: 1,
                     }}
                 >
 
-                    <Tooltip title="ویرایش">
-                        <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => onEdit(property)}
-                            sx={{
-                                borderRadius: 2,
-                                border: "1px solid",
-                                borderColor: "primary.main",
-                                "&:hover": { bgcolor: "primary.main", color: "primary.contrastText" },
-                            }}
-                        >
-                            <EditIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
+                    <Typography
+                        sx={{ fontSize: 12, color: "text.secondary", whiteSpace: "nowrap" }}
+                    >
+                        کد ملک: <bdi>{property.code}</bdi>
+                    </Typography>
 
-                    <Tooltip title="حذف">
-                        <IconButton
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+
+                        <Tooltip title="ویرایش">
+                            <IconButton
+                                size="small"
+                                aria-label="ویرایش"
+                                onClick={() => onEdit(property)}
+                                sx={{
+                                    color: (theme) => theme.custom.tones.emerald.text,
+                                    "&:hover": {
+                                        bgcolor: (theme) => theme.custom.tones.emerald.bg,
+                                    },
+                                }}
+                            >
+                                <EditOutlinedIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="حذف">
+                            <IconButton
+                                size="small"
+                                aria-label="حذف"
+                                onClick={() => onDelete(property)}
+                                sx={{
+                                    color: "text.secondary",
+                                    "&:hover": {
+                                        bgcolor: (theme) => theme.custom.tones.rose.bg,
+                                        color: (theme) => theme.custom.tones.rose.text,
+                                    },
+                                }}
+                            >
+                                <DeleteOutlinedIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+
+                        <Button
                             size="small"
-                            color="error"
-                            onClick={() => onDelete(property)}
+                            onClick={() => onView(property)}
                             sx={{
-                                borderRadius: 2,
+                                px: 1.75,
+                                py: 0.5,
+                                fontSize: 12,
                                 border: "1px solid",
-                                borderColor: "error.main",
-                                "&:hover": { bgcolor: "error.main", color: "#fff" },
+                                color: (theme) => theme.custom.tones[tone].text,
+                                bgcolor: (theme) => theme.custom.tones[tone].bg,
+                                borderColor: (theme) => theme.custom.tones[tone].border,
+                                "&:hover": {
+                                    bgcolor: (theme) => theme.custom.tones[tone].border,
+                                },
                             }}
                         >
-                            <DeleteIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
+                            جزئیات کامل
+                        </Button>
+
+                    </Box>
 
                 </Box>
 

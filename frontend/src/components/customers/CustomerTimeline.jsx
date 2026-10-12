@@ -27,9 +27,9 @@ function formatDateTime(value) {
 }
 
 const TYPE_CONFIG = {
-    activity: { icon: ListChecksIcon, color: "#3E7C74", label: "فعالیت" },
-    visit: { icon: CalendarIcon, color: "#4A6FA5", label: "بازدید" },
-    contract: { icon: DescriptionIcon, color: "#B0563D", label: "قرارداد" },
+    activity: { icon: ListChecksIcon, color: "#10b981", label: "فعالیت" },
+    visit: { icon: CalendarIcon, color: "#06b6d4", label: "بازدید" },
+    contract: { icon: DescriptionIcon, color: "#6366f1", label: "قرارداد" },
 };
 
 export default function CustomerTimeline({ customerId }) {

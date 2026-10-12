@@ -29,6 +29,7 @@ export default function Layout({ children }) {
                 height: "100vh",
                 overflow: "hidden",
                 bgcolor: "background.default",
+                backgroundImage: (theme) => theme.custom.pageGradient,
             }}
         >
 
@@ -44,6 +45,7 @@ export default function Layout({ children }) {
                     flexDirection: "column",
                     minWidth: 0,
                     height: "100vh",
+                    backgroundImage: (theme) => theme.custom.pageGradient,
                 }}
             >
 
@@ -57,7 +59,12 @@ export default function Layout({ children }) {
                         overflowY: "auto",
                     }}
                 >
-                    {children}
+                    <Box
+                        key={`${location.pathname}-${location.state?.quick ?? ""}`}
+                        sx={{ animation: "pageFade .35s ease both" }}
+                    >
+                        {children}
+                    </Box>
                 </Box>
 
             </Box>
