@@ -52,7 +52,7 @@ const PROPERTY_TYPE_LABELS = {
     shop: "مغازه",
 };
 
-const CHART_COLORS = ["#A2712A", "#3E7C74", "#4A6FA5", "#B0563D", "#8A8477"];
+const CHART_COLORS = ["#10b981", "#06b6d4", "#6366f1", "#f59e0b", "#64748b"];
 
 const PIE_COLORS = CHART_COLORS;
 

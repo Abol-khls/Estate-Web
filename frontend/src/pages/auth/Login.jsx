@@ -25,6 +25,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Building as BuildingIcon } from "lucide-react";
 
 function getLoginErrorMessage(err) {
 
@@ -132,11 +133,18 @@ export default function Login() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                bgcolor: (theme) => theme.custom.darkAnchorBg,
-                backgroundImage: (theme) =>
-                    `radial-gradient(circle at 20% 20%, ${theme.custom.darkAnchorGlow}, transparent 40%),` +
-                    "radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06), transparent 40%)",
+                position: "relative",
+                overflow: "hidden",
+                bgcolor: "#090d16",
                 p: 2,
+                "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                        "radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.16), transparent 40%), radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.12), transparent 40%)",
+                    animation: "floatGlow 10s ease-in-out infinite",
+                },
             }}
         >
 
@@ -144,60 +152,59 @@ export default function Login() {
                 component="form"
                 onSubmit={handleSubmit}
                 sx={{
-                    width: 380,
+                    position: "relative",
+                    width: 400,
+                    maxWidth: "100%",
                     p: 4.5,
-                    borderRadius: 4,
-                    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+                    borderRadius: 6,
+                    bgcolor: "rgba(15, 23, 42, 0.8)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    boxShadow: "0 30px 80px rgba(0, 0, 0, 0.5)",
+                    color: "#f1f5f9",
+                    animation: "cardIn .7s ease both",
+                    "& .MuiInputBase-input": { color: "#f1f5f9" },
+                    "& .MuiInputLabel-root": { color: "#94a3b8" },
                 }}
             >
 
                 <Box
                     sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 4,
+                        mx: "auto",
+                        mb: 1.5,
                         display: "flex",
-                        flexDirection: "row",
-                        gap: 1.2,
                         alignItems: "center",
                         justifyContent: "center",
-                        mb: 1,
+                        color: "#fff",
+                        background: (theme) => theme.custom.brandDiag,
+                        boxShadow: (theme) => theme.custom.glow,
                     }}
                 >
-
-                    <Box
-                        sx={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: "50%",
-                            bgcolor: "secondary.main",
-                        }}
-                    />
-
-                    <Typography
-                        variant="h6"
-                        color="primary.main"
-                        fontWeight={700}
-                    >
-                        {agency?.name || "Estate CRM"}
-                    </Typography>
-
+                    <BuildingIcon size={28} />
                 </Box>
 
                 <Typography
-                    variant="h5"
-                    fontWeight={800}
                     sx={{
                         textAlign: "center",
+                        fontWeight: 700,
+                        fontSize: 18,
                         mb: 0.5,
+                        background: "linear-gradient(90deg, #34d399 0%, #22d3ee 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "transparent",
                     }}
                 >
-                    ورود به پنل مدیریت
+                    {agency?.name || "Estate CRM"}
                 </Typography>
 
                 <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ textAlign: "center", mb: 3 }}
+                    sx={{ textAlign: "center", mb: 3, fontSize: 13, color: "#94a3b8" }}
                 >
-                    برای دسترسی به داشبورد آژانس خود وارد شوید
+                    برای ورود به پنل مدیریت اطلاعات حساب خود را وارد کنید
                 </Typography>
 
                 {error && (
@@ -226,7 +233,7 @@ export default function Login() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <PersonOutlineIcon fontSize="small" sx={{ color: "text.secondary" }} />
+                                        <PersonOutlineIcon fontSize="small" sx={{ color: "#64748b" }} />
                                     </InputAdornment>
                                 ),
                             },
@@ -246,7 +253,7 @@ export default function Login() {
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <LockOutlinedIcon fontSize="small" sx={{ color: "text.secondary" }} />
+                                        <LockOutlinedIcon fontSize="small" sx={{ color: "#64748b" }} />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
@@ -256,6 +263,7 @@ export default function Login() {
                                             onClick={() => setShowPassword(prev => !prev)}
                                             edge="end"
                                             tabIndex={-1}
+                                            sx={{ color: "#94a3b8" }}
                                         >
                                             {showPassword ? (
                                                 <VisibilityOff fontSize="small" />
@@ -282,7 +290,14 @@ export default function Login() {
                             ) : null
                         }
                     >
-                        {loading ? "در حال ورود..." : "ورود"}
+                        {loading ? "در حال ورود..." : "ورود به پنل"}
+                    </Button>
+
+                    <Button
+                        onClick={() => navigate("/")}
+                        sx={{ color: "#94a3b8", fontWeight: 500, "&:hover": { color: "#34d399", bgcolor: "transparent" } }}
+                    >
+                        بازگشت به پورتال عمومی
                     </Button>
 
                 </Stack>

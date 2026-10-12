@@ -244,7 +244,7 @@ export default function Activities() {
                         overflow: "hidden",
                         border: "1px solid",
                         borderColor: "divider",
-                        boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
+                        boxShadow: (theme) => theme.custom.cardShadow,
                     }}
                 >
 
