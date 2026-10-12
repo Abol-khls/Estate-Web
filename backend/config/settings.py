@@ -182,6 +182,12 @@ REST_FRAMEWORK = {
     'NUM_PROXIES': config("NUM_PROXIES", default=0, cast=int),
 
     'DEFAULT_THROTTLE_RATES': {
+        'anon': '1000000/min',
+        'user': '1000000/min',
+        'public_inquiry': '1000000/hour',
+        'login_ip': '1000000/min',
+        'login_username': '1000000/min',
+    } if config("DISABLE_THROTTLING", default=False, cast=bool) else {
         'anon': '1000/min',
         'user': '300/min',
         'public_inquiry': '5/hour',

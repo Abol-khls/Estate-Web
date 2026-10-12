@@ -3,6 +3,13 @@ services:
   db:
     image: postgres:17-alpine
     restart: unless-stopped
+    command: postgres -c max_connections=1200 -c shared_buffers=512MB
+    shm_size: '1gb'
+    deploy:
+      resources:
+        limits:
+          cpus: '2.5'
+          memory: 3G
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -15,6 +22,11 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
 
   backend:
     build: ./backend
@@ -22,6 +34,11 @@ services:
     depends_on:
       - db
       - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
     environment:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: ${DEBUG:-False}
@@ -37,6 +54,7 @@ services:
       REDIS_URL: redis://redis:6379/1
       NUM_PROXIES: 1
       ENABLE_SSL: ${ENABLE_SSL:-False}
+      DISABLE_THROTTLING: ${DISABLE_THROTTLING:-False}
     volumes:
       - media_data:/app/media
       - static_data:/app/staticfiles
