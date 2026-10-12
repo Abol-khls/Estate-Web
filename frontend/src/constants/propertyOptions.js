@@ -24,17 +24,24 @@ export function getPropertyStatusLabel(value) {
 }
 
 export function getPropertyStatusColor(value) {
-    if (value === "available") return "info";
+    if (value === "available") return "success";
     if (value === "reserved") return "warning";
-    if (value === "sold") return "success";
+    if (value === "sold") return "neutral";
     return "default";
 }
 
 export function getTransactionTypeColor(value) {
     if (value === "sale") return "primary";
-    if (value === "rent") return "secondary";
-    if (value === "mortgage") return "warning";
+    if (value === "rent") return "info";
+    if (value === "mortgage") return "secondary";
     return "default";
+}
+
+export function getTransactionTone(value) {
+    if (value === "sale") return "emerald";
+    if (value === "rent") return "indigo";
+    if (value === "mortgage") return "cyan";
+    return "slate";
 }
 
 export function isRentTransaction(value) {
