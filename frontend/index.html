@@ -4,19 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link
-      href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/font-face.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <title>frontend</title>
+    <title>سامانه جامع مدیریت املاک</title>
+    <meta name="theme-color" content="#090d16" />
     <style>
       #initial-loader {
         position: fixed;
@@ -26,7 +15,7 @@
         align-items: center;
         justify-content: center;
         gap: 16px;
-        background: #17161B;
+        background: #090d16;
         z-index: 9999;
       }
       #initial-loader .spinner {
@@ -34,24 +23,24 @@
         height: 42px;
         border-radius: 50%;
         border: 3px solid rgba(255, 255, 255, 0.15);
-        border-top-color: #DCAC5B;
+        border-top-color: #10b981;
         animation: initial-loader-spin 0.8s linear infinite;
       }
       #initial-loader .label {
-        font-family: Shabnam, sans-serif;
+        font-family: "Vazirmatn FD", Tahoma, sans-serif;
         color: rgba(255, 255, 255, 0.75);
         font-size: 14px;
       }
       @media (prefers-color-scheme: light) {
         #initial-loader {
-          background: #FAF9F6;
+          background: #f1f5f9;
         }
         #initial-loader .spinner {
-          border: 3px solid rgba(32, 30, 27, 0.12);
-          border-top-color: #A2712A;
+          border: 3px solid rgba(15, 23, 42, 0.12);
+          border-top-color: #059669;
         }
         #initial-loader .label {
-          color: rgba(32, 30, 27, 0.65);
+          color: rgba(15, 23, 42, 0.65);
         }
       }
       @keyframes initial-loader-spin {

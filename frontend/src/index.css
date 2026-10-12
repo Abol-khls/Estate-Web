@@ -1,8 +1,59 @@
+@font-face { font-family: "Vazirmatn FD"; font-weight: 400; font-display: swap; src: url("/fonts/Vazirmatn-FD-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn FD"; font-weight: 500; font-display: swap; src: url("/fonts/Vazirmatn-FD-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn FD"; font-weight: 600; font-display: swap; src: url("/fonts/Vazirmatn-FD-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn FD"; font-weight: 700; font-display: swap; src: url("/fonts/Vazirmatn-FD-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Vazirmatn FD"; font-weight: 800; font-display: swap; src: url("/fonts/Vazirmatn-FD-ExtraBold.woff2") format("woff2"); }
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Shabnam', Arial, sans-serif;
+  font-family: "Vazirmatn FD", "Vazirmatn", Tahoma, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-search-input input::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+@keyframes pageFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.85); }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes areaIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes floatGlow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
 }
