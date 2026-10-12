@@ -1,11 +1,58 @@
 import { Box, Typography } from "@mui/material";
 
-export default function SpecStrip({ items, sx }) {
+export default function SpecStrip({ items, sx, inline = false }) {
 
     const visible = items.filter((item) => item.value !== null && item.value !== undefined);
 
     if (visible.length === 0) {
         return null;
+    }
+
+    if (inline) {
+
+        return (
+
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(${visible.length}, minmax(0, 1fr))`,
+                    gap: 1,
+                    py: 1.25,
+                    borderTop: "1px solid",
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                    ...sx,
+                }}
+            >
+
+                {visible.map((item) => (
+
+                    <Box
+                        key={item.label}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 0.75,
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: "text.secondary",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+
+                        <item.icon sx={{ fontSize: 16, color: (theme) => theme.custom.textMuted }} />
+
+                        <span>{item.value} {item.label}</span>
+
+                    </Box>
+
+                ))}
+
+            </Box>
+
+        );
+
     }
 
     return (
@@ -52,14 +99,13 @@ export default function SpecStrip({ items, sx }) {
                             display: "flex",
                             alignItems: "center",
                             gap: 0.6,
-                            fontFamily: (theme) => theme.custom.fontMono,
-                            fontSize: 13,
-                            fontWeight: 600,
+                            fontSize: 14,
+                            fontWeight: 700,
                             color: "text.primary",
                         }}
                     >
 
-                        <item.icon sx={{ fontSize: 15, color: "primary.main" }} />
+                        <item.icon sx={{ fontSize: 15, color: (theme) => theme.custom.tones.emerald.text }} />
 
                         {item.value}
 

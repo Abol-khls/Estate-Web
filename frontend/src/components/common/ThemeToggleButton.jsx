@@ -12,7 +12,23 @@ export default function ThemeToggleButton({ sx }) {
 
         <Tooltip title={mode === "dark" ? "حالت روشن" : "حالت تاریک"}>
 
-            <IconButton onClick={toggleMode} sx={sx}>
+            <IconButton
+                onClick={toggleMode}
+                aria-label="تغییر تم"
+                sx={{
+                    width: 40,
+                    height: 40,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    bgcolor: (theme) => theme.custom.surfaceAlt,
+                    color: "text.secondary",
+                    "&:hover": {
+                        color: "text.primary",
+                        bgcolor: (theme) => theme.custom.surfaceAlt,
+                    },
+                    ...sx,
+                }}
+            >
 
                 {mode === "dark" ? (
                     <LightModeIcon fontSize="small" />

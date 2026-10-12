@@ -6,13 +6,12 @@ export default function PageContainer({ children }) {
 
         <Box
             sx={{
-                minHeight: "100vh",
-                bgcolor: "background.default",
-                py: { xs: 3, md: 5 },
+                minHeight: "100%",
+                py: { xs: 2, md: 3 },
             }}
         >
 
-            <Container maxWidth="xl">
+            <Container maxWidth={false} sx={{ maxWidth: 1600 }}>
                 {children}
             </Container>
 

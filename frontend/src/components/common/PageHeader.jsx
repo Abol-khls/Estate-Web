@@ -16,28 +16,19 @@ export default function PageHeader({
             direction="row"
             sx={{
                 justifyContent: "space-between",
-                alignItems: "flex-end",
+                alignItems: "center",
                 flexWrap: "wrap",
                 gap: 2,
-                mb: 4,
+                mb: 3,
             }}
         >
 
             <Box>
 
-                <Box
-                    sx={{
-                        width: 36,
-                        height: 4,
-                        borderRadius: 2,
-                        bgcolor: "secondary.main",
-                        mb: 1.5,
-                    }}
-                />
-
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     color="text.primary"
+                    sx={{ fontSize: 20, fontWeight: 700 }}
                 >
 
                     {title}
@@ -49,7 +40,7 @@ export default function PageHeader({
                     <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ mt: 0.5 }}
+                        sx={{ mt: 0.25, fontSize: 12 }}
                     >
 
                         {subtitle}
