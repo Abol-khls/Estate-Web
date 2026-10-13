@@ -63,10 +63,11 @@ export default function PropertyGrid({
             }}
         >
 
-            {properties.map((property) => (
+            {properties.map((property, index) => (
 
                 <PropertyCard
                     key={property.id}
+                    index={index}
                     property={property}
                     onView={onView}
                     onEdit={onEdit}

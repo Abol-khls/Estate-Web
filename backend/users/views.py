@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.authentication import BaseAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import ValidationError
@@ -205,11 +206,20 @@ class TeamViewSet(AgencyScopedViewSet):
         instance.delete()
 
 
+class NoAuthentication(BaseAuthentication):
+
+    def authenticate(self, request):
+        return None
+
+    def authenticate_header(self, request):
+        return 'Bearer'
+
+
 class CookieTokenObtainPairView(APIView):
 
     permission_classes = [AllowAny]
 
-    authentication_classes = []
+    authentication_classes = [NoAuthentication]
 
     throttle_classes = [
         LoginIPRateThrottle,
@@ -238,7 +248,7 @@ class CookieTokenRefreshView(APIView):
 
     permission_classes = [AllowAny]
 
-    authentication_classes = []
+    authentication_classes = [NoAuthentication]
 
     @extend_schema(responses={200: OpenApiTypes.OBJECT})
     def post(self, request):
@@ -273,7 +283,7 @@ class CookieTokenLogoutView(APIView):
 
     permission_classes = [AllowAny]
 
-    authentication_classes = []
+    authentication_classes = [NoAuthentication]
 
     @extend_schema(responses={200: OpenApiTypes.OBJECT})
     def post(self, request):
