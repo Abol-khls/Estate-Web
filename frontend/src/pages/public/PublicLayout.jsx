@@ -14,7 +14,7 @@ const headButtonSx = {
     display: "inline-flex",
     alignItems: "center",
     gap: 1,
-    px: 1.75,
+    px: { xs: 1.1, sm: 1.75 },
     py: 0.75,
     fontSize: 13,
     fontWeight: 600,
@@ -76,7 +76,6 @@ export default function PublicLayout({ children }) {
                             alignItems: "center",
                             justifyContent: "space-between",
                             py: 1.5,
-                            flexWrap: "wrap",
                             gap: 1.5,
                         }}
                     >
@@ -126,7 +125,7 @@ export default function PublicLayout({ children }) {
                                     {agency?.name || "بنگاه املاک"}
                                 </Typography>
 
-                                <Typography sx={{ fontSize: 11.5, color: "#94a3b8" }}>
+                                <Typography sx={{ fontSize: 11.5, color: "#94a3b8", display: { xs: "none", sm: "block" } }}>
                                     پورتال رسمی املاک و مستغلات
                                 </Typography>
 
@@ -158,7 +157,7 @@ export default function PublicLayout({ children }) {
 
                                         <PhoneIcon sx={{ fontSize: 16 }} />
 
-                                        <span>راه‌های تماس</span>
+                                        <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>راه‌های تماس</Box>
 
                                     </Box>
 
@@ -237,7 +236,7 @@ export default function PublicLayout({ children }) {
 
                                 <LoginIcon sx={{ fontSize: 16 }} />
 
-                                <span>ورود مدیران</span>
+                                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>ورود مدیران</Box>
 
                             </Box>
 

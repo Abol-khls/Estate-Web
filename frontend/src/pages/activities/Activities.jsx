@@ -41,7 +41,7 @@ import {
     getActivityStatusColor,
 } from "../../constants/activityOptions";
 
-const GRID_COLUMNS = "180px 200px 170px 140px 1fr 130px";
+const GRID_COLUMNS = "1.1fr 1.3fr 1.1fr .9fr 1fr .8fr";
 const PAGE_SIZE = 20;
 
 function formatDateTime(value) {
@@ -198,7 +198,7 @@ export default function Activities() {
                         />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 3.5 }}>
                         <AppSelect
                             label="وضعیت"
                             value={status}
@@ -213,7 +213,7 @@ export default function Activities() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 3.5 }}>
                         <AppSelect
                             label="مرتب‌سازی"
                             value={ordering}
@@ -250,7 +250,7 @@ export default function Activities() {
 
                     <Box
                         sx={{
-                            display: "grid",
+                            display: { xs: "none", lg: "grid" },
                             gridTemplateColumns: GRID_COLUMNS,
                             columnGap: 2,
                             alignItems: "center",
@@ -315,10 +315,19 @@ export default function Activities() {
                                 onClick={() => navigate(`/admin/activities/${activity.id}`)}
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: GRID_COLUMNS,
+                                    gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: GRID_COLUMNS },
                                     columnGap: 2,
+                                    rowGap: { xs: 1.25, lg: 0 },
                                     alignItems: "center",
-                                    px: 3,
+                                    px: { xs: 2, lg: 3 },
+                                    "& > *": { textAlign: { xs: "start", lg: "center" }, justifyContent: { xs: "flex-start", lg: "center" }, minWidth: 0 },
+                                    "@media (max-width:1199.95px)": { "& > :first-of-type": { alignItems: "flex-start", textAlign: "start" }, "& > :not(:first-of-type):not(:last-child)": { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, textAlign: "end", paddingBottom: 1, borderBottom: "1px dashed", borderColor: "divider" } },
+                                    "& > :first-of-type": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-start", lg: "center" } },
+                                    "& > :last-child": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-end", lg: "center" } },
+                                    "& > :nth-child(2)::before": { content: '"عنوان"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(3)::before": { content: '"تاریخ پیگیری"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(4)::before": { content: '"وضعیت"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(5)::before": { content: '"توضیحات"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
                                     py: 2.5,
                                     cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",

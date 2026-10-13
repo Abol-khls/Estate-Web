@@ -26,6 +26,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Building as BuildingIcon } from "lucide-react";
+import { ThemeProvider } from "@mui/material/styles";
+import getTheme from "../../theme/getTheme";
+
+const darkTheme = getTheme("dark");
 
 function getLoginErrorMessage(err) {
 
@@ -126,6 +130,8 @@ export default function Login() {
     }
 
     return (
+
+        <ThemeProvider theme={darkTheme}>
 
         <Box
             sx={{
@@ -305,6 +311,8 @@ export default function Login() {
             </Paper>
 
         </Box>
+
+        </ThemeProvider>
 
     );
 

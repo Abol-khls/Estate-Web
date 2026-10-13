@@ -68,7 +68,7 @@ function StatCard({ title, value, icon, tone, footer, onClick, index }) {
         <Box
             onClick={onClick}
             sx={{
-                p: 2.5,
+                p: { xs: 1.75, md: 2.5 },
                 borderRadius: 4,
                 bgcolor: "background.paper",
                 border: "1px solid",
@@ -97,7 +97,7 @@ function StatCard({ title, value, icon, tone, footer, onClick, index }) {
                         {title}
                     </Typography>
 
-                    <Typography sx={{ fontSize: 26, fontWeight: 700, mt: 0.5, lineHeight: 1.4 }}>
+                    <Typography sx={{ fontSize: { xs: 22, md: 26 }, fontWeight: 700, mt: 0.5, lineHeight: 1.4 }}>
                         {animated.toLocaleString("en-US")}
                     </Typography>
 
@@ -106,8 +106,8 @@ function StatCard({ title, value, icon, tone, footer, onClick, index }) {
                 <Box
                     className="stat-icon"
                     sx={{
-                        width: 48,
-                        height: 48,
+                        width: { xs: 40, md: 48 },
+                        height: { xs: 40, md: 48 },
                         borderRadius: 3,
                         display: "flex",
                         alignItems: "center",
@@ -127,7 +127,7 @@ function StatCard({ title, value, icon, tone, footer, onClick, index }) {
 
             <Box
                 sx={{
-                    display: "flex",
+                    display: { xs: "none", sm: "flex" },
                     alignItems: "center",
                     gap: 0.75,
                     mt: 2,
@@ -155,7 +155,7 @@ function SectionCard({ title, subtitle, action, children, delay = 0 }) {
 
         <Box
             sx={{
-                p: 3,
+                p: { xs: 2, md: 3 },
                 borderRadius: 4,
                 bgcolor: "background.paper",
                 border: "1px solid",
@@ -172,7 +172,8 @@ function SectionCard({ title, subtitle, action, children, delay = 0 }) {
                 sx={{
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: 2,
+                    flexWrap: "wrap",
+                    gap: 1.5,
                     mb: 2.5,
                 }}
             >
@@ -535,11 +536,10 @@ export default function Dashboard() {
                 sx={{
                     display: "grid",
                     gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "repeat(2, 1fr)",
-                        lg: "repeat(4, 1fr)",
+                        xs: "repeat(2, minmax(0, 1fr))",
+                        lg: "repeat(4, minmax(0, 1fr))",
                     },
-                    gap: 2.5,
+                    gap: { xs: 1.5, md: 2.5 },
                     mb: 3,
                 }}
             >

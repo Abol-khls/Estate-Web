@@ -209,6 +209,8 @@ class CookieTokenObtainPairView(APIView):
 
     permission_classes = [AllowAny]
 
+    authentication_classes = []
+
     throttle_classes = [
         LoginIPRateThrottle,
         LoginUsernameRateThrottle,
@@ -235,6 +237,8 @@ class CookieTokenObtainPairView(APIView):
 class CookieTokenRefreshView(APIView):
 
     permission_classes = [AllowAny]
+
+    authentication_classes = []
 
     @extend_schema(responses={200: OpenApiTypes.OBJECT})
     def post(self, request):
@@ -268,6 +272,8 @@ class CookieTokenRefreshView(APIView):
 class CookieTokenLogoutView(APIView):
 
     permission_classes = [AllowAny]
+
+    authentication_classes = []
 
     @extend_schema(responses={200: OpenApiTypes.OBJECT})
     def post(self, request):

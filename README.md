@@ -5,7 +5,7 @@ The project has two panels: a public panel where visitors browse listed properti
 
 ---
 
-##  Research Paper
+## Research Paper
 
 This project is presented and discussed in the following research paper:
 
@@ -16,7 +16,7 @@ This project is presented and discussed in the following research paper:
 ## Features
 
 * JWT authentication with httpOnly refresh-token cookie
-* Agency-based data isolation (Multi-Tenant, single-agency-per-installation model)
+* Agency-based data isolation (single-agency-per-installation model)
 * Role-based access (manager / agent / customer)
 * Property management with images, videos, and favorites
 * Property type, transaction type (sale / rent / mortgage), and status (available / reserved / sold) tracked independently
@@ -25,106 +25,183 @@ This project is presented and discussed in the following research paper:
 * Visit calendar and activity timeline
 * Public panel: property listing, property details, contact/inquiry form
 * Real dashboard with agency statistics
-* Reports with charts and Excel/PDF export (RTL, Persian)
-* Team management (single manager per agency, agents added via management command)
+* Reports with modern charts and Excel/PDF export (RTL, Persian)
+* Team management (single manager per agency, agents added from Settings → Team)
 * Advanced filtering, debounced search, ordering, URL-synced filters
 * Image validation and compression on upload
 * Rate limiting on login and public inquiries
 * Audit log for create/update/delete actions
+* Dark and light theme, fully responsive (desktop, tablet, mobile)
 
 ---
 
 ## Tech Stack
 
-### Backend
+**Backend:** Python 3.12, Django 6, Django REST Framework, SimpleJWT (httpOnly cookie), Django Filter, drf-spectacular, SQLite (default) or PostgreSQL, Redis (optional cache), Gunicorn, WhiteNoise, Pillow, openpyxl, reportlab.
 
-* Python 3.12+
-* Django 6.0.8
-* Django REST Framework
-* SimpleJWT (httpOnly cookie based)
-* Django Filter
-* drf-spectacular (OpenAPI schema, admin-only)
-* SQLite (default) or PostgreSQL, switchable via `DB_ENGINE`
-* Pillow (image processing)
-* openpyxl / reportlab (Excel / PDF export)
+**Frontend:** React 19, Vite, Material UI (RTL), TanStack React Query, React Router, Recharts, Axios.
 
-### Frontend
-
-* React
-* Vite
-* Material UI
-* Axios
-* React Router
-* TanStack React Query
+**Infrastructure:** Docker Compose (PostgreSQL 17, Redis 7, backend, Nginx serving the built frontend).
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```
 Estate-Web
-│
 ├── backend
-│   ├── config
-│   ├── users
-│   ├── agencies
-│   ├── properties
-│   ├── customers
-│   ├── visits
-│   ├── contracts
-│   ├── activities
-│   ├── dashboard
-│   ├── reports
-│   ├── public
-│   ├── audit
-│   ├── core
+│   ├── config          settings, urls, wsgi
+│   ├── users  agencies  properties  customers
+│   ├── visits  contracts  activities
+│   ├── dashboard  reports  public  audit  core
+│   ├── loadtest        Locust load-test scripts
+│   ├── Dockerfile
+│   ├── docker-entrypoint.sh
 │   └── manage.py
-│
-└── frontend
-    ├── src
-    ├── public
-    └── package.json
+├── frontend
+│   ├── src
+│   ├── public          fonts and static assets
+│   ├── nginx.conf
+│   └── Dockerfile
+├── docker-compose.yml
+└── .env.docker.example
 ```
 
 ---
 
-# Requirements
+# Option A: Run with Docker (recommended)
 
-Before running the project install:
+## Requirements
 
-* Python 3.12+
-* Node.js 20+
-* npm
-* Git
+* Docker Desktop (Windows / macOS) or Docker Engine + Compose plugin (Linux)
 
----
+Nothing else needs to be installed. Python, Node, PostgreSQL and Redis all run in containers.
 
-# Backend Installation
+## 1. Create the environment file
 
-Clone the project
+Linux / macOS
 
 ```bash
-git clone <repository-url>
+cp .env.docker.example .env
 ```
 
-Go to backend
+Windows (PowerShell)
+
+```powershell
+Copy-Item .env.docker.example .env
+```
+
+Open `.env` and change at least:
+
+* `SECRET_KEY` — a random string of **50+ characters**. Generate one with:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(64))"
+```
+
+* `DB_PASSWORD` — any strong password.
+
+Other values:
+
+| Variable | Meaning |
+| --- | --- |
+| `DEBUG` | Keep `False` for Docker. |
+| `ENABLE_SSL` | `False` for local use over http. Set `True` only behind HTTPS. |
+| `ALLOWED_HOSTS` | Comma-separated hostnames the backend accepts. |
+| `CORS_ALLOWED_ORIGINS` | The URL users open in the browser, e.g. `http://localhost:8080`. |
+| `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Used both to create PostgreSQL and to connect to it. |
+
+The real `.env` file is git-ignored. Never commit it.
+
+## 2. Build and start
+
+```bash
+docker compose up -d --build
+```
+
+On first start the backend waits for the database, applies migrations and collects static files automatically.
+
+Check that everything is running:
+
+```bash
+docker compose ps
+docker compose logs -f backend
+```
+
+## 3. Create the first account
+
+```bash
+docker compose exec backend python manage.py create_agency_owner --agency-name "My Agency" --username owner --password "A-Strong-Password-1"
+```
+
+This creates the agency and its first manager. That account is also a Django superuser.
+
+## 4. Open the app
+
+| What | URL |
+| --- | --- |
+| Public site | http://localhost:8080/ |
+| Admin panel login | http://localhost:8080/admin/login |
+| Django admin | http://localhost:8080/django-admin/ |
+| API docs (staff only) | http://localhost:8080/api/docs/ |
+| Backend directly | http://localhost:8000 |
+
+Note: `/admin/*` belongs to the React admin panel. The Django admin lives at `/django-admin/`.
+
+## Everyday Docker commands
+
+```bash
+docker compose up -d                 # start
+docker compose down                  # stop (data is kept)
+docker compose logs -f backend       # follow backend logs
+docker compose up -d --build         # rebuild after code changes
+docker compose build frontend        # rebuild only the frontend
+docker compose exec backend python manage.py test    # run backend tests
+docker compose down -v               # stop AND delete all data (database, uploads)
+```
+
+Data lives in named volumes: `postgres_data` (database), `media_data` (uploaded files), `static_data`.
+
+## Backup and restore the database
+
+```bash
+docker compose exec db pg_dump -U estate_user estate_db > backup.sql
+```
+
+Restore into a fresh database:
+
+```bash
+docker compose exec -T db psql -U estate_user estate_db < backup.sql
+```
+
+Use the `DB_USER` and `DB_NAME` from your `.env`. Back up the `media_data` volume as well, since it holds uploaded images and videos.
+
+---
+
+# Option B: Run without Docker
+
+## Requirements
+
+* Python 3.12+
+* Node.js 20+ and npm
+* Git
+* PostgreSQL is optional. SQLite is used by default.
+
+You need two terminals: one for the backend, one for the frontend.
+
+## Backend
 
 ```bash
 cd backend
-```
-
-Create virtual environment
-
-```bash
 python -m venv .venv
 ```
 
-Activate it
+Activate the virtual environment.
 
-Windows
+Windows (PowerShell)
 
-```bash
-.venv\Scripts\activate
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
 Linux / macOS
@@ -139,48 +216,32 @@ Install packages
 pip install -r requirements.txt
 ```
 
----
+Create `backend/.env` from the example
 
-# Backend Environment
-
-Create a file named
-
-```
-.env
+```bash
+cp .env.example .env
 ```
 
-Copy the values from
+Windows (PowerShell)
 
-```
-.env.example
+```powershell
+Copy-Item .env.example .env
 ```
 
-Example (SQLite, default)
+Default values (SQLite):
 
 ```env
 SECRET_KEY=your_secret_key
-
 DEBUG=True
-
 ALLOWED_HOSTS=127.0.0.1,localhost
-
 CORS_ALLOWED_ORIGINS=http://localhost:5173
-
 DB_ENGINE=sqlite3
 DB_NAME=db.sqlite3
 ```
 
-Example (PostgreSQL)
+To use PostgreSQL instead:
 
 ```env
-SECRET_KEY=your_secret_key
-
-DEBUG=True
-
-ALLOWED_HOSTS=127.0.0.1,localhost
-
-CORS_ALLOWED_ORIGINS=http://localhost:5173
-
 DB_ENGINE=postgresql
 DB_NAME=estate_db
 DB_USER=estate_user
@@ -189,13 +250,9 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-`DB_ENGINE` accepts `sqlite3` (default) or `postgresql`. When it is `postgresql`, `DB_USER` and `DB_PASSWORD` are required.
+The PostgreSQL database and user must already exist.
 
-`SECRET_KEY` must be a long random string. When `DEBUG=False`, the app refuses to start if it is under 50 characters.
-
----
-
-# Database
+`SECRET_KEY` must be a long random string. When `DEBUG=False`, the app refuses to start if it is shorter than 50 characters.
 
 Apply migrations
 
@@ -203,271 +260,146 @@ Apply migrations
 python manage.py migrate
 ```
 
-If you changed any model, generate the migration first
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
----
-
-# Create the First Account
-
-This project is **not** a normal multi-tenant Django admin app — every regular user must belong to an `Agency`, and each installation is meant to serve a single agency. Because of that, the standard `python manage.py createsuperuser` command is **not** the right way to create your first account: it creates a user with no agency attached, and that user will not be able to see or manage anything in the app.
-
-Use the dedicated command instead:
+Create the first account
 
 ```bash
 python manage.py create_agency_owner --agency-name "My Agency" --username owner --password "A-Strong-Password-1"
 ```
 
-Optional flags:
+Do not use `createsuperuser`. It creates a user with no agency, and that user cannot see or manage anything in the app.
 
-```bash
---phone "021xxxxxxx"
---address "Agency address"
---force   # only needed if you intentionally want a second agency on this installation
-```
+Optional flags: `--phone "021xxxxxxx"`, `--address "Agency address"`, `--force` (only to intentionally create a second agency).
 
-This creates the `Agency` record and its first manager account in one step. That account is also a Django superuser, so it works for both the app and `/admin/`.
-
-Agents are added later from inside the app (Settings → Team), not from the command line.
-
----
-
-# Run Backend
+Start the server
 
 ```bash
 python manage.py runserver
 ```
 
-Backend will be available at
+Backend: http://127.0.0.1:8000
 
-```
-http://127.0.0.1:8000
-```
+* API docs (staff only): http://127.0.0.1:8000/api/docs/
+* Django admin: http://127.0.0.1:8000/django-admin/
 
-API schema (manager/staff only): `http://127.0.0.1:8000/api/schema/`
-Swagger UI (manager/staff only): `http://127.0.0.1:8000/api/docs/`
-
----
-
-# Frontend Installation
-
-Open another terminal
+## Frontend
 
 ```bash
 cd frontend
-```
-
-Install dependencies
-
-```bash
 npm install
 ```
 
----
+Create `frontend/.env` from the example
 
-# Frontend Environment
-
-Create
-
+```bash
+cp .env.example .env
 ```
-.env
-```
-
-Copy values from
-
-```
-.env.example
-```
-
-Example
 
 ```env
 VITE_API_URL=http://127.0.0.1:8000
 ```
 
----
-
-# Run Frontend
+Start the dev server
 
 ```bash
 npm run dev
 ```
 
-Frontend
+## Open the app
 
-```
-http://localhost:5173
-```
-
----
-
-# Using the App
-
-Public panel (property listing, property details, contact form):
-
-```
-http://localhost:5173/
-```
-
-Admin panel login:
-
-```
-http://localhost:5173/admin/login
-```
+| What | URL |
+| --- | --- |
+| Public site | http://localhost:5173/ |
+| Admin panel login | http://localhost:5173/admin/login |
 
 Log in with the account created by `create_agency_owner`.
 
----
-
-# Media Files
-
-Uploaded files are stored inside
-
-```
-backend/media
-```
-
-During development Django serves media automatically. In production, media must be served by the web server (nginx or similar), not by Django.
-
----
-
-# Useful Commands
-
-Create migrations
-
-```bash
-python manage.py makemigrations
-```
-
-Apply migrations
-
-```bash
-python manage.py migrate
-```
-
-Create the first agency + manager account
-
-```bash
-python manage.py create_agency_owner --agency-name "My Agency" --username owner --password "A-Strong-Password-1"
-```
-
-Run backend
-
-```bash
-python manage.py runserver
-```
-
-Run backend tests
-
-```bash
-python manage.py test
-```
-
-Run frontend
-
-```bash
-npm run dev
-```
-
-Build frontend for production
+## Build the frontend for production
 
 ```bash
 npm run build
 ```
 
-Lint frontend
+The output is in `frontend/dist`. For production serving, use the Docker setup or serve `dist` with Nginx using `frontend/nginx.conf` as a reference.
+
+---
+
+# Useful Commands
 
 ```bash
-npm run lint
+python manage.py makemigrations      # after changing a model
+python manage.py migrate
+python manage.py test                # backend tests
+npm run lint                         # frontend lint
+npm run build                        # frontend production build
 ```
 
 ---
 
 # Environment Files
 
-Backend
+| File | Used for |
+| --- | --- |
+| `.env` (project root) | Docker Compose. Copy from `.env.docker.example`. |
+| `backend/.env` | Backend without Docker. Copy from `backend/.env.example`. |
+| `frontend/.env` | Frontend dev server. Copy from `frontend/.env.example`. |
 
-```
-backend/.env
-backend/.env.example
+All real `.env` files are git-ignored.
+
+---
+
+# Media Files
+
+Uploaded files are stored in `backend/media` (a Docker volume when using Docker). During development Django serves media automatically. In production, Nginx serves `/media/` directly.
+
+---
+
+# Production Notes
+
+* Set `DEBUG=False`, a long random `SECRET_KEY`, and real `ALLOWED_HOSTS` / `CORS_ALLOWED_ORIGINS`.
+* Put the app behind HTTPS and set `ENABLE_SSL=True`. Also add your https origin to `CSRF_TRUSTED_ORIGINS` if you use the Django admin on a domain.
+* Rate limits are per client IP. `NUM_PROXIES` (set to `1` in `docker-compose.yml`) must equal the number of reverse proxies in front of Django. If you add Cloudflare or a load balancer, raise it, otherwise every user appears to have the same IP and gets throttled together.
+* In `docker-compose.yml`, the database port `5433` and backend port `8000` are published for convenience. Remove those `ports` entries on a public server.
+* Back up the database and the media volume regularly.
+
+---
+
+# Load Testing
+
+Locust scripts are in `backend/loadtest`.
+
+```bash
+pip install locust
+cd backend/loadtest
+locust -f locustfile.py --host http://localhost:8000
 ```
 
-Frontend
-
-```
-frontend/.env
-frontend/.env.example
-```
+Then open http://localhost:8089. Keep rate limiting enabled while testing. A realistic test sends a different `X-Forwarded-For` per simulated user, because limits are per IP.
 
 ---
 
 # Troubleshooting
 
-### Backend packages are missing
+**Login returns 403 after an update.** An old Django session cookie is still in the browser. Clear the site's cookies (or open a private window) and sign in again.
 
-```bash
-pip install -r requirements.txt
-```
+**Refreshing the admin panel opens the Django login page.** The Django admin moved to `/django-admin/`. Rebuild with `docker compose up -d --build` so the new Nginx config is used.
 
----
+**Frontend changes do not appear (Docker).** Rebuild the image: `docker compose build frontend`, then `docker compose up -d`, and hard-refresh the browser (`Ctrl+Shift+R`).
 
-### Frontend packages are missing
+**Login works but the dashboard is empty.** The account has no agency assigned. Only accounts created with `create_agency_owner` (manager) or added later from Settings → Team (agent) are properly scoped. A user created with the plain `createsuperuser` command will not work correctly in the app.
 
-```bash
-npm install
-```
+**Backend packages are missing.** Run `pip install -r requirements.txt` inside the virtual environment.
 
----
+**Frontend packages are missing.** Run `npm install`.
 
-### Database changes are not applied
+**Database changes are not applied.** Run `python manage.py makemigrations` and `python manage.py migrate`.
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
+**`could not connect to server` / `password authentication failed`.** The `.env` does not match a real database and user. Check that `DB_ENGINE=postgresql`, the service is running, and `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` are correct. With Docker, `DB_HOST` is set automatically. If you changed `DB_PASSWORD` after the first start, the old password is still stored in the volume; run `docker compose down -v` to reset (this deletes data).
 
----
+**Images are not displayed.** Make sure the backend is running and `VITE_API_URL` points to it (non-Docker).
 
-### `could not connect to server` / `password authentication failed` (PostgreSQL)
+**CORS errors.** `CORS_ALLOWED_ORIGINS` must exactly match the URL in the browser's address bar, including the port, e.g. `http://localhost:5173` (dev) or `http://localhost:8080` (Docker).
 
-This means the backend `.env` does not match a database and user that actually exist. Check:
-
-* `DB_ENGINE=postgresql` is set.
-* PostgreSQL service is running.
-* `DB_NAME`, `DB_USER`, `DB_PASSWORD` match a database and user you created (via `psql` or pgAdmin), not just values you made up in `.env`.
-* `DB_HOST=localhost` and `DB_PORT=5432` match your local PostgreSQL install.
-
----
-
-### Images are not displayed
-
-Make sure:
-
-* Backend server is running.
-* `MEDIA_URL` and `MEDIA_ROOT` are configured correctly.
-* `VITE_API_URL` points to the correct backend.
-
----
-
-### CORS errors
-
-Check the value of
-
-```
-CORS_ALLOWED_ORIGINS
-```
-
-inside the backend `.env`.
-
----
-
-### Login fails / dashboard shows nothing after login
-
-This almost always means the account has no `agency` assigned. Only accounts created through `create_agency_owner` (as manager) or added afterward through Settings → Team (as agent) are properly scoped. A user created with the plain `createsuperuser` command will not work correctly in the app.
+**Port already in use.** Change the left side of the mapping in `docker-compose.yml`, e.g. `"8081:80"`.
 
 ---
 

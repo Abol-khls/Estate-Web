@@ -43,7 +43,7 @@ import {
     getCustomerStatusColor,
 } from "../../constants/customerOptions";
 
-const GRID_COLUMNS = "200px 160px 130px 150px 1fr 150px";
+const GRID_COLUMNS = "1.3fr 1.1fr .9fr 1.1fr 1.2fr .9fr";
 const PAGE_SIZE = 20;
 
 export default function Customers() {
@@ -194,7 +194,7 @@ export default function Customers() {
                         />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 2.5 }}>
                         <AppSelect
                             label="نوع درخواست"
                             value={requestType}
@@ -209,7 +209,7 @@ export default function Customers() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 2.5 }}>
                         <AppSelect
                             label="وضعیت"
                             value={status}
@@ -224,7 +224,7 @@ export default function Customers() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 3 }}>
                         <AppSelect
                             label="مرتب‌سازی"
                             value={ordering}
@@ -261,7 +261,7 @@ export default function Customers() {
 
                     <Box
                         sx={{
-                            display: "grid",
+                            display: { xs: "none", lg: "grid" },
                             gridTemplateColumns: GRID_COLUMNS,
                             columnGap: 2,
                             alignItems: "center",
@@ -326,10 +326,19 @@ export default function Customers() {
                                 onClick={() => navigate(`/admin/clients/${customer.id}`)}
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: GRID_COLUMNS,
+                                    gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: GRID_COLUMNS },
                                     columnGap: 2,
+                                    rowGap: { xs: 1.25, lg: 0 },
                                     alignItems: "center",
-                                    px: 3,
+                                    px: { xs: 2, lg: 3 },
+                                    "& > *": { textAlign: { xs: "start", lg: "center" }, justifyContent: { xs: "flex-start", lg: "center" }, minWidth: 0 },
+                                    "@media (max-width:1199.95px)": { "& > :first-of-type": { alignItems: "flex-start", textAlign: "start" }, "& > :not(:first-of-type):not(:last-child)": { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, textAlign: "end", paddingBottom: 1, borderBottom: "1px dashed", borderColor: "divider" } },
+                                    "& > :first-of-type": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-start", lg: "center" } },
+                                    "& > :last-child": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-end", lg: "center" } },
+                                    "& > :nth-child(2)::before": { content: '"شماره تماس"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(3)::before": { content: '"نوع درخواست"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(4)::before": { content: '"بودجه"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(5)::before": { content: '"یادداشت"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
                                     py: 2.5,
                                     cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",

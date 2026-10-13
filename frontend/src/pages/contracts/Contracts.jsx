@@ -43,8 +43,7 @@ import {
     getContractStatusColor,
 } from "../../constants/contractOptions";
 
-const GRID_COLUMNS =
-"minmax(170px,2fr) minmax(170px,2fr) minmax(120px,1fr) minmax(140px,1.2fr) minmax(120px,1fr) minmax(120px,1fr) 90px";
+const GRID_COLUMNS = "1.4fr 1.4fr .8fr 1.1fr .9fr .9fr .7fr";
 
 const PAGE_SIZE = 20;
 
@@ -196,7 +195,7 @@ export default function Contracts() {
                         />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 2.5 }}>
                         <AppSelect
                             label="نوع قرارداد"
                             value={contractType}
@@ -211,7 +210,7 @@ export default function Contracts() {
                         </AppSelect>
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                    <Grid size={{ xs: 6, sm: 6, md: 2.5 }}>
                         <AppSelect
                             label="وضعیت"
                             value={status}
@@ -263,7 +262,7 @@ export default function Contracts() {
 
                     <Box
                         sx={{
-                            display: "grid",
+                            display: { xs: "none", lg: "grid" },
                             gridTemplateColumns: GRID_COLUMNS,
                             columnGap: 2,
                             alignItems: "center",
@@ -332,10 +331,20 @@ export default function Contracts() {
                                 onClick={() => navigate(`/admin/contracts/${contract.id}`)}
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: GRID_COLUMNS,
+                                    gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: GRID_COLUMNS },
                                     columnGap: 2,
+                                    rowGap: { xs: 1.25, lg: 0 },
                                     alignItems: "center",
-                                    px: 3,
+                                    px: { xs: 2, lg: 3 },
+                                    "& > *": { textAlign: { xs: "start", lg: "center" }, justifyContent: { xs: "flex-start", lg: "center" }, minWidth: 0 },
+                                    "@media (max-width:1199.95px)": { "& > :first-of-type": { alignItems: "flex-start", textAlign: "start" }, "& > :not(:first-of-type):not(:last-child)": { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, textAlign: "end", paddingBottom: 1, borderBottom: "1px dashed", borderColor: "divider" } },
+                                    "& > :first-of-type": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-start", lg: "center" } },
+                                    "& > :last-child": { gridColumn: { xs: "1 / -1", lg: "auto" }, justifyContent: { xs: "flex-end", lg: "center" } },
+                                    "& > :nth-child(2)::before": { content: '"ملک"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(3)::before": { content: '"نوع"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(4)::before": { content: '"مبلغ"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(5)::before": { content: '"وضعیت"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
+                                    "& > :nth-child(6)::before": { content: '"تاریخ امضا"', display: { xs: "block", lg: "none" }, fontSize: 11, color: "text.secondary", marginInlineEnd: 0.75, flexShrink: 0 },
                                     py: 2.5,
                                     cursor: "pointer",
                                     bgcolor: index % 2 === 1 ? (theme) => theme.custom.surfaceAlt : "transparent",

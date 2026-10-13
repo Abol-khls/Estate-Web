@@ -3,39 +3,47 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
     Box,
-    Grid,
-    Paper,
     Typography,
     Chip,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 
 import {
-    BarChart,
     Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    ComposedChart,
+    LabelList,
+    Line,
+    Pie,
+    PieChart,
+    ResponsiveContainer,
+    Tooltip as RechartsTooltip,
     XAxis,
     YAxis,
-    CartesianGrid,
-    Tooltip as RechartsTooltip,
-    Legend,
-    ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
 } from "recharts";
 
-import DownloadIcon from "@mui/icons-material/Download";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import TableChartIcon from "@mui/icons-material/TableChart";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdfOutlined";
+import TableChartIcon from "@mui/icons-material/TableChartOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 import PageContainer from "../../components/common/PageContainer";
 import PageHeader from "../../components/common/PageHeader";
 import AppTextField from "../../components/common/AppTextField";
 import AppButton from "../../components/common/AppButton";
 import Loading from "../../components/common/Loading";
+import ChartTooltip from "../../components/common/ChartTooltip";
 
+import useCountUp from "../../hooks/useCountUp";
 import api from "../../services/api";
 import { useSnackbar } from "../../context/useSnackbar";
 import { getErrorMessage } from "../../utils/errorMessage";
+import { formatToman } from "../../utils/formatPrice";
 
 const REQUEST_TYPE_LABELS = {
     buy: "خرید",
@@ -50,44 +58,191 @@ const PROPERTY_TYPE_LABELS = {
     land: "زمین",
     office: "اداری",
     shop: "مغازه",
+    suite: "سوئیت",
 };
 
-const CHART_COLORS = ["#10b981", "#06b6d4", "#6366f1", "#f59e0b", "#64748b"];
+const EMERALD = "#10b981";
+const CYAN = "#06b6d4";
+const INDIGO = "#6366f1";
+const AMBER = "#f59e0b";
 
-const PIE_COLORS = CHART_COLORS;
+const DONUT_COLORS = [EMERALD, CYAN, INDIGO, AMBER, "#64748b"];
+
+const PRESETS = [
+    { key: "30", label: "۳۰ روز اخیر", days: 30 },
+    { key: "90", label: "۳ ماه اخیر", days: 90 },
+    { key: "180", label: "۶ ماه اخیر", days: 180 },
+    { key: "365", label: "۱ سال اخیر", days: 365 },
+];
 
 function toDateInputValue(date) {
     return date.toISOString().slice(0, 10);
 }
 
-function defaultStartDate() {
+function dateDaysAgo(days) {
     const d = new Date();
-    d.setDate(d.getDate() - 180);
+    d.setDate(d.getDate() - days);
     return toDateInputValue(d);
 }
 
-function SectionPaper({ title, children }) {
+function compact(value) {
+    return formatToman(value, false);
+}
+
+function Panel({ title, subtitle, action, children, delay = 0 }) {
 
     return (
 
-        <Paper
-            elevation={0}
+        <Box
             sx={{
-                p: 3,
+                p: { xs: 2, md: 3 },
                 borderRadius: 4,
-                border: "1px solid",
-                borderColor: "divider",
                 height: "100%",
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: (theme) => theme.custom.glassBorderSoft,
+                boxShadow: (theme) => theme.custom.cardShadow,
+                animation: "cardIn .6s ease both",
+                animationDelay: `${delay}ms`,
             }}
         >
 
-            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>
-                {title}
-            </Typography>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 1.5,
+                    mb: 2.5,
+                }}
+            >
+
+                <Box>
+
+                    <Typography sx={{ fontSize: 16, fontWeight: 700 }}>
+                        {title}
+                    </Typography>
+
+                    {subtitle && (
+                        <Typography sx={{ fontSize: 12, mt: 0.25 }} color="text.secondary">
+                            {subtitle}
+                        </Typography>
+                    )}
+
+                </Box>
+
+                {action}
+
+            </Box>
 
             {children}
 
-        </Paper>
+        </Box>
+
+    );
+
+}
+
+function EmptyState({ text }) {
+
+    return (
+
+        <Typography color="text.secondary" sx={{ py: 6, textAlign: "center", fontSize: 14 }}>
+            {text}
+        </Typography>
+
+    );
+
+}
+
+function LegendDot({ color, label }) {
+
+    return (
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, fontSize: 12, color: "text.secondary" }}>
+            <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: color }} />
+            {label}
+        </Box>
+
+    );
+
+}
+
+function KpiCard({ title, value, suffix, text, icon, tone, index }) {
+
+    const Icon = icon;
+
+    const animated = useCountUp(value);
+
+    return (
+
+        <Box
+            sx={{
+                p: { xs: 1.75, md: 2.5 },
+                borderRadius: 4,
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: (theme) => theme.custom.glassBorderSoft,
+                boxShadow: (theme) => theme.custom.cardShadow,
+                animation: "cardIn .55s ease both",
+                animationDelay: `${index * 80}ms`,
+                overflow: "hidden",
+                position: "relative",
+                "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    insetInlineEnd: -30,
+                    top: -30,
+                    width: 110,
+                    height: 110,
+                    borderRadius: "50%",
+                    background: (theme) => theme.custom.tones[tone].bg,
+                    filter: "blur(2px)",
+                },
+            }}
+        >
+
+            <Box sx={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5 }}>
+
+                <Box sx={{ minWidth: 0 }}>
+
+                    <Typography sx={{ fontSize: 12, fontWeight: 500 }} color="text.secondary" noWrap>
+                        {title}
+                    </Typography>
+
+                    <Typography sx={{ fontSize: { xs: 17, md: 24 }, fontWeight: 700, mt: 0.5, lineHeight: 1.4 }}>
+                        {text ?? compact(animated)}
+                        {suffix && (
+                            <Box component="span" sx={{ fontSize: 12, fontWeight: 500, color: "text.secondary", marginInlineStart: 0.5 }}>
+                                {suffix}
+                            </Box>
+                        )}
+                    </Typography>
+
+                </Box>
+
+                <Box
+                    sx={{
+                        width: { xs: 38, md: 46 },
+                        height: { xs: 38, md: 46 },
+                        borderRadius: 3,
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid",
+                        bgcolor: (theme) => theme.custom.tones[tone].bg,
+                        borderColor: (theme) => theme.custom.tones[tone].border,
+                        color: (theme) => theme.custom.tones[tone].text,
+                    }}
+                >
+                    <Icon />
+                </Box>
+
+            </Box>
+
+        </Box>
 
     );
 
@@ -97,7 +252,13 @@ export default function Reports() {
 
     const { showSnackbar } = useSnackbar();
 
-    const [startDate, setStartDate] = useState(defaultStartDate());
+    const theme = useTheme();
+
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const [preset, setPreset] = useState("180");
+
+    const [startDate, setStartDate] = useState(dateDaysAgo(180));
     const [endDate, setEndDate] = useState(toDateInputValue(new Date()));
 
     const [exporting, setExporting] = useState(false);
@@ -189,16 +350,19 @@ export default function Reports() {
 
     }
 
+    const totalSale = data.sales.reduce((sum, row) => sum + Number(row.sale_amount || 0), 0);
+    const totalRent = data.sales.reduce((sum, row) => sum + Number(row.rent_amount || 0), 0);
+
     const salesChartData = data.sales.map(row => ({
         month: row.month,
-        "مبلغ فروش": row.sale_amount,
-        "مبلغ اجاره": row.rent_amount,
+        sale: Number(row.sale_amount || 0),
+        rent: Number(row.rent_amount || 0),
     }));
 
     const agentsChartData = data.agents.map(row => ({
         name: row.agent_name,
-        بازدید: row.visits_count,
-        قرارداد: row.contracts_count,
+        visits: row.visits_count,
+        contracts: row.contracts_count,
     }));
 
     const customerPieData = data.customers.by_request_type.map(row => ({
@@ -206,10 +370,22 @@ export default function Reports() {
         value: row.count,
     }));
 
+    const pieTotal = customerPieData.reduce((sum, row) => sum + row.value, 0);
+
     const priceChartData = data.property_prices.map(row => ({
         name: PROPERTY_TYPE_LABELS[row.property_type] ?? row.property_type,
-        "میانگین قیمت": row.avg_price,
+        price: Number(row.avg_price || 0),
     }));
+
+    const axisTick = { fontSize: 11, fill: theme.palette.text.secondary };
+
+    const gridStroke = theme.palette.divider;
+
+    function applyPreset(item) {
+        setPreset(item.key);
+        setStartDate(dateDaysAgo(item.days));
+        setEndDate(toDateInputValue(new Date()));
+    }
 
     return (
 
@@ -220,143 +396,202 @@ export default function Reports() {
                 subtitle="عملکرد آژانس در بازه‌ی زمانی انتخابی"
             />
 
-            <Paper
-                elevation={0}
+            <Box
                 sx={{
-                    p: 2.5,
+                    p: { xs: 2, md: 2.5 },
                     mb: 3,
                     borderRadius: 4,
+                    bgcolor: "background.paper",
                     border: "1px solid",
-                    borderColor: "divider",
+                    borderColor: (theme) => theme.custom.glassBorderSoft,
+                    boxShadow: (theme) => theme.custom.cardShadow,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
                 }}
             >
 
-                <Grid container spacing={2} sx={{ alignItems: "center" }}>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <AppTextField
-                            label="از تاریخ"
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                            sx={{ "& input": { direction: "ltr", textAlign: "right" } }}
+                    {PRESETS.map(item => (
+
+                        <Chip
+                            key={item.key}
+                            label={item.label}
+                            onClick={() => applyPreset(item)}
+                            color={preset === item.key ? "primary" : "default"}
+                            variant={preset === item.key ? "filled" : "outlined"}
+                            sx={{ fontWeight: 600 }}
                         />
-                    </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <AppTextField
-                            label="تا تاریخ"
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                            sx={{ "& input": { direction: "ltr", textAlign: "right" } }}
-                        />
-                    </Grid>
+                    ))}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                </Box>
 
-                        <Box sx={{ display: "flex", gap: 1.5, justifyContent: { xs: "flex-start", md: "flex-end" } }}>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: { xs: "1fr 1fr", md: "220px 220px 1fr" },
+                        gap: 2,
+                        alignItems: "center",
+                    }}
+                >
 
-                            <AppButton
-                                variant="outlined"
-                                startIcon={<TableChartIcon />}
-                                disabled={exporting}
-                                onClick={() => handleExport("excel")}
-                            >
-                                دانلود Excel
-                            </AppButton>
+                    <AppTextField
+                        label="از تاریخ"
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => {
+                            setPreset("");
+                            setStartDate(e.target.value);
+                        }}
+                        slotProps={{ inputLabel: { shrink: true } }}
+                        sx={{ "& input": { direction: "ltr", textAlign: "right" } }}
+                    />
 
-                            <AppButton
-                                variant="outlined"
-                                startIcon={<PictureAsPdfIcon />}
-                                disabled={exporting}
-                                onClick={() => handleExport("pdf")}
-                            >
-                                دانلود PDF
-                            </AppButton>
+                    <AppTextField
+                        label="تا تاریخ"
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => {
+                            setPreset("");
+                            setEndDate(e.target.value);
+                        }}
+                        slotProps={{ inputLabel: { shrink: true } }}
+                        sx={{ "& input": { direction: "ltr", textAlign: "right" } }}
+                    />
+
+                    <Box
+                        sx={{
+                            gridColumn: { xs: "1 / -1", md: "auto" },
+                            display: "flex",
+                            gap: 1.5,
+                            justifyContent: { xs: "stretch", md: "flex-end" },
+                            "& > *": { flex: { xs: 1, md: "none" } },
+                        }}
+                    >
+
+                        <AppButton
+                            variant="outlined"
+                            startIcon={<TableChartIcon />}
+                            disabled={exporting}
+                            onClick={() => handleExport("excel")}
+                        >
+                            Excel
+                        </AppButton>
+
+                        <AppButton
+                            variant="outlined"
+                            startIcon={<PictureAsPdfIcon />}
+                            disabled={exporting}
+                            onClick={() => handleExport("pdf")}
+                        >
+                            PDF
+                        </AppButton>
+
+                    </Box>
+
+                </Box>
+
+            </Box>
+
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", lg: "repeat(4, minmax(0, 1fr))" },
+                    gap: { xs: 1.5, md: 2.5 },
+                    mb: 3,
+                }}
+            >
+
+                <KpiCard index={0} tone="emerald" icon={PaidOutlinedIcon} title="مجموع فروش" value={totalSale} suffix="تومان" />
+
+                <KpiCard index={1} tone="indigo" icon={KeyOutlinedIcon} title="مجموع اجاره" value={totalRent} suffix="تومان" />
+
+                <KpiCard index={2} tone="cyan" icon={GroupsOutlinedIcon} title="مشتریان" value={data.customers.total} text={Number(data.customers.total).toLocaleString("en-US")} />
+
+                <KpiCard index={3} tone="amber" icon={TrendingUpIcon} title="نرخ تبدیل" value={0} text={`${data.customers.conversion_rate}٪`} />
+
+            </Box>
+
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: "minmax(0, 7fr) minmax(0, 5fr)" },
+                    gap: 3,
+                }}
+            >
+
+                <Panel
+                    delay={150}
+                    title="فروش و اجاره ماهانه"
+                    subtitle="ستون‌ها فروش (محور راست) و خط اجاره (محور چپ)"
+                    action={
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                            <LegendDot color={EMERALD} label="فروش" />
+                            <LegendDot color={INDIGO} label="اجاره" />
+                        </Box>
+                    }
+                >
+
+                    {salesChartData.length === 0 ? (
+
+                        <EmptyState text="داده‌ای در این بازه ثبت نشده است." />
+
+                    ) : (
+
+                        <Box sx={{ width: "100%", height: { xs: 260, md: 320 }, direction: "ltr" }}>
+
+                            <ResponsiveContainer>
+
+                                <ComposedChart data={salesChartData} margin={{ top: 8, right: isMobile ? 0 : 8, left: isMobile ? 0 : 8, bottom: 0 }}>
+
+                                    <defs>
+                                        <linearGradient id="barSale" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0" stopColor={EMERALD} stopOpacity={1} />
+                                            <stop offset="1" stopColor={CYAN} stopOpacity={0.55} />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <CartesianGrid vertical={false} stroke={gridStroke} strokeDasharray="4 4" />
+
+                                    <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+
+                                    <YAxis yAxisId="sale" orientation="left" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={compact} width={isMobile ? 38 : 54} hide={isMobile} />
+
+                                    <YAxis yAxisId="rent" orientation="right" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={compact} width={isMobile ? 38 : 54} hide={isMobile} />
+
+                                    <RechartsTooltip content={<ChartTooltip />} cursor={{ fill: "rgba(16,185,129,0.06)" }} />
+
+                                    <Bar yAxisId="sale" dataKey="sale" name="فروش" fill="url(#barSale)" radius={[8, 8, 0, 0]} maxBarSize={44} animationDuration={1000} />
+
+                                    <Line yAxisId="rent" dataKey="rent" name="اجاره" type="monotone" stroke={INDIGO} strokeWidth={3} dot={{ r: 4, strokeWidth: 2, stroke: theme.palette.background.paper, fill: INDIGO }} activeDot={{ r: 6 }} animationDuration={1200} />
+
+                                </ComposedChart>
+
+                            </ResponsiveContainer>
 
                         </Box>
 
-                    </Grid>
+                    )}
 
-                </Grid>
+                </Panel>
 
-            </Paper>
+                <Panel
+                    delay={230}
+                    title="آمار مشتریان"
+                    subtitle={`${Number(data.customers.converted).toLocaleString("en-US")} مشتری تبدیل‌شده از ${Number(data.customers.total).toLocaleString("en-US")}`}
+                >
 
-            <Grid container spacing={2.5}>
+                    {customerPieData.length === 0 ? (
 
-                <Grid size={{ xs: 12, lg: 7 }}>
+                        <EmptyState text="داده‌ای در این بازه ثبت نشده است." />
 
-                    <SectionPaper title="فروش و اجاره ماهانه">
+                    ) : (
 
-                        {salesChartData.length === 0 ? (
+                        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row", lg: "column", xl: "row" }, alignItems: "center", gap: 2 }}>
 
-                            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
-                                داده‌ای در این بازه ثبت نشده است.
-                            </Typography>
-
-                        ) : (
-
-                            <Box sx={{ width: "100%", height: 280 }}>
-
-                                <ResponsiveContainer>
-
-                                    <BarChart data={salesChartData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="month" />
-                                        <YAxis />
-                                        <RechartsTooltip formatter={(value) => Number(value).toLocaleString("fa-IR")} />
-                                        <Legend />
-                                        <Bar dataKey="مبلغ فروش" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey="مبلغ اجاره" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
-                                    </BarChart>
-
-                                </ResponsiveContainer>
-
-                            </Box>
-
-                        )}
-
-                    </SectionPaper>
-
-                </Grid>
-
-                <Grid size={{ xs: 12, lg: 5 }}>
-
-                    <SectionPaper title="آمار مشتریان">
-
-                        <Box sx={{ display: "flex", gap: 3, mb: 2, flexWrap: "wrap" }}>
-
-                            <Box>
-                                <Typography variant="caption" color="text.secondary">تعداد کل</Typography>
-                                <Typography variant="h5" fontWeight={800}>{data.customers.total}</Typography>
-                            </Box>
-
-                            <Box>
-                                <Typography variant="caption" color="text.secondary">تبدیل‌شده</Typography>
-                                <Typography variant="h5" fontWeight={800}>{data.customers.converted}</Typography>
-                            </Box>
-
-                            <Box>
-                                <Typography variant="caption" color="text.secondary">نرخ تبدیل</Typography>
-                                <Typography variant="h5" fontWeight={800}>
-                                    <bdi>{data.customers.conversion_rate}٪</bdi>
-                                </Typography>
-                            </Box>
-
-                        </Box>
-
-                        {customerPieData.length === 0 ? (
-
-                            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
-                                داده‌ای در این بازه ثبت نشده است.
-                            </Typography>
-
-                        ) : (
-
-                            <Box sx={{ width: "100%", height: 220 }}>
+                            <Box sx={{ position: "relative", width: 200, height: 200, flexShrink: 0 }}>
 
                                 <ResponsiveContainer>
 
@@ -366,103 +601,209 @@ export default function Reports() {
                                             data={customerPieData}
                                             dataKey="value"
                                             nameKey="name"
-                                            innerRadius={50}
-                                            outerRadius={80}
-                                            paddingAngle={2}
+                                            innerRadius={66}
+                                            outerRadius={92}
+                                            paddingAngle={3}
+                                            cornerRadius={8}
+                                            stroke="none"
+                                            animationDuration={1000}
                                         >
 
                                             {customerPieData.map((entry, index) => (
-                                                <Cell key={entry.name} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                                                <Cell key={entry.name} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
                                             ))}
 
                                         </Pie>
-
-                                        <RechartsTooltip />
-                                        <Legend />
 
                                     </PieChart>
 
                                 </ResponsiveContainer>
 
-                            </Box>
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        inset: 0,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        pointerEvents: "none",
+                                    }}
+                                >
 
-                        )}
+                                    <Typography sx={{ fontSize: 26, fontWeight: 800, lineHeight: 1.2 }}>
+                                        {Number(pieTotal).toLocaleString("en-US")}
+                                    </Typography>
 
-                    </SectionPaper>
+                                    <Typography sx={{ fontSize: 11 }} color="text.secondary">
+                                        درخواست
+                                    </Typography>
 
-                </Grid>
-
-                <Grid size={{ xs: 12, lg: 7 }}>
-
-                    <SectionPaper title="عملکرد مشاوران">
-
-                        {agentsChartData.length === 0 ? (
-
-                            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
-                                مشاوری برای نمایش وجود ندارد.
-                            </Typography>
-
-                        ) : (
-
-                            <Box sx={{ width: "100%", height: 280 }}>
-
-                                <ResponsiveContainer>
-
-                                    <BarChart data={agentsChartData} layout="vertical">
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis type="number" />
-                                        <YAxis dataKey="name" type="category" width={90} />
-                                        <RechartsTooltip />
-                                        <Legend />
-                                        <Bar dataKey="بازدید" fill={CHART_COLORS[1]} radius={[0, 4, 4, 0]} />
-                                        <Bar dataKey="قرارداد" fill={CHART_COLORS[3]} radius={[0, 4, 4, 0]} />
-                                    </BarChart>
-
-                                </ResponsiveContainer>
+                                </Box>
 
                             </Box>
 
-                        )}
+                            <Box sx={{ flex: 1, width: "100%", display: "flex", flexDirection: "column", gap: 1.75 }}>
 
-                    </SectionPaper>
+                                {customerPieData.map((row, index) => {
 
-                </Grid>
+                                    const percent = pieTotal ? Math.round((row.value / pieTotal) * 100) : 0;
 
-                <Grid size={{ xs: 12, lg: 5 }}>
+                                    return (
 
-                    <SectionPaper title="میانگین قیمت ملک بر اساس نوع">
+                                        <Box key={row.name}>
 
-                        {priceChartData.length === 0 ? (
+                                            <Box sx={{ display: "flex", justifyContent: "space-between", fontSize: 13, mb: 0.5 }}>
 
-                            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
-                                ملکی برای نمایش وجود ندارد.
-                            </Typography>
+                                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                                                    <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: DONUT_COLORS[index % DONUT_COLORS.length] }} />
+                                                    {row.name}
+                                                </Box>
 
-                        ) : (
+                                                <Box sx={{ fontWeight: 700 }}>
+                                                    {row.value.toLocaleString("en-US")}
+                                                    <Box component="span" sx={{ color: "text.secondary", fontWeight: 500, marginInlineStart: 0.75 }}>
+                                                        {percent}٪
+                                                    </Box>
+                                                </Box>
 
-                            <Box sx={{ width: "100%", height: 280 }}>
+                                            </Box>
 
-                                <ResponsiveContainer>
+                                            <Box sx={{ height: 6, borderRadius: 999, bgcolor: (t) => t.custom.surfaceAlt, overflow: "hidden" }}>
+                                                <Box
+                                                    sx={{
+                                                        height: "100%",
+                                                        width: `${percent}%`,
+                                                        borderRadius: 999,
+                                                        bgcolor: DONUT_COLORS[index % DONUT_COLORS.length],
+                                                        transition: "width 1s ease",
+                                                    }}
+                                                />
+                                            </Box>
 
-                                    <BarChart data={priceChartData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" />
-                                        <YAxis />
-                                        <RechartsTooltip formatter={(value) => Number(value).toLocaleString("fa-IR")} />
-                                        <Bar dataKey="میانگین قیمت" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
-                                    </BarChart>
+                                        </Box>
 
-                                </ResponsiveContainer>
+                                    );
+
+                                })}
 
                             </Box>
 
-                        )}
+                        </Box>
 
-                    </SectionPaper>
+                    )}
 
-                </Grid>
+                </Panel>
 
-            </Grid>
+                <Panel
+                    delay={310}
+                    title="عملکرد مشاوران"
+                    subtitle="تعداد بازدید و قرارداد هر مشاور"
+                    action={
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                            <LegendDot color={CYAN} label="بازدید" />
+                            <LegendDot color={AMBER} label="قرارداد" />
+                        </Box>
+                    }
+                >
+
+                    {agentsChartData.length === 0 ? (
+
+                        <EmptyState text="مشاوری برای نمایش وجود ندارد." />
+
+                    ) : (
+
+                        <Box sx={{ width: "100%", height: Math.max(220, agentsChartData.length * 62 + 40), direction: "ltr" }}>
+
+                            <ResponsiveContainer>
+
+                                <BarChart data={agentsChartData} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }} barCategoryGap="28%">
+
+                                    <defs>
+                                        <linearGradient id="barVisits" x1="0" y1="0" x2="1" y2="0">
+                                            <stop offset="0" stopColor={CYAN} stopOpacity={0.45} />
+                                            <stop offset="1" stopColor={CYAN} stopOpacity={1} />
+                                        </linearGradient>
+                                        <linearGradient id="barContracts" x1="0" y1="0" x2="1" y2="0">
+                                            <stop offset="0" stopColor={AMBER} stopOpacity={0.45} />
+                                            <stop offset="1" stopColor={AMBER} stopOpacity={1} />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <CartesianGrid horizontal={false} stroke={gridStroke} strokeDasharray="4 4" />
+
+                                    <XAxis type="number" tick={axisTick} tickLine={false} axisLine={false} allowDecimals={false} />
+
+                                    <YAxis dataKey="name" type="category" tick={axisTick} tickLine={false} axisLine={false} width={isMobile ? 70 : 100} orientation="right" />
+
+                                    <RechartsTooltip content={<ChartTooltip />} cursor={{ fill: "rgba(16,185,129,0.06)" }} />
+
+                                    <Bar dataKey="visits" name="بازدید" fill="url(#barVisits)" radius={[0, 8, 8, 0]} animationDuration={1000}>
+                                        <LabelList dataKey="visits" position="right" style={{ fontSize: 11, fill: theme.palette.text.secondary }} />
+                                    </Bar>
+
+                                    <Bar dataKey="contracts" name="قرارداد" fill="url(#barContracts)" radius={[0, 8, 8, 0]} animationDuration={1000}>
+                                        <LabelList dataKey="contracts" position="right" style={{ fontSize: 11, fill: theme.palette.text.secondary }} />
+                                    </Bar>
+
+                                </BarChart>
+
+                            </ResponsiveContainer>
+
+                        </Box>
+
+                    )}
+
+                </Panel>
+
+                <Panel
+                    delay={390}
+                    title="میانگین قیمت ملک بر اساس نوع"
+                    subtitle="به تومان"
+                >
+
+                    {priceChartData.length === 0 ? (
+
+                        <EmptyState text="ملکی برای نمایش وجود ندارد." />
+
+                    ) : (
+
+                        <Box sx={{ width: "100%", height: { xs: 260, md: 300 }, direction: "ltr" }}>
+
+                            <ResponsiveContainer>
+
+                                <BarChart data={priceChartData} margin={{ top: 22, right: 8, left: 8, bottom: 0 }}>
+
+                                    <defs>
+                                        <linearGradient id="barPrice" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0" stopColor={INDIGO} stopOpacity={1} />
+                                            <stop offset="1" stopColor={EMERALD} stopOpacity={0.6} />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <CartesianGrid vertical={false} stroke={gridStroke} strokeDasharray="4 4" />
+
+                                    <XAxis dataKey="name" tick={axisTick} tickLine={false} axisLine={false} />
+
+                                    <YAxis hide />
+
+                                    <RechartsTooltip content={<ChartTooltip formatter={(value) => `${compact(value)} تومان`} />} cursor={{ fill: "rgba(16,185,129,0.06)" }} />
+
+                                    <Bar dataKey="price" name="میانگین قیمت" fill="url(#barPrice)" radius={[8, 8, 0, 0]} maxBarSize={52} animationDuration={1000}>
+                                        <LabelList dataKey="price" position="top" formatter={compact} style={{ fontSize: 11, fontWeight: 600, fill: theme.palette.text.primary }} />
+                                    </Bar>
+
+                                </BarChart>
+
+                            </ResponsiveContainer>
+
+                        </Box>
+
+                    )}
+
+                </Panel>
+
+            </Box>
 
         </PageContainer>
 

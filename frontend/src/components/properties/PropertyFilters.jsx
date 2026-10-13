@@ -43,7 +43,7 @@ export default function PropertyFilters({
 
                 mb: 3,
 
-                p: 3,
+                p: { xs: 2, md: 3 },
 
                 borderRadius: 4,
 
@@ -53,7 +53,7 @@ export default function PropertyFilters({
 
                 borderColor: "divider",
 
-                boxShadow: "0 1px 3px rgba(16, 24, 40, 0.06)",
+                boxShadow: (theme) => theme.custom.cardShadow,
 
             }}
 
@@ -99,17 +99,18 @@ export default function PropertyFilters({
 
             />
 
-            <Stack
-                direction={{
-                    xs: "column",
-                    md: "row"
-                }}
-                spacing={2}
+            <Box
                 sx={{
-                    alignItems: {
-                        xs: "stretch",
-                        md: "center"
-                    }
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "repeat(2, minmax(0, 1fr))",
+                        lg: "repeat(4, minmax(0, 1fr)) auto",
+                    },
+                    gap: 2,
+                    alignItems: "center",
+                    "& > :last-child": {
+                        gridColumn: { xs: "1 / -1", lg: "auto" },
+                    },
                 }}
             >
 
@@ -274,7 +275,7 @@ export default function PropertyFilters({
 
                 </Box>
 
-            </Stack>
+            </Box>
 
         </Box>
 
