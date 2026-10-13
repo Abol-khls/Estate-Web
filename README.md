@@ -369,7 +369,7 @@ Locust scripts are in `backend/loadtest`.
 
 ```bash
 pip install locust
-cd backend/loadtes
+cd backend/loadtest
 locust -f locustfile.py --host http://localhost:8000
 ```
 
